@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/foldersBottomNav"
+        android:icon="@drawable/icon_folder"
+        android:title="Folders" />
+    <item
+        android:id="@+id/videosBottomNav"
+        android:icon="@drawable/icon_video"
+        android:title="Videos" />
+</menu>
