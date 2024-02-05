@@ -16,6 +16,11 @@
         android:name="com.maurya.flexivid.fragments.VideosFragment"
         android:label="fragment_videos"
         tools:layout="@layout/fragment_videos" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.maurya.flexivid.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 
 
     <!--    <fragment-->
