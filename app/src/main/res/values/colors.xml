@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FFF0E6</color>
+    <color name="colorPrimary">#151515</color>
+    <color name="colorPrimaryDark">#151515</color>
+    <color name="colorAccent">#03DAC5</color>
+
+
+    <color name="red">#BD0404</color>
+    <color name="purple_500">#673AB7</color>
+    <color name="indigo_500">#3F51B5</color>
+    <color name="light_blue_500">#03A9F4</color>
+    <color name="deep_orange_500">#FF5722</color>
+    <color name="orange_500">#FF9800</color>
+    <color name="yellow_500">#FFEB3B</color>
+    <color name="light_green_500">#8BC34A</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="teal_500">#009688</color>
+    <color name="amber_500">#FFC107</color>
+    <color name="light_green_A200">#76EAA5</color>
+    <color name="brown_500">#729857</color>
+
+    <!--    Light Mode-->
+
+    <color name="statusBarDark">#202930</color>
+    <color name="statusBarLight">#E5faff</color>
+
+    <color name="dark_black">#181C1F</color>
+    <color name="light_black">#202930</color>
+
+    <color name="PopUpWindowColour">#FFFFFF</color>
+    <color name="PopUpWindowBottomColour">#E8E8E8</color>
+
+    <color name="ImageViewAndTextViewColour">#000000</color>
+
+    <color name="UploadBackgroundColour">#FFFFFF</color>
+
+    <color name="StatusBarColour">@color/statusBarLight</color>
+
 </resources>
