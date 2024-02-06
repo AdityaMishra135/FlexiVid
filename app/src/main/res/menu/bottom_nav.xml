@@ -3,14 +3,17 @@
 
     <item
         android:id="@+id/videosBottomNav"
+        android:enabled="true"
         android:icon="@drawable/icon_video"
         android:title="Videos" />
     <item
         android:id="@+id/foldersBottomNav"
+        android:enabled="true"
         android:icon="@drawable/icon_folder"
         android:title="Folders" />
     <item
         android:id="@+id/settingsBottomNav"
+        android:enabled="true"
         android:icon="@drawable/icon_settings"
         android:title="Settings" />
 </menu>

@@ -2,6 +2,6 @@ package com.maurya.flexivid.util
 
 
 interface OnItemClickListener {
-    fun onItemLongClickListener(position: Int)
+    fun onItemClickListener(position: Int)
 
 }

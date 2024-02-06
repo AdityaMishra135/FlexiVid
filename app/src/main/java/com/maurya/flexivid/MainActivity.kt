@@ -15,7 +15,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -34,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.videosFragment)
 
 
-        binding.bottomNavMainActivity.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
+        binding.bottomNavMainActivity.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
                 R.id.foldersBottomNav -> navController.navigate(R.id.foldersFragment)
                 R.id.videosBottomNav -> navController.navigate(R.id.videosFragment)
                 R.id.settingsBottomNav -> navController.navigate(R.id.settingsFragment)
@@ -44,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
-
 
         permission()
 
