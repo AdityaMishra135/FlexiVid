@@ -42,4 +42,15 @@
     <style name="PopUpWindowStyle">
         <item name="android:background">@drawable/bg_popup_window</item>
     </style>
+
+
+    //for Player Activity
+    <style name="playerActivityTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/statusBarLight</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+
 </resources>
