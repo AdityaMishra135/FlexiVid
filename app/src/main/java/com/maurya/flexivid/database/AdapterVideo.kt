@@ -2,14 +2,17 @@ package com.maurya.flexivid.database
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.maurya.flexivid.R
+import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
@@ -32,11 +35,11 @@ class AdapterVideo(
         val currentItem = itemList[position]
 
         with(holder) {
-            videoTitle.isSelected=true
+            videoTitle.isSelected = true
 
             videoTitle.text = currentItem.videoName
             folderName.text = currentItem.folderName
-            durationText.text=DateUtils.formatElapsedTime(currentItem.durationText/1000)
+            durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
             Glide.with(context)
                 .asBitmap()
@@ -45,6 +48,10 @@ class AdapterVideo(
                 .error(R.drawable.mp4)
                 .into(image)
 
+            root.setOnClickListener {
+                val intent = Intent(context, PlayerActivity::class.java)
+                ContextCompat.startActivity(context, intent, null)
+            }
 
         }
 
@@ -65,7 +72,6 @@ class AdapterVideo(
         val durationText = binding.videoDurationVideoItem
         val image = binding.videoImageVideoItem
         val root = binding.root
-
 
 
         init {

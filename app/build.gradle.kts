@@ -91,4 +91,9 @@ dependencies {
     //glide
     implementation(libs.glide)
 
+    //exoPlayer
+    implementation (libs.exoplayer.core)
+    implementation (libs.exoplayer.ui)
+
+
 }
