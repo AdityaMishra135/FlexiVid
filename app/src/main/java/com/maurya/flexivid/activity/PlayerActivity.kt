@@ -20,6 +20,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
 
 
+    private var isPause: Boolean = false
+
     companion object {
         lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
@@ -32,7 +34,27 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(activityPlayerBinding.root)
 
 
+        activityPlayerBinding.videoTitlePlayerActivity.isSelected = true
+
         initializeLayout()
+        listeners()
+
+    }
+
+    private fun listeners() {
+
+        activityPlayerBinding.backPlayerActivity.setOnClickListener {
+            finish()
+        }
+
+        activityPlayerBinding.playPausePlayerActivity.setOnClickListener {
+            if (player.isPlaying) {
+                pauseVideo()
+            } else {
+                playVideo()
+            }
+
+        }
 
     }
 
@@ -40,32 +62,42 @@ class PlayerActivity : AppCompatActivity() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
                 playerList.addAll(MainActivity.videoList)
+                createPlayer()
 
 
             }
 
             "folderActivity" -> {
                 playerList.addAll(FolderActivity.currentFolderVideos)
-
+                createPlayer()
             }
 
         }
 
 
-
-
-
-        createPlayer()
     }
 
+
     private fun createPlayer() {
+        activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
         val player = Builder(this).build()
         activityPlayerBinding.playerViewPlayerActivity.player = player
 
         val mediaItem = MediaItem.fromUri(playerList[position].image)
         player.setMediaItem(mediaItem)
         player.prepare()
+        playVideo()
+    }
+
+
+    private fun playVideo() {
+        activityPlayerBinding.playPausePlayerActivity.setImageResource(R.drawable.icon_pause)
         player.play()
+    }
+
+    private fun pauseVideo() {
+        activityPlayerBinding.playPausePlayerActivity.setImageResource(R.drawable.icon_play)
+        player.pause()
     }
 
     override fun onDestroy() {

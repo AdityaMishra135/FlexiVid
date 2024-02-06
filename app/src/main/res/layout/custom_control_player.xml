@@ -29,21 +29,30 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="00:00"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="00:00"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:text=":"
+            android:textColor="@color/white"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
 
         <TextView
             android:id="@id/exo_duration"
-            android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Loading..."
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="Loading..."
             android:textStyle="bold" />
 
     </LinearLayout>
