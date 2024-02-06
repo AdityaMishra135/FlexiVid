@@ -37,4 +37,5 @@
 
     <color name="StatusBarColour">@color/statusBarLight</color>
 
+    <color name="ViewColor">#EAE0E0</color>
 </resources>

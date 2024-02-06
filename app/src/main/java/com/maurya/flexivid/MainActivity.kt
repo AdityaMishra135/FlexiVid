@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.videosFragment)
 
 
-        binding.bottomNavMainActivity.setOnItemReselectedListener { item ->
+        binding.bottomNavMainActivity.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.foldersBottomNav -> navController.navigate(R.id.foldersFragment)
                 R.id.videosBottomNav -> navController.navigate(R.id.videosFragment)
@@ -42,7 +42,9 @@ class MainActivity : AppCompatActivity() {
                 else -> navController.navigate(R.id.videosFragment)
             }
 
+            true
         }
+
 
         permission()
 
