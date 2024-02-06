@@ -44,7 +44,6 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
             val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
             val folderPath = imagePathCursor.substringBeforeLast("/")
 
-
             try {
                 val fileCursor = File(imagePathCursor)
                 val imageUri = Uri.fromFile(fileCursor)
@@ -65,6 +64,57 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
                     tempFolderList.add(folderNameCursor)
                     folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
                 }
+
+            } catch (e: Exception) {
+                showToast(context, "Error in Fetching Video File")
+            }
+
+
+        }
+    }
+
+    return tempList
+}
+
+fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<VideoDataClass> {
+    val tempList = ArrayList<VideoDataClass>()
+
+    val selection = "$BUCKET_ID like? "
+
+
+    val projection = arrayOf(
+        _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE
+    )
+
+    val cursor = context.contentResolver.query(
+        EXTERNAL_CONTENT_URI, projection, selection, arrayOf(folderId), "$DATE_ADDED DESC"
+    )
+
+    cursor?.use {
+        while (it.moveToNext()) {
+            val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
+            val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
+            val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
+            val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
+            val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
+            val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
+
+            try {
+                val fileCursor = File(imagePathCursor)
+                val imageUri = Uri.fromFile(fileCursor)
+                val videoData = VideoDataClass(
+                    idCursor,
+                    videoNameCursor,
+                    folderNameCursor,
+                    durationCursor,
+                    videoSizeCursor,
+                    imagePathCursor,
+                    imageUri
+                )
+                if (fileCursor.exists()) {
+                    tempList.add(videoData)
+                }
+
 
             } catch (e: Exception) {
                 showToast(context, "Error in Fetching Video File")
