@@ -39,6 +39,7 @@ class AdapterVideo(
             durationText.text=DateUtils.formatElapsedTime(currentItem.durationText/1000)
 
             Glide.with(context)
+                .asBitmap()
                 .load(currentItem.image)
                 .centerCrop()
                 .error(R.drawable.mp4)

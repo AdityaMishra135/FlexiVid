@@ -2,19 +2,14 @@ package com.maurya.flexivid.database
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.FolderDataClass
-import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemFolderBinding
-import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import com.maurya.flexivid.util.countVideoFilesInFolder
 
 class AdapterFolder(
     private val context: Context,
@@ -36,13 +31,17 @@ class AdapterFolder(
         with(holder) {
             folderName.text = currentItem.folderName
 
-            val textToShow = when (val videoCount = currentItem.folderItemCount) {
-                1 -> "1 video"
-                else -> "$videoCount videos"
+            val textToShow = countVideoFilesInFolder(currentItem.folderPath)
+
+            if (textToShow == 1) {
+                folderItemCount.text
             }
 
-            folderItemCount.text = textToShow
+            folderItemCount.text = textToShow.toString()
 
+            root.setOnClickListener {
+
+            }
         }
 
 

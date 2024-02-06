@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
 import com.maurya.flexivid.util.getAllVideos
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
+        var folderList: ArrayList<FolderDataClass> = arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

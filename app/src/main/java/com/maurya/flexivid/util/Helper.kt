@@ -8,9 +8,12 @@ import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
 import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
+import com.maurya.flexivid.MainActivity.Companion.folderList
+import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import java.io.File
 import java.io.IOException
+import java.util.UUID
 
 
 fun showToast(context: Context, message: String) {
@@ -18,61 +21,29 @@ fun showToast(context: Context, message: String) {
 }
 
 
-fun uriToFile(context: Context, uri: Uri, fileName: String): File {
-    val inputStream = context.contentResolver.openInputStream(uri)
-    val file = File(context.cacheDir, fileName) // Change to an appropriate file name
-
-    if (inputStream != null) {
-        inputStream.use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-    } else {
-        val documentFile = DocumentFile.fromSingleUri(context, uri)
-        if (documentFile != null && documentFile.isDirectory) {
-            throw IOException("Selected item is a directory, not a file")
-        } else {
-            throw IOException("Could not open the file")
-        }
-    }
-
-    return file
-}
-
-
 fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
     val tempList = ArrayList<VideoDataClass>()
+    val tempFolderList = ArrayList<String>()
 
     val projection = arrayOf(
-        TITLE,
-        ALBUM,
-        _ID,
-        BUCKET_DISPLAY_NAME,
-        SIZE,
-        DATA,
-        DATE_ADDED,
-        DURATION
+        _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE
     )
 
     val cursor = context.contentResolver.query(
-        EXTERNAL_CONTENT_URI, projection, null, null,
-        "$DATE_ADDED DESC"
+        EXTERNAL_CONTENT_URI, projection, null, null, "$DATE_ADDED DESC"
     )
 
     cursor?.use {
         while (it.moveToNext()) {
             val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
-            val videoNameCursor =
-                it.getString(it.getColumnIndexOrThrow(TITLE))
-            val folderNameCursor =
-                it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
-            val durationCursor =
-                it.getLong(it.getColumnIndexOrThrow(DURATION))
-            val imagePathCursor =
-                it.getString(it.getColumnIndexOrThrow(DATA))
-            val videoSizeCursor =
-                it.getString(it.getColumnIndexOrThrow(SIZE))
+            val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
+            val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
+            val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
+            val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
+            val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
+            val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
+            val folderPath = imagePathCursor.substringBeforeLast("/")
+
 
             try {
                 val fileCursor = File(imagePathCursor)
@@ -90,6 +61,11 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
                     tempList.add(videoData)
                 }
 
+                if (!tempFolderList.contains(folderNameCursor)) {
+                    tempFolderList.add(folderNameCursor)
+                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
+                }
+
             } catch (e: Exception) {
                 showToast(context, "Error in Fetching Video File")
             }
@@ -98,6 +74,31 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
         }
     }
 
-
     return tempList
+}
+
+fun countVideoFilesInFolder(folderPath: String): Int {
+    val folder = File(folderPath)
+    if (!folder.exists() || !folder.isDirectory) {
+        return 0
+    }
+
+    val videoFileExtensions =
+        listOf(".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv")
+
+    var videoFileCount = 0
+
+    val folderFiles = folder.listFiles()
+    if (folderFiles != null) {
+        for (file in folderFiles) {
+            if (file.isFile) {
+                val fileName = file.name.toLowerCase()
+                if (videoFileExtensions.any { fileName.endsWith(it) }) {
+                    videoFileCount++
+                }
+            }
+        }
+    }
+
+    return videoFileCount
 }

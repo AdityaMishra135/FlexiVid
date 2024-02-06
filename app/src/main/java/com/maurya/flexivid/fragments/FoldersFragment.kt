@@ -6,13 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
+import com.maurya.flexivid.database.AdapterFolder
 import com.maurya.flexivid.databinding.FragmentFoldersBinding
+import com.maurya.flexivid.util.OnItemClickListener
 
 
-class FoldersFragment : Fragment() {
+class FoldersFragment : Fragment() ,OnItemClickListener{
 
     private lateinit var fragmentFoldersBinding: FragmentFoldersBinding
+    private lateinit var adapterFolder: AdapterFolder
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +25,14 @@ class FoldersFragment : Fragment() {
         fragmentFoldersBinding = FragmentFoldersBinding.inflate(inflater, container, false)
         val view = fragmentFoldersBinding.root
 
+        fragmentFoldersBinding.recyclerViewFoldersFragment.setHasFixedSize(true)
+        fragmentFoldersBinding.recyclerViewFoldersFragment.setItemViewCacheSize(13)
+        fragmentFoldersBinding.recyclerViewFoldersFragment.layoutManager =
+            LinearLayoutManager(
+                requireContext(), LinearLayoutManager.VERTICAL, false
+            )
+        adapterFolder = AdapterFolder(requireContext(), this, MainActivity.folderList)
+        fragmentFoldersBinding.recyclerViewFoldersFragment.adapter = adapterFolder
 
 
 
@@ -29,6 +41,11 @@ class FoldersFragment : Fragment() {
     }
 
     private fun listeners() {
+
+
+    }
+
+    override fun onItemClickListener(position: Int) {
 
 
     }

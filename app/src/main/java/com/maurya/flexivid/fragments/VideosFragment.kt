@@ -30,8 +30,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
 
 
-
-
         fragmentVideosBinding.recyclerViewVideosFragment.setHasFixedSize(true)
         fragmentVideosBinding.recyclerViewVideosFragment.setItemViewCacheSize(13)
         fragmentVideosBinding.recyclerViewVideosFragment.layoutManager =
