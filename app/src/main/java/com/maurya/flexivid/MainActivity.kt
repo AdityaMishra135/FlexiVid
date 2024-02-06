@@ -8,6 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.provider.MediaStore.*
+import android.provider.MediaStore.Video.*
+import android.provider.MediaStore.Video.Media.*
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,7 +20,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
+import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.lang.reflect.Field
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -24,6 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var navController: NavController
+
+    companion object {
+        var videoList: ArrayList<VideoDataClass> = arrayListOf()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         permission()
+
+        videoList = getAllVideos(this)
 
     }
 
@@ -140,12 +154,5 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun getAllVideos(): ArrayList<VideoDataClass> {
-        val tempList = ArrayList<VideoDataClass>()
-
-
-
-        return tempList
-    }
 
 }

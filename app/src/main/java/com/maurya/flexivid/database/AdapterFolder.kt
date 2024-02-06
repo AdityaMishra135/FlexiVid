@@ -10,19 +10,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.maurya.flexivid.R
+import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
+import com.maurya.flexivid.databinding.ItemFolderBinding
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
 
-class AdapterVideo(
+class AdapterFolder(
     private val context: Context,
     private var listener: OnItemClickListener,
-    private val itemList: MutableList<VideoDataClass> = mutableListOf()
-) : RecyclerView.Adapter<AdapterVideo.DayHolder>() {
+    private val itemList: MutableList<FolderDataClass> = mutableListOf()
+) : RecyclerView.Adapter<AdapterFolder.DayHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayHolder {
-        val binding = ItemVideoBinding.inflate(LayoutInflater.from(context), parent, false)
+        val binding = ItemFolderBinding.inflate(LayoutInflater.from(context), parent, false)
 
         return DayHolder(binding)
     }
@@ -32,18 +34,14 @@ class AdapterVideo(
         val currentItem = itemList[position]
 
         with(holder) {
-            videoTitle.isSelected=true
-
-            videoTitle.text = currentItem.videoName
             folderName.text = currentItem.folderName
-            durationText.text=DateUtils.formatElapsedTime(currentItem.durationText/1000)
 
-            Glide.with(context)
-                .load(currentItem.image)
-                .centerCrop()
-                .error(R.drawable.mp4)
-                .into(image)
+            val textToShow = when (val videoCount = currentItem.folderItemCount) {
+                1 -> "1 video"
+                else -> "$videoCount videos"
+            }
 
+            folderItemCount.text = textToShow
 
         }
 
@@ -56,15 +54,12 @@ class AdapterVideo(
     }
 
 
-    inner class DayHolder(binding: ItemVideoBinding) :
+    inner class DayHolder(binding: ItemFolderBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
-        val videoTitle = binding.videoNameVideoItem
-        val folderName = binding.pathNameVideoItem
-        val durationText = binding.videoDurationVideoItem
-        val image = binding.videoImageVideoItem
+        val folderName = binding.folderNameFolderItem
+        val folderItemCount = binding.folderItemCountFolderItem
         val root = binding.root
-
 
 
         init {

@@ -18,7 +18,8 @@
             android:id="@+id/videoImageVideoItem"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/gif" />
+            android:padding="5dp"
+            android:src="@drawable/icon_folder" />
 
     </androidx.cardview.widget.CardView>
 
@@ -26,14 +27,14 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
 
         <TextView
-            android:id="@+id/videoNameVideoItem"
+            android:id="@+id/folderNameFolderItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_title"
@@ -44,32 +45,18 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/pathNameVideoItem"
+            android:id="@+id/folderItemCountFolderItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_date"
             android:singleLine="true"
-            android:text="Downloads"
+            android:text="24 Videos"
             android:textAllCaps="false"
             android:textColor="#737A91"
             android:textSize="15sp" />
 
 
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/videoDurationVideoItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="10dp"
-        android:fontFamily="@font/font_title"
-        android:singleLine="true"
-        android:text="00:50"
-        android:textAllCaps="false"
-        android:textColor="#737A91"
-        android:textSize="15sp" />
 
 
 </LinearLayout>
