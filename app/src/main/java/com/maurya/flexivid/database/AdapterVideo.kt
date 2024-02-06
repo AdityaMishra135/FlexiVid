@@ -28,10 +28,9 @@ class AdapterVideo(
     override fun onBindViewHolder(holder: DayHolder, position: Int) {
         val currentItem = itemList[position]
 
-
         with(holder) {
-//            videoTitle = itemList[position].videoName
-//            folderName= currentItem.folderName
+            videoTitle.text = currentItem.videoName
+            folderName.text = currentItem.folderName
 //
 //
 //
@@ -60,7 +59,6 @@ class AdapterVideo(
         val folderName = binding.pathNameVideoItem
         val durationText = binding.videoDurationVideoItem
         val image = binding.videoImageVideoItem
-
         val root = binding.root
 
         init {

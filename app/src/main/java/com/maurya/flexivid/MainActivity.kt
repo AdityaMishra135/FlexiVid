@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -137,6 +138,14 @@ class MainActivity : AppCompatActivity() {
             ) { _, _ -> finish() }
             .setCancelable(false)
             .show()
+    }
+
+    private fun getAllVideos(): ArrayList<VideoDataClass> {
+        val tempList = ArrayList<VideoDataClass>()
+
+
+
+        return tempList
     }
 
 }
