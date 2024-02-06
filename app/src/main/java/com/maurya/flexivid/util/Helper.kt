@@ -1,14 +1,17 @@
 package com.maurya.flexivid.util
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.maurya.flexivid.MainActivity.Companion.folderList
+import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import java.io.File
@@ -151,4 +154,11 @@ fun countVideoFilesInFolder(folderPath: String): Int {
     }
 
     return videoFileCount
+}
+
+fun sendIntent(context: Context,position: Int, reference: String) {
+    PlayerActivity.position = position
+    val intent = Intent(context, PlayerActivity::class.java)
+    intent.putExtra("class", reference)
+    ContextCompat.startActivity(context, intent, null)
 }

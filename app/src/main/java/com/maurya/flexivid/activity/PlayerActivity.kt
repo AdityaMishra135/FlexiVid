@@ -21,7 +21,7 @@ class PlayerActivity : AppCompatActivity() {
 
 
     companion object {
-//        lateinit var player: ExoPlayer
+        lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
         var position: Int = -1
     }
@@ -37,6 +37,19 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initializeLayout() {
+        when (intent.getStringExtra("class")) {
+            "allVideos" -> {
+                playerList.addAll(MainActivity.videoList)
+
+
+            }
+
+            "folderActivity" -> {
+                playerList.addAll(FolderActivity.currentFolderVideos)
+
+            }
+
+        }
 
 
 
@@ -49,10 +62,16 @@ class PlayerActivity : AppCompatActivity() {
         val player = Builder(this).build()
         activityPlayerBinding.playerViewPlayerActivity.player = player
 
-        val mediaItem = MediaItem.fromUri(MainActivity.videoList[0].image)
+        val mediaItem = MediaItem.fromUri(playerList[position].image)
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        player.release()
+
     }
 
 

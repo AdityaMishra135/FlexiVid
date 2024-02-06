@@ -16,11 +16,14 @@ import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import com.maurya.flexivid.util.sendIntent
+import java.lang.ref.Reference
 
 class AdapterVideo(
     private val context: Context,
     private var listener: OnItemClickListener,
-    private val itemList: MutableList<VideoDataClass> = mutableListOf()
+    private val itemList: MutableList<VideoDataClass> = mutableListOf(),
+    private val isFolder: Boolean = false
 ) : RecyclerView.Adapter<AdapterVideo.DayHolder>() {
 
 
@@ -49,8 +52,14 @@ class AdapterVideo(
                 .into(image)
 
             root.setOnClickListener {
-                val intent = Intent(context, PlayerActivity::class.java)
-                ContextCompat.startActivity(context, intent, null)
+                when {
+                    isFolder -> {
+                        sendIntent(context,position, "folderActivity")
+                    }
+
+                    else -> sendIntent(context,position, "allVideos")
+                }
+
             }
 
         }

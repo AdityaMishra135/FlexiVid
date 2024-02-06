@@ -11,9 +11,8 @@
         android:id="@+id/playerViewPlayerActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:use_controller="true"
         android:keepScreenOn="true"
-
+        app:controller_layout_id="@layout/custom_control_player"
 
         />
 

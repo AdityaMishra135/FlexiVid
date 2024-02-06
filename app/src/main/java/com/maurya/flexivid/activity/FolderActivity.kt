@@ -49,7 +49,7 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
                 this, LinearLayoutManager.VERTICAL, false
             )
         activityFolderBinding.recyclerViewFolderActivity.adapter =
-            AdapterVideo(this, this, currentFolderVideos)
+            AdapterVideo(this, this, currentFolderVideos, isFolder = true)
 
 
     }

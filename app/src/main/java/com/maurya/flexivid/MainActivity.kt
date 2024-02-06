@@ -131,6 +131,7 @@ class MainActivity : AppCompatActivity() {
             if (!allPermissionsGranted) {
                 showPermissionRequiredDialog()
             } else {
+                videoList = getAllVideos(this)
             }
         }
     }
@@ -156,5 +157,10 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        videoList = getAllVideos(this)
+    }
 
 }
