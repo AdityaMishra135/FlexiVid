@@ -42,6 +42,7 @@ class PlayerActivity : AppCompatActivity() {
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
         var position: Int = -1
         var isFullScreen: Boolean = false
+        var isLocked: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +119,24 @@ class PlayerActivity : AppCompatActivity() {
                 fullScreen(true)
             }
         }
+
+        activityPlayerBinding.lockPlayerActivity.setOnClickListener {
+            if (!isLocked) {
+                isLocked = true
+                activityPlayerBinding.playerViewPlayerActivity.hideController()
+                activityPlayerBinding.playerViewPlayerActivity.useController = false
+                activityPlayerBinding.lockPlayerActivity.setImageResource(R.drawable.icon_lock)
+
+            } else {
+                isLocked = false
+                activityPlayerBinding.playerViewPlayerActivity.useController = true
+                activityPlayerBinding.playerViewPlayerActivity.showController()
+                activityPlayerBinding.lockPlayerActivity.setImageResource(R.drawable.icon_unlock)
+
+            }
+        }
+
+
     }
 
     private fun initializeLayout() {
@@ -141,6 +160,10 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun visibilityControl() {
+        if (isLocked){
+            activityPlayerBinding.lockPlayerActivity.visibility=View.VISIBLE
+        }
+
         runnable = Runnable {
             if (activityPlayerBinding.playerViewPlayerActivity.isControllerVisible) {
                 activityPlayerBinding.topController.visibility = View.VISIBLE
