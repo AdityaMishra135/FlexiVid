@@ -54,7 +54,7 @@ dependencies {
 
 
     //retrofit
-    implementation (libs.logging.interceptor)
+    implementation(libs.logging.interceptor)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     //noinspection UseTomlInstead
@@ -87,13 +87,15 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
 
-
     //glide
     implementation(libs.glide)
 
     //exoPlayer
-    implementation (libs.exoplayer.core)
-    implementation (libs.exoplayer.ui)
+    implementation(libs.exoplayer.core)
+    implementation(libs.exoplayer.ui)
+
+    //VolumeSeekbar
+    implementation("com.github.lukelorusso:VerticalSeekBar:1.2.7")
 
 
 }
