@@ -1,5 +1,6 @@
 package com.maurya.flexivid.activity
 
+import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -9,10 +10,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer.Builder
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.FolderDataClass
@@ -30,6 +35,7 @@ class PlayerActivity : AppCompatActivity() {
         lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
         var position: Int = -1
+        var isFullScreen: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +102,16 @@ class PlayerActivity : AppCompatActivity() {
             }
 
         }
+
+        activityPlayerBinding.maximizeMinimizePlayerActivity.setOnClickListener {
+            if (isFullScreen) {
+                isFullScreen = false
+                fullScreen(false)
+            } else {
+                isFullScreen = true
+                fullScreen(true)
+            }
+        }
     }
 
     private fun initializeLayout() {
@@ -112,6 +128,11 @@ class PlayerActivity : AppCompatActivity() {
                 createPlayer()
             }
 
+        }
+        if (repeat) {
+            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat)
+        } else {
+            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat_one)
         }
 
 
@@ -141,6 +162,8 @@ class PlayerActivity : AppCompatActivity() {
             }
 
         })
+
+        fullScreen(isFullScreen)
     }
 
     private fun nextPrevVideo(isNext: Boolean = true) {
@@ -180,6 +203,22 @@ class PlayerActivity : AppCompatActivity() {
     private fun pauseVideo() {
         activityPlayerBinding.playPausePlayerActivity.setImageResource(R.drawable.icon_play)
         player.pause()
+    }
+
+    private fun fullScreen(enable: Boolean) {
+        if (enable) {
+            activityPlayerBinding.playerViewPlayerActivity.resizeMode =
+                RESIZE_MODE_FILL
+            player.videoScalingMode = VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+            activityPlayerBinding.maximizeMinimizePlayerActivity.setImageResource(R.drawable.icon_minimize)
+        } else {
+            activityPlayerBinding.playerViewPlayerActivity.resizeMode =
+                RESIZE_MODE_FIT
+            player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
+            activityPlayerBinding.maximizeMinimizePlayerActivity.setImageResource(R.drawable.icon_maximize)
+
+        }
+
     }
 
     override fun onDestroy() {
