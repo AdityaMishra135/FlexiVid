@@ -163,6 +163,8 @@ class PlayerActivity : AppCompatActivity() {
                 playVideo()
 
                 val subtitleTracks = ArrayList<String>()
+                subtitleTracks.add("Subtitle Off")
+
                 for (i in 0 until player.currentTrackGroups.length) {
                     if (player.currentTrackGroups.get(i)
                             .getFormat(0).sampleMimeType == MimeTypes.TEXT_VTT
@@ -180,19 +182,25 @@ class PlayerActivity : AppCompatActivity() {
                 MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
                     .setTitle("Select Subtitle Track")
                     .setItems(tempTracks) { _, position ->
-                        showToast(this, subtitleTracks[position] + " Selected")
-                        trackSelector.setParameters(
-                            trackSelector.buildUponParameters()
-                                .setPreferredTextLanguage(subtitleTracks[position])
-                        )
+                        if (position == 0) {
+                            trackSelector.setParameters(
+                                trackSelector.buildUponParameters().clearSelectionOverrides()
+                            )
+                            showToast(this, "Subtitles Off")
+                        } else {
+                            showToast(this, subtitleTracks[position] + " Selected")
+                            trackSelector.setParameters(
+                                trackSelector.buildUponParameters()
+                                    .setPreferredTextLanguage(subtitleTracks[position])
+                            )
+                        }
                     }
                     .setOnCancelListener {
-                        playVideo() // Resume video playback if dialog is canceled
+                        playVideo()
                     }
                     .create()
                     .show()
             }
-
 
             bindingPopUp.audioBoosterPopUp.setOnClickListener { }
 
