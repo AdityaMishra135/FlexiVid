@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/PopUpWindowStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/audioTracksPopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Audio Tracks"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_audio_track"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/subtitlePopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Subtitles"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_subtitle"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/audioBoosterPopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Booster"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_audio_booster"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="5dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/speedPopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Speed"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_video_speed"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sleepTimerPopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Sleep Timer"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_timer"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pipPopUp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor_without_corner"
+            android:text="Pip"
+            android:textAllCaps="false"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            app:icon="@drawable/icon_pip_enable"
+            app:iconGravity="top"
+            app:iconSize="25dp"
+            app:iconTint="@color/ImageViewAndTextViewColour" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

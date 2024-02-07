@@ -4,6 +4,7 @@ import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -22,12 +23,14 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityFolderBinding
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
+import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
@@ -136,6 +139,21 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        activityPlayerBinding.menuPlayerActivity.setOnClickListener {
+            pauseVideo()
+            val popUpDialog = LayoutInflater.from(this)
+                .inflate(R.layout.popup_more_features, activityPlayerBinding.root, false)
+            val bindingPopUp = PopupMoreFeaturesBinding.bind(popUpDialog)
+            val dialog =
+                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(popUpDialog)
+                    .setOnCancelListener {
+                        playVideo()
+                    }
+                    .create()
+
+            dialog.show()
+        }
+
 
     }
 
@@ -160,8 +178,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun visibilityControl() {
-        if (isLocked){
-            activityPlayerBinding.lockPlayerActivity.visibility=View.VISIBLE
+        if (isLocked) {
+            activityPlayerBinding.lockPlayerActivity.visibility = View.VISIBLE
         }
 
         runnable = Runnable {
