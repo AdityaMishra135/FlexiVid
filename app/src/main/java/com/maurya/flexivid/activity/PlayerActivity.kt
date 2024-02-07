@@ -2,6 +2,9 @@ package com.maurya.flexivid.activity
 
 import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +18,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer.Builder
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -27,11 +31,13 @@ import com.maurya.flexivid.databinding.ActivityPlayerBinding
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
+    private lateinit var runnable: Runnable
 
+    private lateinit var trackSelector: DefaultTrackSelector
 
-    private var repeat: Boolean = false
 
     companion object {
+        private var repeat: Boolean = false
         lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
         var position: Int = -1
@@ -119,25 +125,36 @@ class PlayerActivity : AppCompatActivity() {
             "allVideos" -> {
                 playerList.addAll(MainActivity.videoList)
                 createPlayer()
-
-
             }
 
             "folderActivity" -> {
                 playerList.addAll(FolderActivity.currentFolderVideos)
                 createPlayer()
             }
-
         }
         if (repeat) {
-            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat)
-        } else {
             activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat_one)
+        } else {
+            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat)
         }
-
 
     }
 
+    private fun visibilityControl() {
+        runnable = Runnable {
+            if (activityPlayerBinding.playerViewPlayerActivity.isControllerVisible) {
+                activityPlayerBinding.topController.visibility = View.VISIBLE
+                activityPlayerBinding.bottomController.visibility = View.VISIBLE
+                activityPlayerBinding.playPausePlayerActivity.visibility = View.VISIBLE
+            } else {
+                activityPlayerBinding.topController.visibility = View.INVISIBLE
+                activityPlayerBinding.bottomController.visibility = View.INVISIBLE
+                activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
+            }
+            Handler(Looper.getMainLooper()).postDelayed(runnable, 100)
+        }
+        Handler(Looper.getMainLooper()).postDelayed(runnable, 0)
+    }
 
     private fun createPlayer() {
 
@@ -146,13 +163,16 @@ class PlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
         }
 
+        trackSelector = DefaultTrackSelector(this)
+        player = ExoPlayer.Builder(this).setTrackSelector(trackSelector).build()
+
         activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
         activityPlayerBinding.playerViewPlayerActivity.player = player
+
         val mediaItem = MediaItem.fromUri(playerList[position].image)
         player.setMediaItem(mediaItem)
         player.prepare()
         playVideo()
-
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
@@ -162,8 +182,8 @@ class PlayerActivity : AppCompatActivity() {
             }
 
         })
-
-        fullScreen(isFullScreen)
+        fullScreen(enable = isFullScreen)
+        visibilityControl()
     }
 
     private fun nextPrevVideo(isNext: Boolean = true) {
