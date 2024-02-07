@@ -1,5 +1,7 @@
 package com.maurya.flexivid.activity
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +25,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
@@ -31,6 +34,8 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityFolderBinding
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
+import com.maurya.flexivid.util.showToast
+import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
@@ -152,6 +157,98 @@ class PlayerActivity : AppCompatActivity() {
                     .create()
 
             dialog.show()
+
+            bindingPopUp.subtitlePopUp.setOnClickListener {
+                dialog.dismiss()
+                playVideo()
+
+                val subtitleTracks = ArrayList<String>()
+                for (i in 0 until player.currentTrackGroups.length) {
+                    if (player.currentTrackGroups.get(i)
+                            .getFormat(0).sampleMimeType == MimeTypes.TEXT_VTT
+                    ) {
+                        subtitleTracks.add(
+                            Locale(
+                                player.currentTrackGroups.get(i).getFormat(0).language.toString()
+                            ).displayLanguage
+                        )
+                    }
+                }
+
+                val tempTracks = subtitleTracks.toTypedArray<CharSequence>()
+
+                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
+                    .setTitle("Select Subtitle Track")
+                    .setItems(tempTracks) { _, position ->
+                        showToast(this, subtitleTracks[position] + " Selected")
+                        trackSelector.setParameters(
+                            trackSelector.buildUponParameters()
+                                .setPreferredTextLanguage(subtitleTracks[position])
+                        )
+                    }
+                    .setOnCancelListener {
+                        playVideo() // Resume video playback if dialog is canceled
+                    }
+                    .create()
+                    .show()
+            }
+
+
+            bindingPopUp.audioBoosterPopUp.setOnClickListener { }
+
+            bindingPopUp.audioTracksPopUp.setOnClickListener {
+                dialog.dismiss()
+                playVideo()
+                val audioTracks = ArrayList<String>()
+
+                for (i in 0 until player.currentTrackGroups.length) {
+                    if (player.currentTrackGroups.get(i)
+                            .getFormat(0).selectionFlags == C.SELECTION_FLAG_DEFAULT
+                    ) {
+                        audioTracks.add(
+                            Locale(
+                                player.currentTrackGroups.get(i).getFormat(0).language.toString()
+                            ).displayLanguage
+                        )
+
+
+                    }
+                }
+
+                val tempTracks = audioTracks.toArray(arrayOfNulls<CharSequence>(audioTracks.size))
+
+                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
+                    .setTitle("Select Audio Track")
+                    .setOnCancelListener {
+                        playVideo()
+                    }
+                    .setItems(tempTracks) { _, position ->
+                        showToast(this, audioTracks[position] + "Selected")
+                        trackSelector.setParameters(
+                            trackSelector.buildUponParameters()
+                                .setPreferredAudioLanguage(audioTracks[position])
+                        )
+
+                    }
+                    .create()
+                    .show()
+
+            }
+
+            bindingPopUp.speedPopUp.setOnClickListener { }
+
+            bindingPopUp.sleepTimerPopUp.setOnClickListener { }
+
+            bindingPopUp.pipPopUp.setOnClickListener { }
+        }
+
+        activityPlayerBinding.orientationPlayerActivity.setOnClickListener {
+            val currentOrientation = resources.configuration.orientation
+            requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
         }
 
 

@@ -104,6 +104,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <ImageView
+            android:id="@+id/orientationPlayerActivity"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="12dp"
+            android:src="@drawable/icon_orientation"
+
+            />
 
         <ImageView
             android:id="@+id/repeatPlayerActivity"
