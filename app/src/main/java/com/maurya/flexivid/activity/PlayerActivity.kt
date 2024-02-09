@@ -3,6 +3,7 @@ package com.maurya.flexivid.activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+import android.media.audiofx.LoudnessEnhancer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -43,6 +44,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var runnable: Runnable
 
     private lateinit var trackSelector: DefaultTrackSelector
+    private lateinit var loudnessEnhancer: LoudnessEnhancer
 
 
     companion object {
@@ -218,14 +220,17 @@ class PlayerActivity : AppCompatActivity() {
                     .inflate(R.layout.popup_audio_booster, activityPlayerBinding.root, false)
                 val bindingPopUpBooster = PopupAudioBoosterBinding.bind(popUpDialogBooster)
                 val dialogBooster =
-                    MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(popUpDialogBooster)
+                    MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(
+                        popUpDialogBooster
+                    )
                         .setOnCancelListener {
                             playVideo()
                         }
                         .create()
 
-                dialogBooster.dismiss()
-
+                bindingPopUpBooster.verticalSeekbar.setOnProgressChangeListener {
+                    loudnessEnhancer.setTargetGain(it*100)
+                }
 
             }
 
@@ -348,6 +353,8 @@ class PlayerActivity : AppCompatActivity() {
         })
         fullScreen(enable = isFullScreen)
         visibilityControl()
+        loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
+        loudnessEnhancer.enabled = true
     }
 
     private fun nextPrevVideo(isNext: Boolean = true) {
