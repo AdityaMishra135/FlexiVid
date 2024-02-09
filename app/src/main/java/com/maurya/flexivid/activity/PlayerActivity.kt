@@ -33,6 +33,7 @@ import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityFolderBinding
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
+import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.util.showToast
 import java.util.Locale
@@ -144,6 +145,15 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        activityPlayerBinding.orientationPlayerActivity.setOnClickListener {
+            val currentOrientation = resources.configuration.orientation
+            requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+        }
+
         activityPlayerBinding.menuPlayerActivity.setOnClickListener {
             pauseVideo()
             val popUpDialog = LayoutInflater.from(this)
@@ -202,7 +212,22 @@ class PlayerActivity : AppCompatActivity() {
                     .show()
             }
 
-            bindingPopUp.audioBoosterPopUp.setOnClickListener { }
+            bindingPopUp.audioBoosterPopUp.setOnClickListener {
+                dialog.dismiss()
+                val popUpDialogBooster = LayoutInflater.from(this)
+                    .inflate(R.layout.popup_audio_booster, activityPlayerBinding.root, false)
+                val bindingPopUpBooster = PopupAudioBoosterBinding.bind(popUpDialogBooster)
+                val dialogBooster =
+                    MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(popUpDialogBooster)
+                        .setOnCancelListener {
+                            playVideo()
+                        }
+                        .create()
+
+                dialogBooster.dismiss()
+
+
+            }
 
             bindingPopUp.audioTracksPopUp.setOnClickListener {
                 dialog.dismiss()
@@ -248,15 +273,8 @@ class PlayerActivity : AppCompatActivity() {
             bindingPopUp.sleepTimerPopUp.setOnClickListener { }
 
             bindingPopUp.pipPopUp.setOnClickListener { }
-        }
 
-        activityPlayerBinding.orientationPlayerActivity.setOnClickListener {
-            val currentOrientation = resources.configuration.orientation
-            requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            }
+
         }
 
 
