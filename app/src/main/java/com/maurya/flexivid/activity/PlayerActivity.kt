@@ -3,6 +3,7 @@ package com.maurya.flexivid.activity
 import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
+import android.app.PictureInPictureUiState
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -373,6 +374,7 @@ class PlayerActivity : AppCompatActivity() {
 
 
             bindingPopUp.pipPopUp.setOnClickListener {
+
                 val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
                 val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     appOps.checkOpNoThrow(
@@ -548,4 +550,19 @@ class PlayerActivity : AppCompatActivity() {
     }
 
 
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if(pipStatus != 0){
+            finish()
+            val intent = Intent(this, PlayerActivity::class.java)
+            when(pipStatus){
+                1 -> intent.putExtra("class","folderActivity")
+                2 -> intent.putExtra("class","searchedVideos")
+                3 -> intent.putExtra("class","allVideos")
+            }
+            startActivity(intent)
+        }
+        if(!isInPictureInPictureMode) pauseVideo()
+
+    }
 }

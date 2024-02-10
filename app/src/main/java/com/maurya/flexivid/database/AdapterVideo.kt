@@ -54,10 +54,14 @@ class AdapterVideo(
             root.setOnClickListener {
                 when {
                     isFolder -> {
-                        sendIntent(context,position, "folderActivity")
+                        PlayerActivity.pipStatus = 1
+                        sendIntent(context, position, "folderActivity")
                     }
 
-                    else -> sendIntent(context,position, "allVideos")
+                    else -> {
+                        PlayerActivity.pipStatus = 3
+                        sendIntent(context, position, "allVideos")
+                    }
                 }
 
             }
