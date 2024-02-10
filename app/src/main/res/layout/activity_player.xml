@@ -92,7 +92,7 @@
 
 
         <ImageView
-            android:id="@+id/rewind10secPlayerActivity"
+            android:id="@+id/fastBackwardPlayerActivity"
             android:layout_width="65dp"
             android:layout_height="70dp"
             android:layout_weight="1"
@@ -101,7 +101,8 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="11dp"
-            android:src="@drawable/icon_fast_backward" />
+            android:src="@drawable/icon_fast_backward"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/playPausePlayerActivity"
@@ -115,7 +116,7 @@
             android:src="@drawable/icon_play" />
 
         <ImageView
-            android:id="@+id/skip10secPlayerActivity"
+            android:id="@+id/fastForwardPlayerActivity"
             android:layout_width="65dp"
             android:layout_height="70dp"
             android:layout_weight="1"
@@ -124,7 +125,8 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="11dp"
-            android:src="@drawable/icon_fast_forward" />
+            android:src="@drawable/icon_fast_forward"
+            android:visibility="gone" />
 
 
     </LinearLayout>

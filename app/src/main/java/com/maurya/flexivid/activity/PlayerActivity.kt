@@ -49,6 +49,7 @@ import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
+import com.maurya.flexivid.util.OnDoubleClickListener
 import com.maurya.flexivid.util.showToast
 import java.util.Locale
 import java.util.Timer
@@ -118,6 +119,27 @@ class PlayerActivity : AppCompatActivity() {
                 playVideo()
             }
 
+        }
+
+        activityPlayerBinding.fastForwardPlayerActivity.setOnClickListener {
+            OnDoubleClickListener(callback = object : OnDoubleClickListener.Callback {
+                override fun doubleClicked() {
+                    activityPlayerBinding.playerViewPlayerActivity.showController()
+                    activityPlayerBinding.fastForwardPlayerActivity.visibility = View.VISIBLE
+                    player.seekTo(player.currentPosition + 1000)
+                }
+
+            })
+        }
+        activityPlayerBinding.fastBackwardPlayerActivity.setOnClickListener {
+            OnDoubleClickListener(callback = object : OnDoubleClickListener.Callback {
+                override fun doubleClicked() {
+                    activityPlayerBinding.playerViewPlayerActivity.showController()
+                    activityPlayerBinding.fastBackwardPlayerActivity.visibility = View.VISIBLE
+                    player.seekTo(player.currentPosition - 1000)
+                }
+
+            })
         }
 
         activityPlayerBinding.nextPlayerActivity.setOnClickListener {
@@ -446,10 +468,17 @@ class PlayerActivity : AppCompatActivity() {
                 activityPlayerBinding.topController.visibility = View.VISIBLE
                 activityPlayerBinding.bottomController.visibility = View.VISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.VISIBLE
+                activityPlayerBinding.fastBackwardPlayerActivity.visibility = View.VISIBLE
+                activityPlayerBinding.fastForwardPlayerActivity.visibility = View.VISIBLE
             } else {
                 activityPlayerBinding.topController.visibility = View.INVISIBLE
                 activityPlayerBinding.bottomController.visibility = View.INVISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    activityPlayerBinding.fastBackwardPlayerActivity.visibility = View.GONE
+                    activityPlayerBinding.fastForwardPlayerActivity.visibility = View.GONE
+                }, 1000)
             }
             Handler(Looper.getMainLooper()).postDelayed(runnable, 100)
         }
@@ -550,19 +579,22 @@ class PlayerActivity : AppCompatActivity() {
     }
 
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if(pipStatus != 0){
+        if (pipStatus != 0) {
             finish()
             val intent = Intent(this, PlayerActivity::class.java)
-            when(pipStatus){
-                1 -> intent.putExtra("class","folderActivity")
-                2 -> intent.putExtra("class","searchedVideos")
-                3 -> intent.putExtra("class","allVideos")
+            when (pipStatus) {
+                1 -> intent.putExtra("class", "folderActivity")
+                2 -> intent.putExtra("class", "searchedVideos")
+                3 -> intent.putExtra("class", "allVideos")
             }
             startActivity(intent)
         }
-        if(!isInPictureInPictureMode) pauseVideo()
+        if (!isInPictureInPictureMode) pauseVideo()
 
     }
 }
