@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     style="@style/LayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,6 +11,10 @@
         android:id="@+id/playerViewPlayerActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:keepScreenOn="true"
         app:controller_layout_id="@layout/custom_control_player"
 
@@ -78,31 +81,62 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/playPausePlayerActivity"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="?android:selectableItemBackground"
-        android:backgroundTint="@android:color/transparent"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="12dp"
-        android:src="@drawable/icon_play"
-        app:layout_constraintBottom_toBottomOf="parent "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/middleController"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomController"
+        android:layout_below="@id/topController"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/rewind10secPlayerActivity"
+            android:layout_width="65dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="?android:selectableItemBackground"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="11dp"
+            android:src="@drawable/icon_fast_backward" />
+
+        <ImageView
+            android:id="@+id/playPausePlayerActivity"
+            android:layout_width="65dp"
+            android:layout_height="70dp"
+            android:background="?android:selectableItemBackground"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/icon_play" />
+
+        <ImageView
+            android:id="@+id/skip10secPlayerActivity"
+            android:layout_width="65dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="?android:selectableItemBackground"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="11dp"
+            android:src="@drawable/icon_fast_forward" />
+
+
+    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/bottomController"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="end|bottom"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/orientationPlayerActivity"
@@ -156,4 +190,4 @@
     </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
