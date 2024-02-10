@@ -46,6 +46,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackSelector: DefaultTrackSelector
     private lateinit var loudnessEnhancer: LoudnessEnhancer
 
+    private lateinit var materialAlertDialogBuilder: MaterialAlertDialogBuilder
 
     companion object {
         private var repeat: Boolean = false
@@ -229,7 +230,7 @@ class PlayerActivity : AppCompatActivity() {
                         .create()
 
                 bindingPopUpBooster.verticalSeekbar.setOnProgressChangeListener {
-                    loudnessEnhancer.setTargetGain(it*100)
+                    loudnessEnhancer.setTargetGain(it * 100)
                 }
 
             }
@@ -273,7 +274,24 @@ class PlayerActivity : AppCompatActivity() {
 
             }
 
-            bindingPopUp.speedPopUp.setOnClickListener { }
+            bindingPopUp.speedPopUp.setOnClickListener {
+                dialog.dismiss()
+
+                val builder = MaterialAlertDialogBuilder(this)
+                    .setTitle("Playback Speed")
+                    .setMultiChoiceItems(
+                        arrayOf("0.25x", "0.50x", "1.0x","1.25x","1.50x","1.75x","2.0x"), null
+                    ) { dialog, which, isChecked ->
+                        // Do something when an item is selected or deselected
+                        if (isChecked) {
+                            // The item at position 'which' was checked
+                        } else {
+                            // The item at position 'which' was unchecked
+                        }
+                    }
+                    .create().show()
+
+            }
 
             bindingPopUp.sleepTimerPopUp.setOnClickListener { }
 
