@@ -28,6 +28,9 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.LabelFormatter
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.FolderDataClass
@@ -36,8 +39,12 @@ import com.maurya.flexivid.databinding.ActivityFolderBinding
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
+import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.util.showToast
 import java.util.Locale
+import java.util.Timer
+import java.util.TimerTask
+import kotlin.system.exitProcess
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
@@ -48,6 +55,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var materialAlertDialogBuilder: MaterialAlertDialogBuilder
 
+    private var timer: Timer? = null
     companion object {
         private var repeat: Boolean = false
         lateinit var player: ExoPlayer
@@ -169,6 +177,7 @@ class PlayerActivity : AppCompatActivity() {
                     }
                     .create()
 
+
             dialog.show()
 
             bindingPopUp.subtitlePopUp.setOnClickListener {
@@ -220,14 +229,15 @@ class PlayerActivity : AppCompatActivity() {
                 val popUpDialogBooster = LayoutInflater.from(this)
                     .inflate(R.layout.popup_audio_booster, activityPlayerBinding.root, false)
                 val bindingPopUpBooster = PopupAudioBoosterBinding.bind(popUpDialogBooster)
-                val dialogBooster =
-                    MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(
-                        popUpDialogBooster
-                    )
-                        .setOnCancelListener {
-                            playVideo()
-                        }
-                        .create()
+
+                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(
+                    popUpDialogBooster
+                )
+                    .setOnCancelListener {
+                        playVideo()
+                    }
+                    .create()
+                    .show()
 
                 bindingPopUpBooster.verticalSeekbar.setOnProgressChangeListener {
                     loudnessEnhancer.setTargetGain(it * 100)
@@ -277,23 +287,79 @@ class PlayerActivity : AppCompatActivity() {
             bindingPopUp.speedPopUp.setOnClickListener {
                 dialog.dismiss()
 
-                val builder = MaterialAlertDialogBuilder(this)
+                val speedOptions =
+                    arrayOf("0.25x", "0.50x", "1.0x", "1.25x", "1.50x", "1.75x", "2.0x")
+
+                val popUpDialogSpeed = LayoutInflater.from(this)
+                    .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
+                val bindingSpeed = PopupVideoSpeedBinding.bind(popUpDialogSpeed)
+
+                bindingSpeed.speedSlider.valueFrom = 0f
+                bindingSpeed.speedSlider.valueTo = speedOptions.size.toFloat()
+
+                bindingSpeed.speedSlider.setLabelFormatter { value ->
+                    speedOptions[value.toInt()]
+                }
+
+                bindingSpeed.speedSlider.value = 2f
+
+                MaterialAlertDialogBuilder(this)
                     .setTitle("Playback Speed")
-                    .setMultiChoiceItems(
-                        arrayOf("0.25x", "0.50x", "1.0x","1.25x","1.50x","1.75x","2.0x"), null
-                    ) { dialog, which, isChecked ->
-                        // Do something when an item is selected or deselected
-                        if (isChecked) {
-                            // The item at position 'which' was checked
-                        } else {
-                            // The item at position 'which' was unchecked
-                        }
+                    .setView(popUpDialogSpeed)
+                    .setPositiveButton("Set") { self, _ ->
+                        val selectedSpeedIndex = bindingSpeed.speedSlider.value.toInt()
+                        val selectedSpeed = speedOptions[selectedSpeedIndex]
+                        showToast(this, "Selected playback speed: $selectedSpeed")
+                        self.dismiss()
                     }
-                    .create().show()
+                    .create()
+                    .show()
 
             }
 
-            bindingPopUp.sleepTimerPopUp.setOnClickListener { }
+
+
+            bindingPopUp.sleepTimerPopUp.setOnClickListener {
+                dialog.dismiss()
+
+                val timePicker = MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_12H)
+                    .setHour(0)
+                    .setMinute(0)
+                    .setTitleText("Select Sleep Timer")
+                    .build()
+
+                timePicker.addOnPositiveButtonClickListener {self->
+                    val selectedHour = timePicker.hour
+                    val selectedMinute = timePicker.minute
+
+                    val selectedTime = String.format(
+                        Locale.getDefault(),
+                        "%02d:%02d",
+                        selectedHour,
+                        selectedMinute
+                    )
+                    val selectedTimeMillis = (selectedHour * 60 + selectedMinute) * 60 * 1000L
+
+                    timer = Timer()
+                    val task = object :TimerTask(){
+                        override fun run() {
+                            moveTaskToBack(true)
+                            exitProcess(1)
+                        }
+                    }
+                    timer!!.schedule(task, selectedTimeMillis)
+                    showToast(this, "Sleep timer set for $selectedTime")
+                }
+
+                timePicker.addOnNegativeButtonClickListener {
+                    showToast(this,"Sleep timer reset")
+                }
+
+                timePicker.show(supportFragmentManager, "SleepTimerPicker")
+            }
+
+
 
             bindingPopUp.pipPopUp.setOnClickListener { }
 
