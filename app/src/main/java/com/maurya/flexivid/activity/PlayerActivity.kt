@@ -1,9 +1,17 @@
 package com.maurya.flexivid.activity
 
+import android.annotation.SuppressLint
+import android.app.AppOpsManager
+import android.app.PictureInPictureParams
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.media.audiofx.LoudnessEnhancer
+import android.net.Uri
+import android.os.Build
+import android.os.Build.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -56,6 +64,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var materialAlertDialogBuilder: MaterialAlertDialogBuilder
 
     private var timer: Timer? = null
+
     companion object {
         private var repeat: Boolean = false
         lateinit var player: ExoPlayer
@@ -63,6 +72,7 @@ class PlayerActivity : AppCompatActivity() {
         var position: Int = -1
         var isFullScreen: Boolean = false
         var isLocked: Boolean = false
+        var pipStatus: Int = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +102,7 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun listeners() {
 
 
@@ -329,7 +340,7 @@ class PlayerActivity : AppCompatActivity() {
                     .setTitleText("Select Sleep Timer")
                     .build()
 
-                timePicker.addOnPositiveButtonClickListener {self->
+                timePicker.addOnPositiveButtonClickListener { self ->
                     val selectedHour = timePicker.hour
                     val selectedMinute = timePicker.minute
 
@@ -342,7 +353,7 @@ class PlayerActivity : AppCompatActivity() {
                     val selectedTimeMillis = (selectedHour * 60 + selectedMinute) * 60 * 1000L
 
                     timer = Timer()
-                    val task = object :TimerTask(){
+                    val task = object : TimerTask() {
                         override fun run() {
                             moveTaskToBack(true)
                             exitProcess(1)
@@ -353,7 +364,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 timePicker.addOnNegativeButtonClickListener {
-                    showToast(this,"Sleep timer reset")
+                    showToast(this, "Sleep timer reset")
                 }
 
                 timePicker.show(supportFragmentManager, "SleepTimerPicker")
@@ -361,7 +372,41 @@ class PlayerActivity : AppCompatActivity() {
 
 
 
-            bindingPopUp.pipPopUp.setOnClickListener { }
+            bindingPopUp.pipPopUp.setOnClickListener {
+                val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+                val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    appOps.checkOpNoThrow(
+                        AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                        android.os.Process.myUid(),
+                        packageName
+                    ) ==
+                            AppOpsManager.MODE_ALLOWED
+                } else {
+                    false
+                }
+
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    if (status) {
+                        this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+                        dialog.dismiss()
+                        activityPlayerBinding.playerViewPlayerActivity.hideController()
+                        playVideo()
+                        pipStatus = 0
+                    } else {
+                        val intent = Intent(
+                            "android.settings.PICTURE_IN_PICTURE_SETTINGS",
+                            Uri.parse("package:$packageName")
+                        )
+                        startActivity(intent)
+                    }
+                } else {
+                    showToast(this, "Feature Not Supported!!")
+                    dialog.dismiss()
+                    playVideo()
+                }
+
+
+            }
 
 
         }
