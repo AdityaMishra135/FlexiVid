@@ -468,17 +468,10 @@ class PlayerActivity : AppCompatActivity() {
                 activityPlayerBinding.topController.visibility = View.VISIBLE
                 activityPlayerBinding.bottomController.visibility = View.VISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.VISIBLE
-                activityPlayerBinding.fastBackwardPlayerActivity.visibility = View.VISIBLE
-                activityPlayerBinding.fastForwardPlayerActivity.visibility = View.VISIBLE
             } else {
                 activityPlayerBinding.topController.visibility = View.INVISIBLE
                 activityPlayerBinding.bottomController.visibility = View.INVISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed({
-                    activityPlayerBinding.fastBackwardPlayerActivity.visibility = View.GONE
-                    activityPlayerBinding.fastForwardPlayerActivity.visibility = View.GONE
-                }, 1000)
             }
             Handler(Looper.getMainLooper()).postDelayed(runnable, 100)
         }
