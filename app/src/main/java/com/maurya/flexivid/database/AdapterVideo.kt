@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
@@ -22,7 +23,7 @@ import java.lang.ref.Reference
 class AdapterVideo(
     private val context: Context,
     private var listener: OnItemClickListener,
-    private val itemList: MutableList<VideoDataClass> = mutableListOf(),
+    private var itemList: ArrayList<VideoDataClass> = arrayListOf(),
     private val isFolder: Boolean = false
 ) : RecyclerView.Adapter<AdapterVideo.DayHolder>() {
 
@@ -57,6 +58,10 @@ class AdapterVideo(
                         PlayerActivity.pipStatus = 1
                         sendIntent(context, position, "folderActivity")
                     }
+                    MainActivity.search -> {
+                        PlayerActivity.pipStatus = 2
+                        sendIntent(context, position, "searchView")
+                    }
 
                     else -> {
                         PlayerActivity.pipStatus = 3
@@ -74,6 +79,14 @@ class AdapterVideo(
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    fun updateSearchList(searchList: ArrayList<VideoDataClass>) {
+        itemList =  ArrayList()
+        itemList.addAll(searchList)
+        notifyDataSetChanged()
+
+
     }
 
 

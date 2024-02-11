@@ -444,6 +444,10 @@ class PlayerActivity : AppCompatActivity() {
                 playerList.addAll(MainActivity.videoList)
                 createPlayer()
             }
+            "searchView" ->{
+                playerList.addAll(MainActivity.searchList)
+                createPlayer()
+            }
 
             "folderActivity" -> {
                 playerList.addAll(FolderActivity.currentFolderVideos)
@@ -582,7 +586,7 @@ class PlayerActivity : AppCompatActivity() {
             val intent = Intent(this, PlayerActivity::class.java)
             when (pipStatus) {
                 1 -> intent.putExtra("class", "folderActivity")
-                2 -> intent.putExtra("class", "searchedVideos")
+                2 -> intent.putExtra("class", "searchView")
                 3 -> intent.putExtra("class", "allVideos")
             }
             startActivity(intent)

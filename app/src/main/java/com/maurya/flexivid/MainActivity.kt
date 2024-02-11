@@ -35,7 +35,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
+        var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
+        var search:Boolean =false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

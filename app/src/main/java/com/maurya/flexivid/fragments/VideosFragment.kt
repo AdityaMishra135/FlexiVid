@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.VideoDataClass
@@ -17,6 +18,7 @@ import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.FragmentFoldersBinding
 import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import kotlinx.coroutines.MainScope
 
 
 class VideosFragment : Fragment(), OnItemClickListener {
@@ -69,6 +71,14 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
             override fun onQueryTextChange(newtext: String?): Boolean {
                 if (newtext!=null){
+                    MainActivity.searchList=ArrayList()
+                    for (video in videoList){
+                        if (video.videoName.lowercase().contains(newtext.lowercase())){
+                            MainActivity.searchList.add(video)
+                        }
+                    }
+                    MainActivity.search=true
+                    adapterVideo.updateSearchList(MainActivity.searchList)
 
                 }
 
