@@ -5,10 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.SearchEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.activity.ComponentActivity
+import androidx.annotation.MenuRes
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.videoList
@@ -64,32 +69,31 @@ class VideosFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_view,menu)
-        val searchView = menu.findItem(R.id.searchViewVideo).actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String?): Boolean =true
+        inflater.inflate(R.menu.search_view, menu)
+        val searchItem = menu.findItem(R.id.searchViewVideo)
+        val searchView = searchItem?.actionView as SearchView?
 
-            override fun onQueryTextChange(newtext: String?): Boolean {
-                if (newtext!=null){
-                    MainActivity.searchList=ArrayList()
-                    for (video in videoList){
-                        if (video.videoName.lowercase().contains(newtext.lowercase())){
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    MainActivity.searchList = ArrayList()
+                    for (video in videoList) {
+                        if (video.videoName.lowercase().contains(newText.lowercase())) {
                             MainActivity.searchList.add(video)
                         }
                     }
-                    MainActivity.search=true
+                    MainActivity.search = true
                     adapterVideo.updateSearchList(MainActivity.searchList)
-
                 }
-
                 return true
-
             }
-
         })
 
         super.onCreateOptionsMenu(menu, inflater)
-
     }
 
 }
