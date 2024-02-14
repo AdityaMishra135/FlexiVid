@@ -68,6 +68,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_view, menu)
         val searchItem = menu.findItem(R.id.searchViewVideo)
