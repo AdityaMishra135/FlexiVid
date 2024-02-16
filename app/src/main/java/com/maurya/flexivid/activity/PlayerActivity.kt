@@ -75,6 +75,7 @@ class PlayerActivity : AppCompatActivity() {
         var isFullScreen: Boolean = false
         var isLocked: Boolean = false
         var pipStatus: Int = 0
+        var nowPlayingId: String = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -522,6 +523,7 @@ class PlayerActivity : AppCompatActivity() {
         visibilityControl()
         loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
         loudnessEnhancer.enabled = true
+        nowPlayingId = playerList[position].id
     }
 
     private fun nextPrevVideo(isNext: Boolean = true) {

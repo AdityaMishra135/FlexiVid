@@ -54,10 +54,15 @@ class AdapterVideo(
 
             root.setOnClickListener {
                 when {
+                    itemList[position].id == PlayerActivity.nowPlayingId -> {
+                        sendIntent(context, position, "nowPlaying")
+                    }
+
                     isFolder -> {
                         PlayerActivity.pipStatus = 1
                         sendIntent(context, position, "folderActivity")
                     }
+
                     MainActivity.search -> {
                         PlayerActivity.pipStatus = 2
                         sendIntent(context, position, "searchView")
@@ -82,7 +87,7 @@ class AdapterVideo(
     }
 
     fun updateSearchList(searchList: ArrayList<VideoDataClass>) {
-        itemList =  ArrayList()
+        itemList = ArrayList()
         itemList.addAll(searchList)
         notifyDataSetChanged()
 
