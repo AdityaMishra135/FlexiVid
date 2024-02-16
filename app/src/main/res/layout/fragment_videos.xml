@@ -20,8 +20,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:layout_below="@id/topLayout">
+        android:layout_below="@id/topLayout"
+        android:scrollbars="vertical">
 
 
         <LinearLayout
@@ -44,13 +44,15 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/nowPlayingVideoFragment"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/icon_play"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="50dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_margin="50dp"
+        android:visibility="gone"
+        app:icon="@drawable/icon_play"
+        app:strokeColor="?attr/themeColor"
+        app:strokeWidth="0.5dp" />
 
 
 </RelativeLayout>

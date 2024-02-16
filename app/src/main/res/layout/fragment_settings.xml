@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutStyle"
     android:layout_width="match_parent"
@@ -35,7 +36,9 @@
             android:layout_height="40dp"
             android:layout_marginStart="30dp"
             android:padding="7dp"
-            android:src="@drawable/icon_theme" />
+            android:src="@drawable/icon_theme"
+            app:tint="?attr/themeColor"
+            />
 
         <TextView
             android:id="@+id/darkModeText"

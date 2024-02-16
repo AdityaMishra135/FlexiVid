@@ -14,7 +14,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         android:padding="5dp"
-        android:src="@drawable/icon_folder" />
+        android:src="@drawable/icon_folder"
+        app:tint="?attr/themeColor" />
 
 
     <LinearLayout
