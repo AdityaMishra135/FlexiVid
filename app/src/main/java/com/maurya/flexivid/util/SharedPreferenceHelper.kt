@@ -29,4 +29,5 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         AppCompatDelegate.MODE_NIGHT_YES,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
+
 }
