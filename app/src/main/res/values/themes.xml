@@ -38,6 +38,7 @@
 
 
     //for Player Activity
+
     <style name="playerActivityTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarLight</item>
         <item name="android:windowLightStatusBar">true</item>

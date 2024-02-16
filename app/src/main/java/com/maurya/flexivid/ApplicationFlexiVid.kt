@@ -18,6 +18,5 @@ class ApplicationFlexiVid : Application() {
 
         setTheme(sharedPreferencesHelper.getUiColor())
 
-
     }
 }
