@@ -1,22 +1,19 @@
 package com.maurya.flexivid.fragments
 
-import android.content.DialogInterface
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.R
@@ -34,6 +31,7 @@ class SettingsFragment : Fragment() {
     private lateinit var fragmentSettingsBinding: FragmentSettingsBinding
 
     private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
+
     private val customThemeList = arrayOf(
         R.style.themeLightGreen,
         R.style.themeYellow,
@@ -65,6 +63,7 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
+        themeIndex = sharedPreferencesHelper.getUiColor()
         requireContext().theme.applyStyle(customThemeList[themeIndex], true)
 
         listeners()
@@ -100,82 +99,48 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.uiSkinLayout.setOnClickListener {
             val customView = layoutInflater.inflate(R.layout.popup_theme, null)
             val bindingCustomTheme = PopupThemeBinding.bind(customView)
-            val dialogTheme =
-                MaterialAlertDialogBuilder(requireContext()).setView(customView)
-                    .setTitle("Custom Theme Selection")
-                    .setView(customView)
-                    .setPositiveButton("Apply") { _, _ ->
-
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-
-            dialogTheme.show()
+            MaterialAlertDialogBuilder(requireContext()).setView(customView)
+                .create()
+                .show()
 
             when (themeIndex) {
-                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundColor(
-                    Color.GRAY
-                )
-
-                1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundColor(Color.GRAY)
-
-                2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundColor(
-                    Color.GRAY
-                )
-
-                3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundColor(Color.GRAY)
-
-                4 -> bindingCustomTheme.themePinkPopUpTheme.setBackgroundColor(Color.GRAY)
-                5 -> bindingCustomTheme.themePurplePopUpTheme.setBackgroundColor(Color.GRAY)
-                6 -> bindingCustomTheme.themeLightOrangePopUpTheme.setBackgroundColor(
-                    Color.GRAY
-                )
-
-                7 ->
-                    bindingCustomTheme.themeBluePopUpTheme.setBackgroundColor(Color.GRAY)
-
-                8 -> bindingCustomTheme.themeLightBrownPopUpTheme.setBackgroundColor(
-                    Color.GRAY
-                )
-
+                in 0..8 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
             }
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(0)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 0)
             }
 
             bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(1)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 1)
             }
 
             bindingCustomTheme.themeLightBluePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(2)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 2)
             }
 
             bindingCustomTheme.themeLightRedPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(3)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 3)
             }
 
             bindingCustomTheme.themePinkPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(4)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 4)
             }
 
             bindingCustomTheme.themePurplePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(5)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 5)
             }
 
             bindingCustomTheme.themeLightOrangePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(6)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 6)
             }
 
             bindingCustomTheme.themeBluePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(7)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 7)
             }
 
             bindingCustomTheme.themeLightBrownPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(8)
+                sharedPreferencesHelper.saveUiColor(requireActivity(), 8)
             }
 
 
@@ -243,6 +208,5 @@ class SettingsFragment : Fragment() {
             requireActivity().finish()
         }
     }
-
 
 }

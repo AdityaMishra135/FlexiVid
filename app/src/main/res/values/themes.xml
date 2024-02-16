@@ -20,7 +20,6 @@
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
-
     <!-- StatusBarLayoutStyle-->
     <style name="StatusBarLayoutStyle">
         <item name="android:background">@drawable/mode_light_bg_custom_appbar</item>
@@ -39,7 +38,6 @@
 
 
     //for Player Activity
-
     <style name="playerActivityTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarLight</item>
         <item name="android:windowLightStatusBar">true</item>

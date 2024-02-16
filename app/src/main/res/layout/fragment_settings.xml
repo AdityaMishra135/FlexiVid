@@ -37,7 +37,6 @@
             android:layout_marginStart="30dp"
             android:padding="7dp"
             android:src="@drawable/icon_theme"
-            app:tint="?attr/themeColor"
             />
 
         <TextView

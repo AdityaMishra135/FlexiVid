@@ -29,7 +29,6 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_circle"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_green" />
 
