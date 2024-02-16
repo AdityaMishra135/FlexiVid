@@ -444,7 +444,8 @@ class PlayerActivity : AppCompatActivity() {
                 playerList.addAll(MainActivity.videoList)
                 createPlayer()
             }
-            "searchView" ->{
+
+            "searchView" -> {
                 playerList.addAll(MainActivity.searchList)
                 createPlayer()
             }
@@ -452,6 +453,15 @@ class PlayerActivity : AppCompatActivity() {
             "folderActivity" -> {
                 playerList.addAll(FolderActivity.currentFolderVideos)
                 createPlayer()
+            }
+
+            "nowPlaying" -> {
+                activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
+                activityPlayerBinding.playerViewPlayerActivity.player = player
+                playVideo()
+                fullScreen(enable = isFullScreen)
+                visibilityControl()
+
             }
         }
         if (repeat) {
@@ -571,7 +581,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        player.release()
+        player.pause()
 
     }
 
@@ -588,6 +598,7 @@ class PlayerActivity : AppCompatActivity() {
                 1 -> intent.putExtra("class", "folderActivity")
                 2 -> intent.putExtra("class", "searchView")
                 3 -> intent.putExtra("class", "allVideos")
+                4 -> intent.putExtra("class", "nowPlaying")
             }
             startActivity(intent)
         }
