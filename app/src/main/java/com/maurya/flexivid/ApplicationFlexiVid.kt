@@ -15,5 +15,7 @@ class ApplicationFlexiVid : Application() {
         super.onCreate()
 
         AppCompatDelegate.setDefaultNightMode(sharedPreferencesHelper.themeFlag[sharedPreferencesHelper.theme])
+
+        setTheme(sharedPreferencesHelper.getUiColor())
     }
 }

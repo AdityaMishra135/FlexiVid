@@ -57,12 +57,63 @@
         <item name="colorSecondary">?attr/themeColor</item>
     </style>
 
-    <style name="themeLightred" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="themeYellow" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/yellow</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+    <style name="themeLightBlue" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/light_blue</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+    <style name="themeLightRed" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="themeColor">@color/light_red</item>
         <item name="android:statusBarColor">?attr/themeColor</item>
         <item name="colorPrimary">?attr/themeColor</item>
         <item name="colorSecondary">?attr/themeColor</item>
     </style>
+
+    <style name="themePink" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/pink</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+    <style name="themePurple" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/purple</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+    <style name="themeLightOrange" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/light_orange</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+    <style name="themeBlue" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/deep_blue</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
+
+    <style name="themeLightBrown" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/light_brown</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
 
 
 </resources>

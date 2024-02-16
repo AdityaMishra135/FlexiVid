@@ -1,14 +1,17 @@
 package com.maurya.flexivid.fragments
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.R
 import com.maurya.flexivid.databinding.FragmentSettingsBinding
-import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.databinding.PopupAboutDialogBinding
-import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupThemeBinding
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +34,17 @@ class SettingsFragment : Fragment() {
     private lateinit var fragmentSettingsBinding: FragmentSettingsBinding
 
     private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
-    private val customThemeList = arrayOf(R.style.themeLightGreen, R.style.themeLightred)
+    private val customThemeList = arrayOf(
+        R.style.themeLightGreen,
+        R.style.themeYellow,
+        R.style.themeLightBlue,
+        R.style.themeLightRed,
+        R.style.themePink,
+        R.style.themePurple,
+        R.style.themeLightOrange,
+        R.style.themeBlue,
+        R.style.themeLightBrown
+    )
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
@@ -125,56 +136,48 @@ class SettingsFragment : Fragment() {
                 7 ->
                     bindingCustomTheme.themeBluePopUpTheme.setBackgroundColor(Color.GRAY)
 
-                8 -> bindingCustomTheme.showColourPickUpPopUpTheme.setBackgroundColor(
+                8 -> bindingCustomTheme.themeLightBrownPopUpTheme.setBackgroundColor(
                     Color.GRAY
                 )
 
             }
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
-                themeIndex = 0
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(0)
             }
 
             bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {
-                themeIndex = 1
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(1)
             }
 
             bindingCustomTheme.themeLightBluePopUpTheme.setOnClickListener {
-                themeIndex = 2
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(2)
             }
 
             bindingCustomTheme.themeLightRedPopUpTheme.setOnClickListener {
-                themeIndex = 3
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(3)
             }
 
             bindingCustomTheme.themePinkPopUpTheme.setOnClickListener {
-                themeIndex = 4
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(4)
             }
 
             bindingCustomTheme.themePurplePopUpTheme.setOnClickListener {
-                themeIndex = 5
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(5)
             }
 
             bindingCustomTheme.themeLightOrangePopUpTheme.setOnClickListener {
-                themeIndex = 6
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(6)
             }
 
             bindingCustomTheme.themeBluePopUpTheme.setOnClickListener {
-                themeIndex = 7
-                dialogTheme.dismiss()
+                sharedPreferencesHelper.saveUiColor(7)
             }
 
-            bindingCustomTheme.showColourPickUpPopUpTheme.setOnClickListener {
-                themeIndex = 8
-                dialogTheme.dismiss()
+            bindingCustomTheme.themeLightBrownPopUpTheme.setOnClickListener {
+                sharedPreferencesHelper.saveUiColor(8)
             }
+
 
         }
 
@@ -240,5 +243,6 @@ class SettingsFragment : Fragment() {
             requireActivity().finish()
         }
     }
+
 
 }

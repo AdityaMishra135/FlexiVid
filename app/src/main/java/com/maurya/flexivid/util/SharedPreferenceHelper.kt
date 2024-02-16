@@ -30,4 +30,14 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
 
+
+    fun saveUiColor(themeIndex: Int) {
+        editor.putInt(keyTheme, themeIndex)
+        editor.apply()
+    }
+
+    fun getUiColor(): Int {
+        return sharedPreferences.getInt(keyTheme, AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+    }
+
 }
