@@ -1,5 +1,6 @@
 package com.maurya.flexivid.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,11 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
+import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.FragmentFoldersBinding
 import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import com.maurya.flexivid.util.sendIntent
 import kotlinx.coroutines.MainScope
 
 
@@ -55,11 +58,20 @@ class VideosFragment : Fragment(), OnItemClickListener {
         fragmentVideosBinding.recyclerViewVideosFragment.adapter = adapterVideo
 
 
+        fragmentVideosBinding.nowPlayingVideoFragment.setOnClickListener{
+            val intent = Intent(requireContext(),PlayerActivity::class.java)
+            intent.putExtra("class","nowPlaying")
+            startActivity(intent)
+
+
+        }
+
         listeners()
         return view
     }
 
     private fun listeners() {
+
 
     }
 
@@ -68,6 +80,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (PlayerActivity.position!=-1){
+            fragmentVideosBinding.nowPlayingVideoFragment.visibility=View.VISIBLE
+        }
+    }
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
