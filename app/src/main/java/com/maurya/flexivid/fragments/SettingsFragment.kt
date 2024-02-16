@@ -31,7 +31,7 @@ class SettingsFragment : Fragment() {
 
     private lateinit var fragmentSettingsBinding: FragmentSettingsBinding
 
-    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto","Custom")
+    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto", "Custom")
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
@@ -66,7 +66,22 @@ class SettingsFragment : Fragment() {
                         "Theme: ${themeList[sharedPreferencesHelper.theme]}"
                 }
                 .setSingleChoiceItems(themeList, checkedTheme) { _, which ->
-                    checkedTheme = which
+                    if (which == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
+                        val customView = layoutInflater.inflate(R.layout.popup_theme, null)
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Custom Theme Selection")
+                            .setView(customView)
+                            .setPositiveButton("Apply") { _, _ ->
+
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+                    } else {
+                        checkedTheme = which
+                    }
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
@@ -84,7 +99,9 @@ class SettingsFragment : Fragment() {
                 .inflate(R.layout.popup_about_dialog, fragmentSettingsBinding.root, false)
             val bindingPopUp = PopupAboutDialogBinding.bind(popUpDialog)
             val dialog =
-                MaterialAlertDialogBuilder(requireContext(), R.style.PopUpWindowStyle).setView(popUpDialog)
+                MaterialAlertDialogBuilder(requireContext(), R.style.PopUpWindowStyle).setView(
+                    popUpDialog
+                )
                     .setOnCancelListener {
 
                     }
@@ -95,7 +112,8 @@ class SettingsFragment : Fragment() {
             }
 
             val textView = bindingPopUp.spannableTextViewDialog
-            val spannableString = SpannableString("If you'd like to share your thoughts or provide Feedback , please feel free to do so. Your input is valuable, and I'd appreciate hearing from you.❤\uFE0F\"\n ")
+            val spannableString =
+                SpannableString("If you'd like to share your thoughts or provide Feedback , please feel free to do so. Your input is valuable, and I'd appreciate hearing from you.❤\uFE0F\"\n ")
 
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
