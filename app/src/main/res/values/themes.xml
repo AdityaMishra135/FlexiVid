@@ -1,19 +1,15 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
+<resources xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.FlexiVid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/statusBarLight</item>
         <item name="android:windowLightStatusBar">true</item>
 
     </style>
 
-
     <!--  layout style-->
     <style name="LayoutStyle">
         <item name="android:background">@color/white</item>
     </style>
-
 
     <!--    Bottom Dialog-->
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
@@ -23,7 +19,6 @@
     <style name="ShoppingList.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
-
 
 
     <!-- StatusBarLayoutStyle-->
@@ -37,7 +32,6 @@
     </style>
 
 
-
     <!-- PopUpWindowStyle-->
     <style name="PopUpWindowStyle">
         <item name="android:background">@drawable/bg_popup_window</item>
@@ -45,11 +39,21 @@
 
 
     //for Player Activity
+
     <style name="playerActivityTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarLight</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <attr name="themeColor" format="color" />
+
+    <style name="themeLightGreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/light_green</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
     </style>
 
 

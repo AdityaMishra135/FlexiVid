@@ -21,6 +21,7 @@ import com.maurya.flexivid.databinding.FragmentSettingsBinding
 import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.databinding.PopupAboutDialogBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
+import com.maurya.flexivid.databinding.PopupThemeBinding
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,6 +37,9 @@ class SettingsFragment : Fragment() {
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
+    companion object {
+        var themeIndex: Int = 0
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +72,7 @@ class SettingsFragment : Fragment() {
                 .setSingleChoiceItems(themeList, checkedTheme) { _, which ->
                     if (which == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
                         val customView = layoutInflater.inflate(R.layout.popup_theme, null)
+                        val bindingCustomTheme = PopupThemeBinding.bind(customView)
                         MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Custom Theme Selection")
                             .setView(customView)
@@ -79,6 +84,34 @@ class SettingsFragment : Fragment() {
                             }
                             .create()
                             .show()
+
+                        when (themeIndex) {
+                            0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundColor(
+                                Color.GRAY
+                            )
+
+                            1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundColor(Color.GRAY)
+
+                            2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundColor(
+                                Color.GRAY
+                            )
+
+                            3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundColor(Color.GRAY)
+
+                            4 -> bindingCustomTheme.themePinkPopUpTheme.setBackgroundColor(Color.GRAY)
+                            5 -> bindingCustomTheme.themePurplePopUpTheme.setBackgroundColor(Color.GRAY)
+                            6 -> bindingCustomTheme.themeLightOrangePopUpTheme.setBackgroundColor(
+                                Color.GRAY
+                            )
+
+                            7 ->
+                                bindingCustomTheme.themeBluePopUpTheme.setBackgroundColor(Color.GRAY)
+
+                            8 -> bindingCustomTheme.showColourPickUpPopUpTheme.setBackgroundColor(
+                                Color.GRAY
+                            )
+
+                        }
                     } else {
                         checkedTheme = which
                     }

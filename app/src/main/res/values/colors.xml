@@ -5,20 +5,19 @@
     <color name="colorPrimaryDark">#151515</color>
     <color name="colorAccent">#03DAC5</color>
 
-
     <color name="red">#BD0404</color>
-    <color name="purple_500">#673AB7</color>
-    <color name="indigo_500">#3F51B5</color>
-    <color name="light_blue_500">#03A9F4</color>
-    <color name="deep_orange_500">#FF5722</color>
-    <color name="orange_500">#FF9800</color>
-    <color name="yellow_500">#FFEB3B</color>
-    <color name="light_green_500">#8BC34A</color>
-    <color name="green_500">#4CAF50</color>
-    <color name="teal_500">#009688</color>
-    <color name="amber_500">#FFC107</color>
-    <color name="light_green_A200">#76EAA5</color>
-    <color name="brown_500">#729857</color>
+
+
+    <!--   custom theme color-->
+    <color name="light_green">#7CFF5F</color>
+    <color name="light_red">#FF4D4D</color>
+    <color name="light_blue">#95F6ED</color>
+    <color name="light_orange">#F4A749</color>
+    <color name="deep_blue">#03AFDA</color>
+    <color name="purple">#9A61FF</color>
+    <color name="pink">#C932FF</color>
+    <color name="yellow">#FFF100</color>
+
 
     <!--    Light Mode-->
 
@@ -38,4 +37,6 @@
     <color name="StatusBarColour">@color/statusBarLight</color>
 
     <color name="ViewColor">#EAE0E0</color>
+
+
 </resources>

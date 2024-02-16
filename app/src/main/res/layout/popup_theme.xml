@@ -26,25 +26,29 @@
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeLightGreenPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#7CFF5F" />
+            android:background="@drawable/bg_circle"
+            android:tint="@color/light_green" />
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeYellowPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#FFF100" />
+            android:tint="@color/yellow" />
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeLightBluePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#95F6ED" />
+            android:tint="@color/light_blue" />
 
 
     </LinearLayout>
@@ -57,25 +61,28 @@
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeLightRedPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#FF4D4D" />
+            android:tint="@color/light_red" />
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themePinkPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#C932FF" />
+            android:tint="@color/pink" />
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themePurplePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#773DFF" />
+            android:tint="@color/purple" />
 
 
     </LinearLayout>
@@ -89,18 +96,20 @@
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeLightOrangePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#F4A749" />
+            android:tint="@color/light_orange" />
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/themeBluePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:src="@drawable/icon_circle"
-            android:tint="#03AFDA" />
+            android:tint="@color/deep_blue" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/showColourPickUpPopUpTheme"
