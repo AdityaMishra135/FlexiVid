@@ -117,7 +117,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:padding="2dp"
-            android:src="@drawable/icon_theme_custom" />
+            android:src="@drawable/icon_ui_skin" />
 
 
     </LinearLayout>

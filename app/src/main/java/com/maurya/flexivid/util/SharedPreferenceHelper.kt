@@ -27,7 +27,6 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
     val themeFlag = arrayOf(
         AppCompatDelegate.MODE_NIGHT_NO,
         AppCompatDelegate.MODE_NIGHT_YES,
-        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-        AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
 }

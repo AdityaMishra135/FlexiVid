@@ -32,7 +32,8 @@ class SettingsFragment : Fragment() {
 
     private lateinit var fragmentSettingsBinding: FragmentSettingsBinding
 
-    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto", "Custom")
+    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
+    private val customThemeList = arrayOf(R.style.themeLightGreen, R.style.themeLightred)
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
@@ -53,6 +54,8 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
+        requireContext().theme.applyStyle(customThemeList[themeIndex], true)
+
         listeners()
         return view
     }
@@ -70,51 +73,7 @@ class SettingsFragment : Fragment() {
                         "Theme: ${themeList[sharedPreferencesHelper.theme]}"
                 }
                 .setSingleChoiceItems(themeList, checkedTheme) { _, which ->
-                    if (which == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-                        val customView = layoutInflater.inflate(R.layout.popup_theme, null)
-                        val bindingCustomTheme = PopupThemeBinding.bind(customView)
-                        MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Custom Theme Selection")
-                            .setView(customView)
-                            .setPositiveButton("Apply") { _, _ ->
-
-                            }
-                            .setNegativeButton("Cancel") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .create()
-                            .show()
-
-                        when (themeIndex) {
-                            0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundColor(
-                                Color.GRAY
-                            )
-
-                            1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundColor(Color.GRAY)
-
-                            2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundColor(
-                                Color.GRAY
-                            )
-
-                            3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundColor(Color.GRAY)
-
-                            4 -> bindingCustomTheme.themePinkPopUpTheme.setBackgroundColor(Color.GRAY)
-                            5 -> bindingCustomTheme.themePurplePopUpTheme.setBackgroundColor(Color.GRAY)
-                            6 -> bindingCustomTheme.themeLightOrangePopUpTheme.setBackgroundColor(
-                                Color.GRAY
-                            )
-
-                            7 ->
-                                bindingCustomTheme.themeBluePopUpTheme.setBackgroundColor(Color.GRAY)
-
-                            8 -> bindingCustomTheme.showColourPickUpPopUpTheme.setBackgroundColor(
-                                Color.GRAY
-                            )
-
-                        }
-                    } else {
-                        checkedTheme = which
-                    }
+                    checkedTheme = which
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
@@ -126,6 +85,100 @@ class SettingsFragment : Fragment() {
                 dialog.dismiss()
             }
         }
+
+        fragmentSettingsBinding.uiSkinLayout.setOnClickListener {
+            val customView = layoutInflater.inflate(R.layout.popup_theme, null)
+            val bindingCustomTheme = PopupThemeBinding.bind(customView)
+            val dialogTheme =
+                MaterialAlertDialogBuilder(requireContext()).setView(customView)
+                    .setTitle("Custom Theme Selection")
+                    .setView(customView)
+                    .setPositiveButton("Apply") { _, _ ->
+
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+
+            dialogTheme.show()
+
+            when (themeIndex) {
+                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundColor(
+                    Color.GRAY
+                )
+
+                1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundColor(Color.GRAY)
+
+                2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundColor(
+                    Color.GRAY
+                )
+
+                3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundColor(Color.GRAY)
+
+                4 -> bindingCustomTheme.themePinkPopUpTheme.setBackgroundColor(Color.GRAY)
+                5 -> bindingCustomTheme.themePurplePopUpTheme.setBackgroundColor(Color.GRAY)
+                6 -> bindingCustomTheme.themeLightOrangePopUpTheme.setBackgroundColor(
+                    Color.GRAY
+                )
+
+                7 ->
+                    bindingCustomTheme.themeBluePopUpTheme.setBackgroundColor(Color.GRAY)
+
+                8 -> bindingCustomTheme.showColourPickUpPopUpTheme.setBackgroundColor(
+                    Color.GRAY
+                )
+
+            }
+
+            bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
+                themeIndex = 0
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {
+                themeIndex = 1
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themeLightBluePopUpTheme.setOnClickListener {
+                themeIndex = 2
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themeLightRedPopUpTheme.setOnClickListener {
+                themeIndex = 3
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themePinkPopUpTheme.setOnClickListener {
+                themeIndex = 4
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themePurplePopUpTheme.setOnClickListener {
+                themeIndex = 5
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themeLightOrangePopUpTheme.setOnClickListener {
+                themeIndex = 6
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.themeBluePopUpTheme.setOnClickListener {
+                themeIndex = 7
+                dialogTheme.dismiss()
+            }
+
+            bindingCustomTheme.showColourPickUpPopUpTheme.setOnClickListener {
+                themeIndex = 8
+                dialogTheme.dismiss()
+            }
+
+        }
+
+
 
         fragmentSettingsBinding.aboutLayout.setOnClickListener {
             val popUpDialog = LayoutInflater.from(requireContext())

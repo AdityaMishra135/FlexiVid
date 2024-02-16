@@ -56,5 +56,12 @@
         <item name="colorSecondary">?attr/themeColor</item>
     </style>
 
+    <style name="themeLightred" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="themeColor">@color/light_red</item>
+        <item name="android:statusBarColor">?attr/themeColor</item>
+        <item name="colorPrimary">?attr/themeColor</item>
+        <item name="colorSecondary">?attr/themeColor</item>
+    </style>
+
 
 </resources>
