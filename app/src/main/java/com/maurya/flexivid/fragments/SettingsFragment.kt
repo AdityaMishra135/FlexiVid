@@ -31,7 +31,7 @@ class SettingsFragment : Fragment() {
 
     private lateinit var fragmentSettingsBinding: FragmentSettingsBinding
 
-    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
+    private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto","Custom")
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
@@ -48,7 +48,6 @@ class SettingsFragment : Fragment() {
 
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
-
 
         listeners()
         return view

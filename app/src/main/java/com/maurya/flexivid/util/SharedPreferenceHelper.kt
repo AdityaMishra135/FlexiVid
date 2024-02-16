@@ -15,15 +15,19 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
 
     private val editor = sharedPreferences.edit()
     private val keyTheme = "theme"
-    var theme get() = sharedPreferences.getInt(keyTheme, 2)
+
+    var theme: Int
+        get() = sharedPreferences.getInt(keyTheme, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         set(value) {
             editor.putInt(keyTheme, value)
             editor.apply()
         }
 
+
     val themeFlag = arrayOf(
         AppCompatDelegate.MODE_NIGHT_NO,
         AppCompatDelegate.MODE_NIGHT_YES,
-        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+        AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
     )
 }
