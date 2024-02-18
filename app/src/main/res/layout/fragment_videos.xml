@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.VideosFragment">
 
-
     <TextView
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
