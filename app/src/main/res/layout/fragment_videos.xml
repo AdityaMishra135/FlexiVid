@@ -33,6 +33,7 @@
             app:tint="?attr/themeColor" />
 
         <ImageView
+            android:id="@+id/sortingVideoFragment"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
@@ -51,12 +52,10 @@
         android:layout_below="@id/topLayout"
         android:scrollbars="vertical">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewVideosFragment"
@@ -77,10 +76,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="50dp"
-        android:visibility="gone"
-        app:icon="@drawable/icon_play"
-        app:strokeColor="?attr/themeColor"
-        app:strokeWidth="0.5dp" />
-
+        android:backgroundTint="?attr/themeColor"
+        app:icon="@drawable/icon_play" />
 
 </RelativeLayout>

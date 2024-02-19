@@ -86,6 +86,12 @@ class AdapterVideo(
         return itemList.size
     }
 
+    fun updateVideoList(videoList: ArrayList<VideoDataClass>) {
+        itemList = ArrayList()
+        itemList.addAll(videoList)
+        notifyDataSetChanged()
+    }
+
     fun updateSearchList(searchList: ArrayList<VideoDataClass>) {
         itemList = ArrayList()
         itemList.addAll(searchList)

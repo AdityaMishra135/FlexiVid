@@ -10,7 +10,9 @@ data class VideoDataClass(
     val durationText: Long,
     val size: String,
     val path: String,
-    val image: Uri
+    val image: Uri,
+    val dateModified:String,
+
 )
 
 data class FolderDataClass(

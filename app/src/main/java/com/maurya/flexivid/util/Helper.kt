@@ -29,7 +29,7 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
     val tempFolderList = ArrayList<String>()
 
     val projection = arrayOf(
-        _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE
+        _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
     )
 
     val cursor = context.contentResolver.query(
@@ -46,6 +46,7 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
             val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
             val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
             val folderPath = imagePathCursor.substringBeforeLast("/")
+            val dateModified =it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
 
             try {
                 val fileCursor = File(imagePathCursor)
@@ -57,7 +58,8 @@ fun getAllVideos(context: Context): ArrayList<VideoDataClass> {
                     durationCursor,
                     videoSizeCursor,
                     imagePathCursor,
-                    imageUri
+                    imageUri,
+                    dateModified
                 )
                 if (fileCursor.exists()) {
                     tempList.add(videoData)
@@ -101,6 +103,7 @@ fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<Video
             val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
             val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
             val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
+            val dateModified =it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
 
             try {
                 val fileCursor = File(imagePathCursor)
@@ -112,7 +115,8 @@ fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<Video
                     durationCursor,
                     videoSizeCursor,
                     imagePathCursor,
-                    imageUri
+                    imageUri,
+                    dateModified
                 )
                 if (fileCursor.exists()) {
                     tempList.add(videoData)

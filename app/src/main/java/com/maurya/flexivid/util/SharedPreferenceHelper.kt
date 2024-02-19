@@ -40,5 +40,14 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
     fun getUiColor(): Int {
         return sharedPreferences.getInt(keyTheme, 0)
     }
+
+    fun saveSortingOrder(sortingOrder: String) {
+        sharedPreferences.edit().putString("sorting_order", sortingOrder).apply()
+    }
+
+    fun getSortingOrder(): String? {
+        return sharedPreferences.getString("sorting_order", null)
+    }
+
 }
 
