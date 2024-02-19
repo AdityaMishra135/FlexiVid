@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maurya.flexivid.MainActivity
-import com.maurya.flexivid.R
 import com.maurya.flexivid.database.AdapterFolder
 import com.maurya.flexivid.databinding.FragmentFoldersBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import java.io.File
 
 
 class FoldersFragment : Fragment() ,OnItemClickListener{
@@ -46,6 +46,11 @@ class FoldersFragment : Fragment() ,OnItemClickListener{
     }
 
     override fun onItemClickListener(position: Int) {
+
+
+    }
+
+    override fun onItemLongClickListener(currentFile: File, position: Int) {
 
 
     }

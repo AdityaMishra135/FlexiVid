@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@drawable/bg_ripplefactor_without_corner"
+    android:orientation="horizontal"
     android:padding="10dp">
 
 
@@ -71,6 +71,14 @@
         android:textAllCaps="false"
         android:textColor="#737A91"
         android:textSize="15sp" />
+
+    <CheckBox
+        android:id="@+id/checkBoxVideoItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:visibility="gone"
+        android:clickable="false" />
 
 
 </LinearLayout>

@@ -2,13 +2,10 @@ package com.maurya.flexivid.database
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.maurya.flexivid.MainActivity
@@ -18,7 +15,7 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.sendIntent
-import java.lang.ref.Reference
+import java.io.File
 
 class AdapterVideo(
     private val context: Context,
@@ -76,6 +73,14 @@ class AdapterVideo(
 
             }
 
+//            root.setOnLongClickListener {
+//                checkBox.visibility = View.VISIBLE
+//
+//
+//
+//                return@setOnLongClickListener true
+//            }
+
         }
 
 
@@ -100,19 +105,23 @@ class AdapterVideo(
 
     }
 
+    fun getFile(position: Int): VideoDataClass {
+        return itemList[position]
+    }
 
     inner class DayHolder(binding: ItemVideoBinding) :
         RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+        View.OnClickListener, View.OnLongClickListener {
         val videoTitle = binding.videoNameVideoItem
         val folderName = binding.pathNameVideoItem
         val durationText = binding.videoDurationVideoItem
         val image = binding.videoImageVideoItem
         val root = binding.root
-
+        val checkBox = binding.checkBoxVideoItem
 
         init {
             root.setOnClickListener(this)
+            root.setOnLongClickListener(this)
         }
 
 
@@ -123,5 +132,15 @@ class AdapterVideo(
             }
         }
 
+        override fun onLongClick(p0: View?): Boolean {
+            val position = adapterPosition
+            val currentFile = File(itemList[position].path)
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemLongClickListener(currentFile, position)
+            }
+            return true
+        }
+
     }
+
 }

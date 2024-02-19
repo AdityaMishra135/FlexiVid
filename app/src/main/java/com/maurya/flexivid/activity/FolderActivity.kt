@@ -1,20 +1,15 @@
 package com.maurya.flexivid.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.folderList
-import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.ActivityFolderBinding
-import com.maurya.flexivid.databinding.ActivityMainBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.getVideosFromFolderPath
+import java.io.File
 
 class FolderActivity : AppCompatActivity(), OnItemClickListener {
 
@@ -56,6 +51,11 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
 
 
     override fun onItemClickListener(position: Int) {
+
+
+    }
+
+    override fun onItemLongClickListener(currentFile: File, position: Int) {
 
 
     }

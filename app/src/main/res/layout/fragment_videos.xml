@@ -8,47 +8,92 @@
 
     <LinearLayout
         android:id="@+id/topLayout"
-        style="@style/PopUpWindowStyle"
+        style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/videoNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/font_link"
+                android:gravity="center_vertical"
+                android:text="Video "
+                android:textSize="40sp" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:padding="7dp"
+                android:src="@drawable/icon_search" />
+
+            <ImageView
+                android:id="@+id/sortingVideoFragment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="30dp"
+                android:padding="8dp"
+                android:src="@drawable/icon_menu_home" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/topToolBarLayoutLongCLick"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginStart="30dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/font_link"
-            android:gravity="center_vertical"
-            android:text="Video "
-            android:textSize="40sp" />
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="10dp"
-            android:padding="7dp"
-            android:src="@drawable/icon_search"
-            app:tint="?attr/themeColor" />
+            <ImageView
+                android:id="@+id/top_toolbar_close"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_ripplefactor"
+                android:padding="9dp"
+                android:src="@drawable/icon_cancel" />
 
-        <ImageView
-            android:id="@+id/sortingVideoFragment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="30dp"
-            android:padding="8dp"
-            android:src="@drawable/icon_menu_home"
-            app:tint="?attr/themeColor" />
+            <TextView
+                android:id="@+id/top_toolbar_selectedtext"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2/15 Selected"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/top_toolbar_selectedall"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_ripplefactor"
+                android:padding="7dp"
+                android:src="@drawable/icon_check_all" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
 
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/bottomToolBarLayoutLongCLick"
         android:layout_below="@id/topLayout"
         android:scrollbars="vertical">
 
@@ -75,8 +120,177 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="50dp"
-        android:backgroundTint="?attr/themeColor"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="60dp"
         app:icon="@drawable/icon_play" />
+
+
+    <LinearLayout
+        android:id="@+id/bottomToolBarLayoutLongCLick"
+        style="@style/LayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/bottomSendVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomMoveVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_move" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="Move"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomDeleteVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_delete" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="Delete"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomCopyVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_copy" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="Copy"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomRenameVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="22dp"
+                android:src="@drawable/icon_rename" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="Rename"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomDetailsVideoFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_about" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="Detail"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>

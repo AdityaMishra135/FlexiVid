@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pop_sheet"
+    style="@style/PopUpWindowStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lotteView"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="fitCenter"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="Contact.json"
+            app:lottie_loop="true" />
+
+
+        <TextView
+            android:id="@+id/popupDetailsNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/font_link"
+                android:singleLine="true"
+                android:text="Location: "
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/popupDetailsPathText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:singleLine="true"
+                android:text="path"
+                android:textColor="#005EFF"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:fontFamily="@font/font_link"
+                android:text="Size:"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/popupDetailsSizeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:gravity="center"
+                android:text="bytes"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/font_link"
+                android:text="Last Modified:"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/popupDetailsLastModifiedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="DD//MM//YYYY"
+                android:textColor="@color/ImageViewAndTextViewColour"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/ViewColor" />
+
+
+        <TextView
+            android:id="@+id/popupDetailsOKText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_ripplefactor"
+            android:clickable="true"
+            android:fontFamily="@font/font_title"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="OK"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="20sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
