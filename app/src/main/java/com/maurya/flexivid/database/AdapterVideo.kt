@@ -5,7 +5,9 @@ import android.content.Context
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.maurya.flexivid.MainActivity
@@ -21,7 +23,8 @@ class AdapterVideo(
     private val context: Context,
     private var listener: OnItemClickListener,
     private var itemList: ArrayList<VideoDataClass> = arrayListOf(),
-    private val isFolder: Boolean = false
+    private val isFolder: Boolean = false,
+    private var isLongClickListenerInitialized: Boolean = false
 ) : RecyclerView.Adapter<AdapterVideo.DayHolder>() {
 
 
@@ -50,40 +53,54 @@ class AdapterVideo(
                 .into(image)
 
             root.setOnClickListener {
-                when {
-                    itemList[position].id == PlayerActivity.nowPlayingId -> {
-                        sendIntent(context, position, "nowPlaying")
-                    }
 
-                    isFolder -> {
-                        PlayerActivity.pipStatus = 1
-                        sendIntent(context, position, "folderActivity")
-                    }
+                if (isLongClickListenerInitialized) {
+                    itemList[position].isChecked = !itemList[position].isChecked
 
-                    MainActivity.search -> {
-                        PlayerActivity.pipStatus = 2
-                        sendIntent(context, position, "searchView")
-                    }
+                    isLongClickListenerInitialized = false
+                } else {
 
-                    else -> {
-                        PlayerActivity.pipStatus = 3
-                        sendIntent(context, position, "allVideos")
+                    when {
+                        itemList[position].id == PlayerActivity.nowPlayingId -> {
+                            sendIntent(context, position, "nowPlaying")
+                        }
+
+                        isFolder -> {
+                            PlayerActivity.pipStatus = 1
+                            sendIntent(context, position, "folderActivity")
+                        }
+
+                        MainActivity.search -> {
+                            PlayerActivity.pipStatus = 2
+                            sendIntent(context, position, "searchView")
+                        }
+
+                        else -> {
+                            PlayerActivity.pipStatus = 3
+                            sendIntent(context, position, "allVideos")
+                        }
                     }
                 }
-
             }
 
-//            root.setOnLongClickListener {
-//                checkBox.visibility = View.VISIBLE
-//
-//
-//
-//                return@setOnLongClickListener true
-//            }
+            root.setOnLongClickListener {
+                isLongClickListenerInitialized = true
+
+                true
+            }
+
+            if (currentItem.isChecked) {
+                checkBox.isChecked = true
+            }
+
 
         }
 
 
+    }
+
+    fun getSelectedItems(): List<VideoDataClass> {
+        return itemList.filter { it.isChecked }
     }
 
 
@@ -101,8 +118,6 @@ class AdapterVideo(
         itemList = ArrayList()
         itemList.addAll(searchList)
         notifyDataSetChanged()
-
-
     }
 
     fun getFile(position: Int): VideoDataClass {
@@ -124,7 +139,6 @@ class AdapterVideo(
             root.setOnLongClickListener(this)
         }
 
-
         override fun onClick(p0: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
@@ -136,6 +150,11 @@ class AdapterVideo(
             val position = adapterPosition
             val currentFile = File(itemList[position].path)
             if (position != RecyclerView.NO_POSITION) {
+                for (item in itemList) {
+                    checkBox.visibility = View.VISIBLE
+                    item.isChecked = true
+                }
+                notifyDataSetChanged()
                 listener.onItemLongClickListener(currentFile, position)
             }
             return true

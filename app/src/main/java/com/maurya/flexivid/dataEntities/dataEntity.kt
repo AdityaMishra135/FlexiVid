@@ -12,12 +12,13 @@ data class VideoDataClass(
     var path: String,
     var image: Uri,
     val dateModified: String,
-
+    var isChecked: Boolean = false
     )
 
 data class FolderDataClass(
     val id: String,
     val folderName: String,
     val folderPath: String,
-    val folderItemCount: Int
+    val folderItemCount: Int,
+    var isChecked: Boolean = false
 )
