@@ -177,6 +177,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
         changeVisibility(true)
 
 
+
+
         bottomDialogFunction(position, currentFile, videoList)
 
 

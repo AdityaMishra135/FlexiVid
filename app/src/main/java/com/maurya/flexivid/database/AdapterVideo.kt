@@ -59,7 +59,6 @@ class AdapterVideo(
 
                     isLongClickListenerInitialized = false
                 } else {
-
                     when {
                         itemList[position].id == PlayerActivity.nowPlayingId -> {
                             sendIntent(context, position, "nowPlaying")
@@ -149,10 +148,11 @@ class AdapterVideo(
         override fun onLongClick(p0: View?): Boolean {
             val position = adapterPosition
             val currentFile = File(itemList[position].path)
+            itemList[position].isChecked = true
+
             if (position != RecyclerView.NO_POSITION) {
                 for (item in itemList) {
                     checkBox.visibility = View.VISIBLE
-                    item.isChecked = true
                 }
                 notifyDataSetChanged()
                 listener.onItemLongClickListener(currentFile, position)
