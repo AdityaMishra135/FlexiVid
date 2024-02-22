@@ -366,7 +366,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
             popupDetailsSizeText.text = "Total Size: ${getFormattedFileSize(totalSizeInBytes)}"
             val lastModified = selectedFiles.maxByOrNull { it.dateModified }?.dateModified ?: 0
             popupDetailsLastModifiedText.text =
-                "Last Modified: ${getFormattedDate(lastModified.toString())}"
+                "Last Modified: $lastModified. "
 
             popupDetailsOKText.setOnClickListener {
                 detailSheetDialog.dismiss()
