@@ -3,7 +3,6 @@ package com.maurya.flexivid.util
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.MediaStore
 import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
@@ -16,6 +15,9 @@ import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 
@@ -133,6 +135,25 @@ fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<Video
 
     return tempList
 }
+
+
+fun getFormattedFileSize(sizeInBytes: Long): String {
+    if (sizeInBytes <= 0) return "0 B"
+    val units = arrayOf("B", "KB", "MB", "GB", "TB")
+    val digitGroups = (Math.log10(sizeInBytes.toDouble()) / Math.log10(1024.0)).toInt()
+    return String.format(
+        "%.1f %s",
+        sizeInBytes / Math.pow(1024.0, digitGroups.toDouble()),
+        units[digitGroups]
+    )
+}
+
+fun getFormattedDate(lastModified: String): String {
+    val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
+    return sdf.format(Date(lastModified))
+}
+
+
 
 fun countVideoFilesInFolder(folderPath: String): Int {
     val folder = File(folderPath)

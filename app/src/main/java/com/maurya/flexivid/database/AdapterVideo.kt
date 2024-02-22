@@ -81,12 +81,12 @@ class AdapterVideo(
                     }
                 }
             }
-
-            root.setOnLongClickListener {
-                isLongClickListenerInitialized = true
-
-                true
-            }
+//
+//            root.setOnLongClickListener {
+//                isLongClickListenerInitialized = true
+//
+//                true
+//            }
 
             if (currentItem.isChecked) {
                 checkBox.isChecked = true
@@ -96,10 +96,6 @@ class AdapterVideo(
         }
 
 
-    }
-
-    fun getSelectedItems(): List<VideoDataClass> {
-        return itemList.filter { it.isChecked }
     }
 
 

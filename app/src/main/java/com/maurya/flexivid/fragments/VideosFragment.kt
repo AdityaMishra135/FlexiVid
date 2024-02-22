@@ -1,10 +1,10 @@
 package com.maurya.flexivid.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
-import android.text.format.Formatter.formatFileSize
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -29,6 +28,8 @@ import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
+import com.maurya.flexivid.util.getFormattedDate
+import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -177,77 +178,22 @@ class VideosFragment : Fragment(), OnItemClickListener {
         changeVisibility(true)
 
 
+        val selectedFiles = videoList.filter { it.isChecked }
 
 
-        bottomDialogFunction(position, currentFile, videoList)
+
+        bottomDialogFunction(position, currentFile, selectedFiles)
 
 
     }
 
 
+    @SuppressLint("SetTextI18n", "InflateParams", "NotifyDataSetChanged")
     private fun bottomDialogFunction(
         position: Int,
         currentFile: File,
-        videoList: ArrayList<VideoDataClass>
+        selectedFiles: List<VideoDataClass>
     ) {
-
-        //detail option
-//        if (selectedFiles.size == 1) {
-//            fragmentVideosBinding.bottomDetailsVideoFragment.isClickable = true
-//            fragmentVideosBinding.bottomDetailsVideoFragment.setOnClickListener {
-//                val DetailSheetDialog =
-//                    BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
-//                val detailsSheetView: View =
-//                    getLayoutInflater().inflate(R.layout.popup_details, null)
-//                DetailSheetDialog.setContentView(detailsSheetView)
-//                DetailSheetDialog.setCanceledOnTouchOutside(true)
-//                val popupDetailsNameText =
-//                    detailsSheetView.findViewById<TextView>(R.id.popupDetailsNameText)
-//                val popupDetailsPathText =
-//                    detailsSheetView.findViewById<TextView>(R.id.popupDetailsPathText)
-//                val popupDetailsSizeText =
-//                    detailsSheetView.findViewById<TextView>(R.id.popupDetailsSizeText)
-//                val popupDetailsLastModifiedText =
-//                    detailsSheetView.findViewById<TextView>(R.id.popupDetailsLastModifiedText)
-//                val popupDetailsOKText =
-//                    detailsSheetView.findViewById<TextView>(R.id.popupDetailsOKText)
-//                selectedFile = fileAdapter.getFile(position)
-//                val builder = StringBuilder()
-//                val pathBuilder = StringBuilder()
-//                for (file in selectedFiles) {
-//                    builder.append(file.name)
-//                    builder.append("\n")
-//                    pathBuilder.append(file.path)
-//                    pathBuilder.append("\n")
-//                }
-//                val selectedFileText = builder.toString().trim { it <= ' ' }
-//                val selectedFilesPaths = pathBuilder.toString().trim { it <= ' ' }
-//                val lastModified: Long = selectedFile.lastModified()
-//                val formattedLastModified: String = formatLastModified(lastModified)
-//                if (selectedFile != null) {
-//                    popupDetailsNameText.text = selectedFileText
-//                    popupDetailsPathText.text = selectedFilesPaths
-//                    if (selectedFile.isDirectory()) {
-//                        val totalSize: Long = getTotalDirectorySize(selectedFile)
-//                        popupDetailsSizeText.setText(formatFileSize(totalSize))
-//                    } else {
-//                        val fileSize: Long = selectedFile.length()
-//                        popupDetailsSizeText.setText(formatFileSize(fileSize))
-//                    }
-//                    popupDetailsLastModifiedText.text = formattedLastModified
-//                }
-//                popupDetailsOKText.setOnClickListener { // Handle OK button click
-//                    DetailSheetDialog.dismiss()
-//                }
-//                changeVisibility(false)
-//                DetailSheetDialog.show()
-//            }
-//        } else {
-//            fragmentVideosBinding.bottomDetailsVideoFragment.isClickable = false
-//        }
-
-        //rename option
-//        if (selectedFiles.size == 1) {
 
 
         fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
@@ -311,170 +257,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
             renameSheetDialog.show()
         }
 
-        /*
-        } else {
-            fragmentVideosBinding.bottomRenameVideoFragment.isClickable = false
-        }
-
-            copy option
-        if (!selectedFiles.isEmpty()) {
-            bottomMenuCopyOption.isClickable = true
-            bottomMenuCopyOption.setTextColor(Color.WHITE)
-            bottomMenuCopyOption.setOnClickListener { showCopyDialog() }
-        } else {
-            bottomMenuCopyOption.isClickable = false
-            bottomMenuCopyOption.setTextColor(Color.RED)
-        }
-
-        //delete option
-        if (selectedFiles.isNotEmpty()) {
-            fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
-                selectedFile = fileAdapter.getFile(position)
-                val deleteSheetDialog = BottomSheetDialog(
-                    requireContext(),
-                    R.style.ThemeOverlay_App_BottomSheetDialog
-                )
-                val deleteSheetView: View =
-                    getLayoutInflater().inflate(R.layout.popup_delete, null)
-                deleteSheetDialog.setContentView(deleteSheetView)
-                deleteSheetDialog.setCanceledOnTouchOutside(true)
-                val deleteSelectedText =
-                    deleteSheetView.findViewById<TextView>(R.id.deleteSelectedText)
-                val deleteDeleteText =
-                    deleteSheetView.findViewById<TextView>(R.id.deleteDeleteText)
-                val deleteCancelText =
-                    deleteSheetView.findViewById<TextView>(R.id.deleteCancelText)
-                deleteSelectedText.text = "Delete " + selectedFiles.size + " selected items?"
-
-                //delete ok
-                deleteDeleteText.setOnClickListener {
-                    val filesToRemove: MutableList<File> =
-                        ArrayList()
-                    for (selectedFile in selectedFiles) {
-                        if (selectedFile.exists()) {
-                            if (selectedFile.isDirectory) {
-                                val isDeleted: Boolean = deleteFolder(selectedFile)
-                                if (isDeleted) {
-                                    Toast.makeText(
-                                        context,
-                                        "Folder deleted",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                    filesToRemove.add(selectedFile)
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to delete folder",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else if (selectedFile.isFile) {
-                                val isDeleted = selectedFile.delete()
-                                if (isDeleted) {
-                                    Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT)
-                                        .show()
-                                    filesToRemove.add(selectedFile)
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to delete file",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Folder/File doesn't exist",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "No file or folder selected",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                        fileList.removeAll(filesToRemove) // Remove the deleted files/folders from fileList
-                        fileAdapter.notifyDataSetChanged()
-                        deleteSheetDialog.dismiss()
-                        selectedFiles.clear() // Clear the selectedFiles list
-                        fileAdapter.onFileSelectionChanged(
-                            selectedFiles,
-                            position
-                        ) // Notify the selection change
-                }
-
-                //dismiss dialog
-                deleteCancelText.setOnClickListener { deleteSheetDialog.dismiss() }
-                deleteSheetDialog.show()
-                changeVisibility(false)
-            }
-        } else {
-            fragmentVideosBinding.bottomDeleteVideoFragment.isClickable = false
-        }
-
-
-        //move option
-        if (selectedFiles.isNotEmpty()) {
-            fragmentVideosBinding.bottomMoveVideoFragment.isClickable = true
-
-            fragmentVideosBinding.bottomMoveVideoFragment.setOnClickListener {
-
-            }
-        } else {
-            fragmentVideosBinding.bottomMoveVideoFragment.isClickable = false
-
-        }
-
-
-        //share option
-        var isFolderSelected = false
-        for (selectedFile in selectedFiles) {
-            if (selectedFile.isDirectory) {
-                isFolderSelected = true
-                break
-            }
-        }
-        if (!isFolderSelected && selectedFiles.isNotEmpty()) {
-            fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener(
-                View.OnClickListener {
-                    val fileUris = ArrayList<Uri>()
-                    val fileNames = ArrayList<String>()
-                    for (selectedFile in selectedFiles) {
-                        if (!selectedFile.isDirectory) {
-                            fileUris.add(
-                                FileProvider.getUriForFile(
-                                    requireContext(),
-                                    requireContext().packageName + ".provider",
-                                    selectedFile
-                                )
-                            )
-                            fileNames.add(selectedFile.name)
-                        }
-                    }
-                    if (!fileUris.isEmpty()) {
-                        val share = Intent(Intent.ACTION_SEND_MULTIPLE)
-                      /* share.setType("*/ * ")*/
-//            share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
-//            startActivity(
-//                Intent.createChooser(
-//                    share,
-//                    "Share " + fileNames.size + " files"
-//                )
-//            )
-//        }
-//    })
-//} else {
-//    // Disable the share button and set the unselected icon
-//    fragmentVideosBinding.bottomSendVideoFragment.isClickable = false
-
 
         fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener {
-            val selectedFiles = videoList.filter { it.isChecked }
-
 
             if (selectedFiles.isNotEmpty()) {
                 val fileUris = ArrayList<Uri>()
@@ -503,6 +287,92 @@ class VideosFragment : Fragment(), OnItemClickListener {
                     )
                 }
             }
+        }
+
+
+        fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
+
+            val deleteSheetDialog =
+                BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
+            val deleteSheetView = layoutInflater.inflate(R.layout.popup_delete, null)
+            deleteSheetDialog.setContentView(deleteSheetView)
+            deleteSheetDialog.setCanceledOnTouchOutside(true)
+            val deleteSelectedText = deleteSheetView.findViewById<TextView>(R.id.deleteSelectedText)
+            val deleteDeleteText = deleteSheetView.findViewById<TextView>(R.id.deleteDeleteText)
+            val deleteCancelText = deleteSheetView.findViewById<TextView>(R.id.deleteCancelText)
+
+            deleteSelectedText.text = "Delete $selectedFiles selected items"
+
+            deleteDeleteText.setOnClickListener {
+                val toDelete = videoList.filter { it.isChecked }
+                toDelete.forEach { videoItem ->
+                    val file = File(videoItem.path)
+                    if (file.exists()) {
+                        file.delete()
+                        MediaScannerConnection.scanFile(
+                            requireContext(), arrayOf(file.toString()),
+                            arrayOf("video/*"), null
+                        )
+                    }
+                }
+                videoList.removeAll(toDelete.toSet())
+                adapterVideo.notifyDataSetChanged()
+                deleteSheetDialog.dismiss()
+            }
+
+            deleteCancelText.setOnClickListener {
+                deleteSheetDialog.dismiss()
+            }
+
+            deleteSheetDialog.show()
+
+
+        }
+
+
+        fragmentVideosBinding.bottomDetailsVideoFragment.setOnClickListener {
+
+            val detailSheetDialog =
+                BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
+            val detailsSheetView =
+                layoutInflater.inflate(R.layout.popup_details, null)
+            detailSheetDialog.setContentView(detailsSheetView)
+            detailSheetDialog.setCanceledOnTouchOutside(true)
+
+            val popupDetailsNameText =
+                detailsSheetView.findViewById<TextView>(R.id.popupDetailsNameText)
+            val popupDetailsPathText =
+                detailsSheetView.findViewById<TextView>(R.id.popupDetailsPathText)
+            val popupDetailsSizeText =
+                detailsSheetView.findViewById<TextView>(R.id.popupDetailsSizeText)
+            val popupDetailsLastModifiedText =
+                detailsSheetView.findViewById<TextView>(R.id.popupDetailsLastModifiedText)
+            val popupDetailsOKText =
+                detailsSheetView.findViewById<TextView>(R.id.popupDetailsOKText)
+
+            if (selectedFiles.size == 1) {
+                val selectedFile = selectedFiles[0]
+                popupDetailsNameText.text = "Name: ${selectedFile.videoName}"
+                popupDetailsPathText.text = "Path: ${selectedFile.path}"
+            } else {
+                popupDetailsNameText.visibility = View.GONE
+                popupDetailsPathText.visibility = View.GONE
+            }
+
+            var totalSizeInBytes: Long = 0
+            selectedFiles.forEach { selectedFile ->
+                totalSizeInBytes += selectedFile.size.toLong()
+            }
+            popupDetailsSizeText.text = "Total Size: ${getFormattedFileSize(totalSizeInBytes)}"
+            val lastModified = selectedFiles.maxByOrNull { it.dateModified }?.dateModified ?: 0
+            popupDetailsLastModifiedText.text =
+                "Last Modified: ${getFormattedDate(lastModified.toString())}"
+
+            popupDetailsOKText.setOnClickListener {
+                detailSheetDialog.dismiss()
+            }
+
+            detailSheetDialog.show()
         }
 
 
