@@ -248,8 +248,10 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         //rename option
 //        if (selectedFiles.size == 1) {
-        fragmentVideosBinding.bottomRenameVideoFragment.isClickable = true
+
+
         fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
+
             val tempFile = adapterVideo.getFile(position)
             val renameSheetDialog =
                 BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
@@ -468,6 +470,40 @@ class VideosFragment : Fragment(), OnItemClickListener {
 //} else {
 //    // Disable the share button and set the unselected icon
 //    fragmentVideosBinding.bottomSendVideoFragment.isClickable = false
+
+
+        fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener {
+            val selectedFiles = videoList.filter { it.isChecked }
+
+
+            if (selectedFiles.isNotEmpty()) {
+                val fileUris = ArrayList<Uri>()
+                val fileNames = ArrayList<String>()
+
+                for (selectedFile in selectedFiles) {
+                    val file = File(selectedFile.path)
+                    val fileUri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "${requireContext().packageName}.provider",
+                        file
+                    )
+                    fileUris.add(fileUri)
+                    fileNames.add(file.name)
+                }
+
+                if (fileUris.isNotEmpty()) {
+                    val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
+                    shareIntent.type = "*/*"
+                    shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
+                    startActivity(
+                        Intent.createChooser(
+                            shareIntent,
+                            "Share ${fileNames.size} files"
+                        )
+                    )
+                }
+            }
+        }
 
 
     }
