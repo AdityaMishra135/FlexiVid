@@ -5,13 +5,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.maurya.flexivid.MainActivity
+import com.maurya.flexivid.dataEntities.FolderDataClass
+import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivitySplashBinding
+import com.maurya.flexivid.util.getAllVideos
+import kotlinx.coroutines.launch
 
 
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var activitySplashBinding: ActivitySplashBinding
+
+    companion object {
+        var videoList: ArrayList<VideoDataClass> = arrayListOf()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +37,14 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             },
 //            2250
-            20
+            2000
         )
 
+
+
+        lifecycleScope.launch {
+            videoList = getAllVideos(this@SplashActivity)
+        }
 
     }
 }

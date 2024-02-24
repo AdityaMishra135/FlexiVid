@@ -442,7 +442,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeLayout() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
-                playerList.addAll(MainActivity.videoList)
+                playerList.addAll(SplashActivity.videoList)
                 createPlayer()
             }
 

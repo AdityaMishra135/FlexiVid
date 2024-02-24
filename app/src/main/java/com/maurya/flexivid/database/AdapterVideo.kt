@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
@@ -45,12 +46,15 @@ class AdapterVideo(
             folderName.text = currentItem.folderName
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
-            Glide.with(context)
-                .asBitmap()
-                .load(currentItem.image)
-                .centerCrop()
-                .error(R.drawable.mp4)
-                .into(image)
+            holder.image.setImageResource(R.drawable.mp4)
+//
+//            Glide.with(context)
+//                .asBitmap()
+//                .load(currentItem.image)
+//                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+//                .centerCrop()
+//                .error(R.drawable.mp4)
+//                .into(image)
 
             root.setOnClickListener {
 
@@ -99,6 +103,7 @@ class AdapterVideo(
     }
 
 
+
     override fun getItemCount(): Int {
         return itemList.size
     }
@@ -109,6 +114,7 @@ class AdapterVideo(
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateSearchList(searchList: ArrayList<VideoDataClass>) {
         itemList = ArrayList()
         itemList.addAll(searchList)

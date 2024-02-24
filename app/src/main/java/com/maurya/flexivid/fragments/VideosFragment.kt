@@ -19,13 +19,16 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.common.io.Files.getFileExtension
-import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
+import com.maurya.flexivid.activity.SplashActivity.Companion.videoList
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.FragmentVideosBinding
+import com.maurya.flexivid.databinding.PopupAboutDialogBinding
+import com.maurya.flexivid.databinding.PopupDetailsBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getFormattedDate
@@ -332,23 +335,25 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         fragmentVideosBinding.bottomDetailsVideoFragment.setOnClickListener {
 
-            val detailSheetDialog =
-                BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
-            val detailsSheetView =
-                layoutInflater.inflate(R.layout.popup_details, null)
-            detailSheetDialog.setContentView(detailsSheetView)
-            detailSheetDialog.setCanceledOnTouchOutside(true)
+            val popUpDialog = LayoutInflater.from(requireContext())
+                .inflate(R.layout.popup_details, fragmentVideosBinding.root, false)
 
-            val popupDetailsNameText =
-                detailsSheetView.findViewById<TextView>(R.id.popupDetailsNameText)
-            val popupDetailsPathText =
-                detailsSheetView.findViewById<TextView>(R.id.popupDetailsPathText)
-            val popupDetailsSizeText =
-                detailsSheetView.findViewById<TextView>(R.id.popupDetailsSizeText)
-            val popupDetailsLastModifiedText =
-                detailsSheetView.findViewById<TextView>(R.id.popupDetailsLastModifiedText)
-            val popupDetailsOKText =
-                detailsSheetView.findViewById<TextView>(R.id.popupDetailsOKText)
+            val bindingPopUp = PopupDetailsBinding.bind(popUpDialog)
+            val dialog =
+                MaterialAlertDialogBuilder(requireContext(), R.style.PopUpWindowStyle).setView(
+                    popUpDialog
+                )
+                    .setOnCancelListener {
+                        it.dismiss()
+                    }
+                    .create()
+
+
+            val popupDetailsNameText = bindingPopUp.popupDetailsNameText
+            val popupDetailsPathText = bindingPopUp.popupDetailsPathText
+            val popupDetailsSizeText = bindingPopUp.popupDetailsSizeText
+            val popupDetailsLastModifiedText = bindingPopUp.popupDetailsSizeText
+            val popupDetailsOKText = bindingPopUp.popupDetailsOKText
 
             if (selectedFiles.size == 1) {
                 val selectedFile = selectedFiles[0]
@@ -365,14 +370,11 @@ class VideosFragment : Fragment(), OnItemClickListener {
             }
             popupDetailsSizeText.text = "Total Size: ${getFormattedFileSize(totalSizeInBytes)}"
             val lastModified = selectedFiles.maxByOrNull { it.dateModified }?.dateModified ?: 0
-            popupDetailsLastModifiedText.text =
-                "Last Modified: $lastModified. "
+            popupDetailsLastModifiedText.text = lastModified.toString()
 
-            popupDetailsOKText.setOnClickListener {
-                detailSheetDialog.dismiss()
-            }
+            popupDetailsOKText.setOnClickListener { dialog.dismiss() }
 
-            detailSheetDialog.show()
+            dialog.show()
         }
 
 

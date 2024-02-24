@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
@@ -16,28 +15,30 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
+import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.ActivityMainBinding
+import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.reflect.Field
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),OnItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var navController: NavController
 
     companion object {
-        var videoList: ArrayList<VideoDataClass> = arrayListOf()
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
-        var search:Boolean =false
+        var search: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,11 @@ class MainActivity : AppCompatActivity() {
 
         permission()
 
-        videoList = getAllVideos(this)
+
+//        lifecycleScope.launch {
+//            videoList = getAllVideos(this@MainActivity)
+//        }
+
 
     }
 
@@ -134,7 +139,9 @@ class MainActivity : AppCompatActivity() {
             if (!allPermissionsGranted) {
                 showPermissionRequiredDialog()
             } else {
-                videoList = getAllVideos(this)
+//                lifecycleScope.launch {
+//                    videoList = getAllVideos(this@MainActivity)
+//                }
             }
         }
     }
@@ -163,7 +170,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        videoList = getAllVideos(this)
+//        lifecycleScope.launch {
+//            videoList = getAllVideos(this@MainActivity)
+//        }
+
+    }
+
+    override fun onItemClickListener(position: Int) {
+
+
+    }
+
+    override fun onItemLongClickListener(currentFile: File, position: Int) {
+        TODO("Not yet implemented")
     }
 
 }

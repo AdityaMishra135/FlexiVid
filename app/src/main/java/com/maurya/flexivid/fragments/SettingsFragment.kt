@@ -147,7 +147,6 @@ class SettingsFragment : Fragment() {
         }
 
 
-
         fragmentSettingsBinding.aboutLayout.setOnClickListener {
             val popUpDialog = LayoutInflater.from(requireContext())
                 .inflate(R.layout.popup_about_dialog, fragmentSettingsBinding.root, false)
