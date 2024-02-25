@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),OnItemClickListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -176,13 +176,6 @@ class MainActivity : AppCompatActivity(),OnItemClickListener {
 
     }
 
-    override fun onItemClickListener(position: Int) {
 
-
-    }
-
-    override fun onItemLongClickListener(currentFile: File, position: Int) {
-        TODO("Not yet implemented")
-    }
 
 }
