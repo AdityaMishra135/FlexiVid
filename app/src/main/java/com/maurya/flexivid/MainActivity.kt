@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity() {
         permission()
 
 
-//        lifecycleScope.launch {
-//            videoList = getAllVideos(this@MainActivity)
-//        }
+        lifecycleScope.launch {
+            videoList = getAllVideos(this@MainActivity)
+        }
 
 
     }
@@ -139,9 +139,9 @@ class MainActivity : AppCompatActivity() {
             if (!allPermissionsGranted) {
                 showPermissionRequiredDialog()
             } else {
-//                lifecycleScope.launch {
-//                    videoList = getAllVideos(this@MainActivity)
-//                }
+                lifecycleScope.launch {
+                    videoList = getAllVideos(this@MainActivity)
+                }
             }
         }
     }
@@ -170,9 +170,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-//        lifecycleScope.launch {
-//            videoList = getAllVideos(this@MainActivity)
-//        }
+        lifecycleScope.launch {
+            videoList = getAllVideos(this@MainActivity)
+        }
 
     }
 

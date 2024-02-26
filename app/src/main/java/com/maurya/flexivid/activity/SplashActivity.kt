@@ -18,9 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
     private lateinit var activitySplashBinding: ActivitySplashBinding
 
-    companion object {
-        var videoList: ArrayList<VideoDataClass> = arrayListOf()
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +38,6 @@ class SplashActivity : AppCompatActivity() {
             2000
         )
 
-
-
-        lifecycleScope.launch {
-            videoList = getAllVideos(this@SplashActivity)
-        }
 
     }
 }
