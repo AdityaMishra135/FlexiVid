@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
         var search: Boolean = false
+        var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
