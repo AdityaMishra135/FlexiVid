@@ -23,10 +23,12 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.ActivityMainBinding
 import com.maurya.flexivid.util.OnItemClickListener
+import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
+
+    @Inject
+    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
     companion object {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
@@ -75,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        setTheme(sharedPreferencesHelper.getUiColor())
     }
 
     private fun permission() {
