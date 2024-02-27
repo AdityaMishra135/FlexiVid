@@ -61,7 +61,9 @@ class MainActivity : AppCompatActivity() {
 //        navController.navigate(R.id.settingsFragment)
 
 
-        binding.bottomNavMainActivity.setOnNavigationItemSelectedListener {
+
+
+        binding.bottomNavMainActivity.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.foldersBottomNav -> navController.navigate(R.id.foldersFragment)
                 R.id.videosBottomNav -> navController.navigate(R.id.videosFragment)
