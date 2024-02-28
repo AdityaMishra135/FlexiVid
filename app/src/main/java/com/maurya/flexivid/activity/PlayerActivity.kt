@@ -97,6 +97,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         activityPlayerBinding.videoTitlePlayerActivity.isSelected = true
+        activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
 
         player = Builder(this).build()
 
@@ -175,18 +176,20 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        activityPlayerBinding.lockPlayerActivity.setOnClickListener {
+        activityPlayerBinding.lockEnablePlayerActivity.setOnClickListener {
             if (!isLocked) {
                 isLocked = true
                 activityPlayerBinding.playerViewPlayerActivity.hideController()
                 activityPlayerBinding.playerViewPlayerActivity.useController = false
-                activityPlayerBinding.lockPlayerActivity.setImageResource(R.drawable.icon_lock)
+                activityPlayerBinding.lockEnablePlayerActivity.visibility = View.GONE
+                activityPlayerBinding.lockDisablePlayerActivity.visibility = View.VISIBLE
 
             } else {
                 isLocked = false
                 activityPlayerBinding.playerViewPlayerActivity.useController = true
                 activityPlayerBinding.playerViewPlayerActivity.showController()
-                activityPlayerBinding.lockPlayerActivity.setImageResource(R.drawable.icon_unlock)
+                activityPlayerBinding.lockEnablePlayerActivity.visibility = View.VISIBLE
+                activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
 
             }
         }
@@ -442,7 +445,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeLayout() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
-                playerList.addAll(SplashActivity.videoList)
+                playerList.addAll(MainActivity.videoList)
                 createPlayer()
             }
 
@@ -475,7 +478,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun visibilityControl() {
         if (isLocked) {
-            activityPlayerBinding.lockPlayerActivity.visibility = View.VISIBLE
+            activityPlayerBinding.lockEnablePlayerActivity.visibility = View.VISIBLE
         }
 
         runnable = Runnable {

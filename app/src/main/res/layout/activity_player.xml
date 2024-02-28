@@ -42,6 +42,15 @@
 
             />
 
+        <ImageView
+            android:id="@+id/lockDisablePlayerActivity"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="12dp"
+            android:src="@drawable/icon_lock" />
+
         <TextView
             android:id="@+id/videoTitlePlayerActivity"
             android:layout_width="0dp"
@@ -69,7 +78,7 @@
             />
 
         <ImageView
-            android:id="@+id/lockPlayerActivity"
+            android:id="@+id/lockEnablePlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="10dp"
