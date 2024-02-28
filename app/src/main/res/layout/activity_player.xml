@@ -106,8 +106,8 @@
 
         <ImageView
             android:id="@+id/playPausePlayerActivity"
-            android:layout_width="65dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="65dp"
             android:background="?android:selectableItemBackground"
             android:backgroundTint="@android:color/transparent"
             android:clickable="true"
