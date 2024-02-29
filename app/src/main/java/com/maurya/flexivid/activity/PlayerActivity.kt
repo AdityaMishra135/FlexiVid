@@ -86,9 +86,18 @@ class PlayerActivity : AppCompatActivity() {
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         activityPlayerBinding = ActivityPlayerBinding.inflate(layoutInflater)
 
+        val orientation = resources.configuration.orientation
+
+        val layoutResId = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            R.layout.activity_player_land // Landscape layout
+        } else {
+            R.layout.activity_player
+        }
+        setContentView(layoutResId)
+
         setTheme(R.style.playerActivityTheme)
-        setContentView(activityPlayerBinding.root)
-        //
+
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, activityPlayerBinding.root).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
