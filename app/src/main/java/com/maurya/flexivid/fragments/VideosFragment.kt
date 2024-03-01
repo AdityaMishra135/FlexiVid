@@ -57,7 +57,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         val view = fragmentVideosBinding.root
 
 
-
         fragmentVideosBinding.recyclerViewVideosFragment.setHasFixedSize(true)
         fragmentVideosBinding.recyclerViewVideosFragment.setItemViewCacheSize(13)
         fragmentVideosBinding.recyclerViewVideosFragment.layoutManager =
