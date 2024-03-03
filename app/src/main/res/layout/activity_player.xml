@@ -135,7 +135,8 @@
             android:focusable="true"
             android:padding="11dp"
             android:src="@drawable/icon_fast_forward"
-            android:visibility="gone" />
+            android:visibility="gone"
+            />
 
 
     </LinearLayout>

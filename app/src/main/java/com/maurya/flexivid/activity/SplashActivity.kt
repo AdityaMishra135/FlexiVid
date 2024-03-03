@@ -1,5 +1,6 @@
 package com.maurya.flexivid.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,15 +11,22 @@ import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivitySplashBinding
+import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
+@SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var activitySplashBinding: ActivitySplashBinding
 
 
+    @Inject
+    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,5 +47,6 @@ class SplashActivity : AppCompatActivity() {
         )
 
 
+        setTheme(sharedPreferencesHelper.getUiColor())
     }
 }

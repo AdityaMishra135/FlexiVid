@@ -81,8 +81,8 @@ class MainActivity : AppCompatActivity() {
             videoList = getAllVideos(this@MainActivity)
         }
 
-
-        setTheme(sharedPreferencesHelper.getUiColor())
+//
+//        setTheme(sharedPreferencesHelper.getUiColor())
     }
 
     private fun permission() {
