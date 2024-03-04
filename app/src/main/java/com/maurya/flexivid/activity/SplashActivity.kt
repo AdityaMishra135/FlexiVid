@@ -24,7 +24,6 @@ class SplashActivity : AppCompatActivity() {
 
     private lateinit var activitySplashBinding: ActivitySplashBinding
 
-
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
