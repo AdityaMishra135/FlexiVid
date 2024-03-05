@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.common.io.Files.getFileExtension
+import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
@@ -163,11 +164,15 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     private fun changeVisibility(visible: Boolean) {
         if (!visible) {
+            (activity as MainActivity).visibilityBottomNav(false)
             fragmentVideosBinding.topToolBarLayoutLongCLick.visibility = View.GONE
             fragmentVideosBinding.bottomToolBarLayoutLongCLick.visibility = View.GONE
             fragmentVideosBinding.videoNameLayout.visibility = View.VISIBLE
             fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.VISIBLE
+
+
         } else {
+            (activity as MainActivity).visibilityBottomNav(true)
             fragmentVideosBinding.topToolBarLayoutLongCLick.visibility = View.VISIBLE
             fragmentVideosBinding.bottomToolBarLayoutLongCLick.visibility = View.VISIBLE
             fragmentVideosBinding.videoNameLayout.visibility = View.GONE

@@ -7,21 +7,32 @@
     tools:context=".fragments.FoldersFragment">
 
 
-    <TextView
+    <LinearLayout
         android:id="@+id/topLayout"
+        style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="Folder "
-        android:textSize="40sp" />
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="30dp"
+            android:fontFamily="@font/font_link"
+            android:gravity="center_vertical"
+            android:text="Folders "
+            android:textSize="40sp" />
+
+
+    </LinearLayout>
 
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:layout_below="@id/topLayout">
+        android:layout_below="@id/topLayout"
+        android:scrollbars="vertical">
 
 
         <LinearLayout

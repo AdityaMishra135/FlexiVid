@@ -110,6 +110,7 @@ class PlayerActivity : AppCompatActivity() {
 
         player = Builder(this).build()
 
+
         initializeLayout()
         listeners()
 

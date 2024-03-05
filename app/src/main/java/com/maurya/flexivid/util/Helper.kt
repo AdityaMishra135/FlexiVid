@@ -15,6 +15,8 @@ import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
@@ -25,7 +27,7 @@ import java.util.UUID
 import kotlin.math.log10
 import kotlin.math.pow
 
-
+const val MAX_VIDEO_COUNT = 100
 fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
@@ -34,7 +36,8 @@ fun showToast(context: Context, message: String) {
 suspend fun getAllVideos(context: Context): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
-        val tempFolderList = ArrayList<String>()
+        val tempFolderList = HashSet<String>()
+
 
         val projection = arrayOf(
             _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
@@ -49,57 +52,41 @@ suspend fun getAllVideos(context: Context): ArrayList<VideoDataClass> =
                 val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
                 val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
                 val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
-                val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
+                val data = it.getString(it.getColumnIndexOrThrow(DATA))
                 val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
-                val folderPath = imagePathCursor.substringBeforeLast("/")
+                val folderPath = data.substringBeforeLast("/")
                 val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
+                val fileCursor = File(data)
 
-                Log.d("getAllVideos", "Processing video: $videoNameCursor")
 
-                try {
-                    val fileCursor = File(imagePathCursor)
-                    val imageUri = Uri.fromFile(fileCursor)
-                    val videoData = VideoDataClass(
-                        idCursor,
-                        videoNameCursor,
-                        folderNameCursor,
-                        durationCursor,
-                        videoSizeCursor,
-                        imagePathCursor,
-                        imageUri,
-                        dateModified
-                    )
-                    Log.w("getAllVideos", "Try Block")
-                    if (fileCursor.exists()) {
-                        tempList.add(videoData)
-                        Log.d("getAllVideos", "Added video to list: $videoNameCursor")
-                    } else {
-                        Log.w("getAllVideos", "File does not exist: $imagePathCursor")
-                    }
-
-                    if (!tempFolderList.contains(folderNameCursor)) {
-                        tempFolderList.add(folderNameCursor)
-                        folderList.add(
-                            FolderDataClass(
-                                folderIdCursor,
-                                folderNameCursor,
-                                folderPath,
-                                0
-                            )
+                GlobalScope.launch(Dispatchers.IO) {
+                    val exists = withContext(Dispatchers.IO) { fileCursor.exists() }
+                    if (exists) {
+                        val imageUri = Uri.fromFile(fileCursor)
+                        val videoData = VideoDataClass(
+                            idCursor,
+                            videoNameCursor,
+                            folderNameCursor,
+                            durationCursor,
+                            videoSizeCursor,
+                            data,
+                            imageUri,
+                            dateModified
                         )
-                        Log.d("getAllVideos", "Added folder to list: $folderNameCursor")
+                        tempList.add(videoData)
+                    } else {
+                        Log.w("getAllVideos", "File does not exist: $data")
                     }
-
-                } catch (e: Exception) {
-                    Log.e("getAllVideos", "Error processing video: $videoNameCursor", e)
-                    showToast(context, "Error in Fetching Video File")
-                    // Log additional information to help diagnose the issue
-                    Log.e("getAllVideos", "Exception: ${e.message}")
-                    e.printStackTrace()
                 }
+
+                // Check folder existence
+                if (!tempFolderList.contains(folderNameCursor)) {
+                    tempFolderList.add(folderNameCursor)
+                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
+                }
+
             }
         }
-
         return@withContext tempList
     }
 
@@ -122,7 +109,8 @@ fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<Video
         while (it.moveToNext()) {
             val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
             val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
-            val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
+            val folderNameCursor =
+                it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
             val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
             val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
             val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))

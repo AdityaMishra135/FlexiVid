@@ -13,7 +13,7 @@ data class VideoDataClass(
     var image: Uri,
     val dateModified: String,
     var isChecked: Boolean = false
-    )
+)
 
 data class FolderDataClass(
     val id: String,

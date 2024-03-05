@@ -12,6 +12,7 @@ import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
 import android.provider.Settings
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,13 +34,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-
     private lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
 
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
+
     companion object {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
@@ -59,8 +60,6 @@ class MainActivity : AppCompatActivity() {
 
         navController.navigate(R.id.videosFragment)
 //        navController.navigate(R.id.settingsFragment)
-
-
 
 
         binding.bottomNavMainActivity.setOnItemSelectedListener {
@@ -83,6 +82,17 @@ class MainActivity : AppCompatActivity() {
 
 //
 //        setTheme(sharedPreferencesHelper.getUiColor())
+    }
+
+
+    fun visibilityBottomNav(visible: Boolean) {
+        if (!visible) {
+            binding.bottomNavMainActivity.visibility = View.VISIBLE
+
+
+        } else {
+            binding.bottomNavMainActivity.visibility = View.GONE
+        }
     }
 
     private fun permission() {
@@ -184,7 +194,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
 
 
 }

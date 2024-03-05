@@ -26,7 +26,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/font_link"
                 android:gravity="center_vertical"
-                android:text="Video "
+                android:text="Videos "
                 android:textSize="40sp" />
 
             <ImageView
@@ -120,6 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:layout_marginHorizontal="30dp"
         android:layout_marginVertical="60dp"
         app:icon="@drawable/icon_play" />
