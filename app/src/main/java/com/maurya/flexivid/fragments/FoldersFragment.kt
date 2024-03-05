@@ -13,7 +13,7 @@ import com.maurya.flexivid.util.OnItemClickListener
 import java.io.File
 
 
-class FoldersFragment : Fragment() ,OnItemClickListener{
+class FoldersFragment : Fragment(), OnItemClickListener {
 
     private lateinit var fragmentFoldersBinding: FragmentFoldersBinding
     private lateinit var adapterFolder: AdapterFolder
@@ -50,7 +50,7 @@ class FoldersFragment : Fragment() ,OnItemClickListener{
 
     }
 
-    override fun onItemLongClickListener(currentFile: File, position: Int) {
+    override fun onItemLongClickListener(position: Int) {
 
 
     }

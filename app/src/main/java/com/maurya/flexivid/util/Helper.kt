@@ -7,6 +7,7 @@ import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
@@ -14,6 +15,7 @@ import com.maurya.flexivid.MainActivity.Companion.folderList
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
+import com.maurya.flexivid.fragments.VideosFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,7 +35,11 @@ fun showToast(context: Context, message: String) {
 }
 
 
-suspend fun getAllVideos(context: Context): ArrayList<VideoDataClass> =
+suspend fun getAllVideos(
+    context: Context,
+    pageSize: Int,
+    pageNumber: Int
+): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
         val tempFolderList = HashSet<String>()
@@ -58,28 +64,24 @@ suspend fun getAllVideos(context: Context): ArrayList<VideoDataClass> =
                 val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
                 val fileCursor = File(data)
 
-
-                GlobalScope.launch(Dispatchers.IO) {
-                    val exists = withContext(Dispatchers.IO) { fileCursor.exists() }
-                    if (exists) {
-                        val imageUri = Uri.fromFile(fileCursor)
-                        val videoData = VideoDataClass(
-                            idCursor,
-                            videoNameCursor,
-                            folderNameCursor,
-                            durationCursor,
-                            videoSizeCursor,
-                            data,
-                            imageUri,
-                            dateModified
-                        )
-                        tempList.add(videoData)
-                    } else {
-                        Log.w("getAllVideos", "File does not exist: $data")
-                    }
+                if (fileCursor.exists()) {
+                    val imageUri = Uri.fromFile(fileCursor)
+                    val videoData = VideoDataClass(
+                        idCursor,
+                        videoNameCursor,
+                        folderNameCursor,
+                        durationCursor,
+                        videoSizeCursor,
+                        data,
+                        imageUri,
+                        dateModified
+                    )
+                    tempList.add(videoData)
+                } else {
+                    Log.w("getAllVideos", "File does not exist: $data")
                 }
 
-                // Check folder existence
+
                 if (!tempFolderList.contains(folderNameCursor)) {
                     tempFolderList.add(folderNameCursor)
                     folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))

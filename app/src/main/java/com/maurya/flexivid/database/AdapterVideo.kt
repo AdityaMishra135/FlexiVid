@@ -47,20 +47,19 @@ class AdapterVideo(
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
             holder.image.setImageResource(R.drawable.mp4)
-//
-//            Glide.with(context)
-//                .asBitmap()
-//                .load(currentItem.image)
-//                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-//                .centerCrop()
-//                .error(R.drawable.mp4)
-//                .into(image)
+
+            Glide.with(context)
+                .asBitmap()
+                .load(currentItem.image)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .centerCrop()
+                .error(R.drawable.mp4)
+                .into(image)
 
             root.setOnClickListener {
 
                 if (isLongClickListenerInitialized) {
                     itemList[position].isChecked = !itemList[position].isChecked
-
                     isLongClickListenerInitialized = false
                 } else {
                     when {
@@ -102,7 +101,11 @@ class AdapterVideo(
 
     }
 
-
+    fun addItems(newItems: List<VideoDataClass>) {
+        val startPosition = itemList.size
+        itemList.addAll(newItems)
+        notifyItemRangeInserted(startPosition, newItems.size)
+    }
 
     override fun getItemCount(): Int {
         return itemList.size
@@ -157,7 +160,7 @@ class AdapterVideo(
                     checkBox.visibility = View.VISIBLE
                 }
                 notifyDataSetChanged()
-                listener.onItemLongClickListener(currentFile, position)
+                listener.onItemLongClickListener( position)
             }
             return true
         }

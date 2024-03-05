@@ -55,7 +55,7 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
 
     }
 
-    override fun onItemLongClickListener(currentFile: File, position: Int) {
+    override fun onItemLongClickListener( position: Int) {
 
 
     }

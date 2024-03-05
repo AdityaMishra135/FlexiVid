@@ -8,8 +8,8 @@
 
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         app:cardBackgroundColor="@android:color/transparent"
@@ -18,9 +18,10 @@
 
         <ImageView
             android:id="@+id/videoImageVideoItem"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/gif" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/mp4" />
 
     </androidx.cardview.widget.CardView>
 
@@ -78,8 +79,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
-        android:visibility="gone"
-        android:clickable="false" />
+        android:clickable="false"
+        android:visibility="gone" />
 
 
 </LinearLayout>

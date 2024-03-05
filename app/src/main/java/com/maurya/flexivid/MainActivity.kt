@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
         var search: Boolean = false
-        var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,10 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         permission()
 
-
-        lifecycleScope.launch {
-            videoList = getAllVideos(this@MainActivity)
-        }
 
 //
 //        setTheme(sharedPreferencesHelper.getUiColor())
@@ -157,10 +152,6 @@ class MainActivity : AppCompatActivity() {
             }
             if (!allPermissionsGranted) {
                 showPermissionRequiredDialog()
-            } else {
-                lifecycleScope.launch {
-                    videoList = getAllVideos(this@MainActivity)
-                }
             }
         }
     }
@@ -187,13 +178,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch {
-            videoList = getAllVideos(this@MainActivity)
-        }
-
-    }
 
 
 }
