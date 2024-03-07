@@ -3,6 +3,8 @@ package com.maurya.flexivid.util
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore.*
 import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
@@ -35,7 +37,7 @@ fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-
+/*
 suspend fun getAllVideos(
     context: Context,
     pageSize: Int,
@@ -50,9 +52,78 @@ suspend fun getAllVideos(
             _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
         )
 
-        context.contentResolver.query(
-            EXTERNAL_CONTENT_URI, projection, null, null, "$DATE_ADDED DESC"
-        )?.use {
+        val cursor = context.contentResolver.query(
+            EXTERNAL_CONTENT_URI, projection, null, null,
+            "$DATE_ADDED DESC"
+        )
+
+        cursor?.moveToPosition(pageNumber * pageSize)
+
+
+        cursor?.use {
+            var count = 0
+            while (it.moveToNext() && count < pageSize) {
+                val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
+                val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
+                val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
+                val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
+                val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
+                val data = it.getString(it.getColumnIndexOrThrow(DATA))
+                val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
+                val folderPath = data.substringBeforeLast("/")
+                val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
+                val fileCursor = File(data)
+
+                if (fileCursor.exists()) {
+                    val imageUri = Uri.fromFile(fileCursor)
+                    val videoData = VideoDataClass(
+                        idCursor,
+                        videoNameCursor,
+                        folderNameCursor,
+                        durationCursor,
+                        videoSizeCursor,
+                        data,
+                        imageUri,
+                        dateModified
+                    )
+                    tempList.add(videoData)
+                    count++
+                } else {
+                    Log.w("getAllVideos", "File does not exist: $data")
+                }
+
+
+                if (!tempFolderList.contains(folderNameCursor)) {
+                    tempFolderList.add(folderNameCursor)
+                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
+                }
+
+            }
+        }
+
+        return@withContext tempList
+    }
+
+*/
+suspend fun getAllVideos(
+    context: Context
+): ArrayList<VideoDataClass> =
+    withContext(Dispatchers.IO) {
+        val tempList = ArrayList<VideoDataClass>()
+        val tempFolderList = HashSet<String>()
+
+
+        val projection = arrayOf(
+            _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
+        )
+
+        val cursor = context.contentResolver.query(
+            EXTERNAL_CONTENT_URI, projection, null, null,
+            "$DATE_ADDED DESC"
+        )
+
+        cursor?.use {
+            var count = 0
             while (it.moveToNext()) {
                 val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
                 val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
@@ -78,6 +149,7 @@ suspend fun getAllVideos(
                         dateModified
                     )
                     tempList.add(videoData)
+                    count++
                 } else {
                     Log.w("getAllVideos", "File does not exist: $data")
                 }
@@ -165,7 +237,25 @@ fun getFormattedDate(lastModified: String): String {
     val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
     return sdf.format(Date(lastModified))
 }
+fun getPathFromURI(context: Context , uri : Uri): String {
+    var filePath = ""
+    // ExternalStorageProvider
+    val docId = DocumentsContract.getDocumentId(uri)
+    val split = docId.split(':')
+    val type = split[0]
 
+    return if ("primary".equals(type, ignoreCase = true)) {
+        "${Environment.getExternalStorageDirectory()}/${split[1]}"
+    } else {
+        //getExternalMediaDirs() added in API 21
+        val external = context.externalMediaDirs
+        if (external.size > 1) {
+            filePath = external[1].absolutePath
+            filePath = filePath.substring(0, filePath.indexOf("Android")) + split[1]
+        }
+        filePath
+    }
+}
 
 fun countVideoFilesInFolder(folderPath: String): Int {
     val folder = File(folderPath)

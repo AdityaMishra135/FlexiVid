@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
 
 
         lifecycleScope.launch {
-            videoList= getAllVideos(applicationContext,20,0)
+//            videoList= getAllVideos(applicationContext,20,0)
+            videoList= getAllVideos(applicationContext)
         }
 
         Log.d("FileData", videoList.size.toString())

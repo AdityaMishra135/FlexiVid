@@ -24,6 +24,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +59,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
     companion object {
         lateinit var fragmentVideosBinding: FragmentVideosBinding
         lateinit var adapterVideo: AdapterVideo
+
     }
 
     @Inject
@@ -71,9 +73,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
         fragmentVideosBinding = FragmentVideosBinding.inflate(inflater, container, false)
         val view = fragmentVideosBinding.root
 
-        fragmentVideosBinding.progressBar.visibility = View.VISIBLE
 
 
+        if (fragmentVideosBinding.recyclerViewVideosFragment.isEmpty()) {
+            fragmentVideosBinding.progressBar.visibility = View.VISIBLE
+        } else {
+            fragmentVideosBinding.progressBar.visibility = View.GONE
+        }
 
 
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
@@ -428,7 +434,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
 
     }
-
 
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

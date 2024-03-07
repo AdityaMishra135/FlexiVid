@@ -16,6 +16,7 @@ import android.os.Build.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +55,10 @@ import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.fragments.VideosFragment
 import com.maurya.flexivid.util.OnDoubleClickListener
+import com.maurya.flexivid.util.getPathFromURI
+import com.maurya.flexivid.util.getVideosFromFolderPath
 import com.maurya.flexivid.util.showToast
+import java.io.File
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
@@ -66,8 +70,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var trackSelector: DefaultTrackSelector
     private lateinit var loudnessEnhancer: LoudnessEnhancer
-
-    private lateinit var materialAlertDialogBuilder: MaterialAlertDialogBuilder
 
     private var timer: Timer? = null
 
@@ -84,23 +86,14 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.attributes.layoutInDisplayCutoutMode =
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         activityPlayerBinding = ActivityPlayerBinding.inflate(layoutInflater)
 
-        val orientation = resources.configuration.orientation
-
-        val layoutResId = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            R.layout.activity_player_land
-        } else {
-            R.layout.activity_player
-        }
-        setContentView( R.layout.activity_player)
+        setContentView(activityPlayerBinding.root)
 
         setTheme(R.style.playerActivityTheme)
-
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, activityPlayerBinding.root).let { controller ->
@@ -114,10 +107,58 @@ class PlayerActivity : AppCompatActivity() {
 
         player = Builder(this).build()
 
+        try {
+            //for handling video file intent (Improved Version)
+            if (intent.data?.scheme.contentEquals("content")) {
+                playerList = ArrayList()
+                position = 0
+                val cursor = contentResolver.query(
+                    intent.data!!, arrayOf(MediaStore.Video.Media.DATA), null, null,
+                    null
+                )
+                cursor?.let {
+                    it.moveToFirst()
+                    try {
+                        val path =
+                            it.getString(it.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                        val file = File(path)
+                        val video = VideoDataClass(
+                            id = "",
+                            videoName = file.name,
+                            folderName = file.parentFile.name,
+                            durationText = 0L,
+                            size = "",
+                            path = path,
+                            image = Uri.fromFile(file),
+                            dateModified = file.lastModified().toString()
+                        )
+                        playerList.add(video)
+                        cursor.close()
+                    } catch (e: Exception) {
+                        val tempPath = getPathFromURI(context = this, intent.data!!)
+                        val tempFile = File(tempPath)
+                        val video = VideoDataClass(
+                            id = "",
+                            videoName = tempFile.name,
+                            folderName = tempFile.parentFile.name,
+                            durationText = 0L,
+                            size = "",
+                            path = tempPath,
+                            image = Uri.fromFile(tempFile),
+                            dateModified = tempFile.lastModified().toString()
+                        )
+                        playerList.add(video)
+                        cursor.close()
+                    }
+                }
+                createPlayer()
+            } else {
+                initializeLayout()
+            }
+        } catch (e: Exception) {
+            showToast(this, e.message.toString())
+        }
 
-        Log.d("PlayerAct", playerList[position].size)
-
-        initializeLayout()
         listeners()
 
     }
@@ -195,21 +236,21 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         activityPlayerBinding.lockEnablePlayerActivity.setOnClickListener {
-            if (!isLocked) {
                 isLocked = true
                 activityPlayerBinding.playerViewPlayerActivity.hideController()
                 activityPlayerBinding.playerViewPlayerActivity.useController = false
-                activityPlayerBinding.lockEnablePlayerActivity.visibility = View.GONE
+                activityPlayerBinding.topController.visibility = View.GONE
+                activityPlayerBinding.bottomController.visibility = View.GONE
                 activityPlayerBinding.lockDisablePlayerActivity.visibility = View.VISIBLE
+        }
 
-            } else {
-                isLocked = false
-                activityPlayerBinding.playerViewPlayerActivity.useController = true
-                activityPlayerBinding.playerViewPlayerActivity.showController()
-                activityPlayerBinding.lockEnablePlayerActivity.visibility = View.VISIBLE
-                activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
-
-            }
+        activityPlayerBinding.lockDisablePlayerActivity.setOnClickListener {
+            isLocked = false
+            activityPlayerBinding.playerViewPlayerActivity.useController = true
+            activityPlayerBinding.playerViewPlayerActivity.showController()
+            activityPlayerBinding.topController.visibility = View.VISIBLE
+            activityPlayerBinding.bottomController.visibility = View.VISIBLE
+            activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
         }
 
         activityPlayerBinding.orientationPlayerActivity.setOnClickListener {
@@ -463,21 +504,25 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeLayout() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
+                playerList = ArrayList()
                 playerList.addAll(MainActivity.videoList)
                 createPlayer()
             }
 
             "searchView" -> {
+                playerList = ArrayList()
                 playerList.addAll(MainActivity.searchList)
                 createPlayer()
             }
 
             "folderActivity" -> {
+                playerList = ArrayList()
                 playerList.addAll(FolderActivity.currentFolderVideos)
                 createPlayer()
             }
 
             "nowPlaying" -> {
+                playerList = ArrayList()
                 activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
                 activityPlayerBinding.playerViewPlayerActivity.player = player
                 playVideo()
@@ -521,17 +566,13 @@ class PlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
         }
 
-        Log.d("PlayerAct", playerList[position].videoName)
-        Log.d("PlayerAct", playerList[position].folderName)
-        Log.d("PlayerAct", playerList[position].size)
-
         trackSelector = DefaultTrackSelector(this)
         player = ExoPlayer.Builder(this).setTrackSelector(trackSelector).build()
 
         activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
         activityPlayerBinding.playerViewPlayerActivity.player = player
 
-        val mediaItem = MediaItem.fromUri(playerList[position].path)
+        val mediaItem = MediaItem.fromUri(playerList[position].image)
         player.setMediaItem(mediaItem)
         player.prepare()
         playVideo()
@@ -549,7 +590,9 @@ class PlayerActivity : AppCompatActivity() {
         loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
         loudnessEnhancer.enabled = true
         nowPlayingId = playerList[position].id
+
     }
+
 
     private fun nextPrevVideo(isNext: Boolean = true) {
 
