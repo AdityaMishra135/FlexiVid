@@ -16,6 +16,7 @@ import android.os.Build.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -27,9 +28,11 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer.Builder
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -90,11 +93,11 @@ class PlayerActivity : AppCompatActivity() {
         val orientation = resources.configuration.orientation
 
         val layoutResId = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            R.layout.activity_player_land // Landscape layout
+            R.layout.activity_player_land
         } else {
             R.layout.activity_player
         }
-        setContentView(layoutResId)
+        setContentView( R.layout.activity_player)
 
         setTheme(R.style.playerActivityTheme)
 
@@ -111,6 +114,8 @@ class PlayerActivity : AppCompatActivity() {
 
         player = Builder(this).build()
 
+
+        Log.d("PlayerAct", playerList[position].size)
 
         initializeLayout()
         listeners()
@@ -144,6 +149,7 @@ class PlayerActivity : AppCompatActivity() {
 
             })
         }
+
         activityPlayerBinding.fastBackwardPlayerActivity.setOnClickListener {
             OnDoubleClickListener(callback = object : OnDoubleClickListener.Callback {
                 override fun doubleClicked() {
@@ -158,6 +164,7 @@ class PlayerActivity : AppCompatActivity() {
         activityPlayerBinding.nextPlayerActivity.setOnClickListener {
             nextPrevVideo(true)
         }
+
         activityPlayerBinding.previousPlayerActivity.setOnClickListener {
             nextPrevVideo(false)
         }
@@ -456,7 +463,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeLayout() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
-                playerList.addAll(VideosFragment.videoList)
+                playerList.addAll(MainActivity.videoList)
                 createPlayer()
             }
 
@@ -514,13 +521,17 @@ class PlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
         }
 
+        Log.d("PlayerAct", playerList[position].videoName)
+        Log.d("PlayerAct", playerList[position].folderName)
+        Log.d("PlayerAct", playerList[position].size)
+
         trackSelector = DefaultTrackSelector(this)
         player = ExoPlayer.Builder(this).setTrackSelector(trackSelector).build()
 
         activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
         activityPlayerBinding.playerViewPlayerActivity.player = player
 
-        val mediaItem = MediaItem.fromUri(playerList[position].image)
+        val mediaItem = MediaItem.fromUri(playerList[position].path)
         player.setMediaItem(mediaItem)
         player.prepare()
         playVideo()

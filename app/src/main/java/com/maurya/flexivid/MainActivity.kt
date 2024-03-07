@@ -8,10 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore.*
-import android.provider.MediaStore.Video.*
-import android.provider.MediaStore.Video.Media.*
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -21,14 +19,11 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
-import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.ActivityMainBinding
-import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
+        var videoList: ArrayList<VideoDataClass> = arrayListOf()
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
         var search: Boolean = false
@@ -73,6 +69,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         permission()
+
+
+
+        lifecycleScope.launch {
+            videoList= getAllVideos(applicationContext,20,0)
+        }
+
+        Log.d("FileData", videoList.size.toString())
 
 
 //

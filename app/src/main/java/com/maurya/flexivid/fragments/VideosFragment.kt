@@ -1,17 +1,22 @@
 package com.maurya.flexivid.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.webkit.MimeTypeMap
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -22,27 +27,23 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.common.io.Files.getFileExtension
 import com.maurya.flexivid.MainActivity
+import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.databinding.FragmentVideosBinding
-import com.maurya.flexivid.databinding.PopupAboutDialogBinding
 import com.maurya.flexivid.databinding.PopupDetailsBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
-import com.maurya.flexivid.util.getFormattedDate
 import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -50,15 +51,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class VideosFragment : Fragment(), OnItemClickListener {
 
-    private lateinit var adapterVideo: AdapterVideo
-
-
     var isLoading = false
     var isLastPage = false
     var currentPage = 0
+
     companion object {
-        var videoList: ArrayList<VideoDataClass> = arrayListOf()
         lateinit var fragmentVideosBinding: FragmentVideosBinding
+        lateinit var adapterVideo: AdapterVideo
     }
 
     @Inject
@@ -74,50 +73,21 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         fragmentVideosBinding.progressBar.visibility = View.VISIBLE
 
-        lifecycleScope.launch {
-           videoList = getAllVideos(requireContext(),20,0)
-        }
 
-        val layoutManagerR = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
 
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(13)
-            layoutManager = layoutManagerR
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
             adapter = adapterVideo
         }
 
 
 
-        fragmentVideosBinding.recyclerViewVideosFragment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = layoutManagerR.childCount
-                val totalItemCount = layoutManagerR.itemCount
-                val firstVisibleItemPosition = layoutManagerR.findFirstVisibleItemPosition()
 
-                if (!isLoading && !isLastPage) {
-                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
-                        && firstVisibleItemPosition >= 0
-                        && totalItemCount >= PAGE_SIZE
-                    ) {
-                        isLoading = true
-                        currentPage++
-                        // Fetch next page of data
-                        lifecycleScope.launch {
-                            val newItems = getAllVideos(requireContext(), currentPage * PAGE_SIZE, PAGE_SIZE)
-                            if (newItems.isNotEmpty()) {
-                                adapterVideo.addItems(newItems)
-                            } else {
-                                isLastPage = true
-                            }
-                            isLoading = false
-                        }
-                    }
-                }
-            }
-        })
 
         fragmentVideosBinding.nowPlayingVideoFragment.setOnClickListener {
             val intent = Intent(requireContext(), PlayerActivity::class.java)
@@ -136,8 +106,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
 
         val sortingOrder = sharedPreferencesHelper.getSortingOrder()
-        sortMusicList(sortingOrder.toString())
 
+        sortMusicList(sortingOrder.toString())
 
         changeVisibility(false)
 
@@ -457,11 +427,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.VISIBLE
         }
 
-        lifecycleScope.launch {
-            videoList = getAllVideos(requireContext(),20,0)
-            fragmentVideosBinding.progressBar.visibility = View.GONE
-        }
     }
+
+
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 //        inflater.inflate(R.menu.search_view, menu)

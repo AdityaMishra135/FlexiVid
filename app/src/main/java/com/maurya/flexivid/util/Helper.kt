@@ -16,6 +16,7 @@ import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.fragments.VideosFragment
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,6 +90,7 @@ suspend fun getAllVideos(
 
             }
         }
+
         return@withContext tempList
     }
 

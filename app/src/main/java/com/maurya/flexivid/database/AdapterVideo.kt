@@ -48,13 +48,13 @@ class AdapterVideo(
 
             holder.image.setImageResource(R.drawable.mp4)
 
-            Glide.with(context)
-                .asBitmap()
-                .load(currentItem.image)
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .centerCrop()
-                .error(R.drawable.mp4)
-                .into(image)
+//            Glide.with(context)
+//                .asBitmap()
+//                .load(currentItem.image)
+//                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+//                .centerCrop()
+//                .error(R.drawable.mp4)
+//                .into(image)
 
             root.setOnClickListener {
 
