@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer.Builder
+import com.google.android.exoplayer2.source.TrackGroup
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
@@ -344,42 +345,64 @@ class PlayerActivity : AppCompatActivity() {
 
             bindingPopUp.audioTracksPopUp.setOnClickListener {
                 dialog.dismiss()
-                playVideo()
-                val audioTracks = ArrayList<String>()
+
+                val audioLanguages = ArrayList<Pair<String?, String?>>()
 
                 for (i in 0 until player.currentTrackGroups.length) {
-                    if (player.currentTrackGroups.get(i)
-                            .getFormat(0).selectionFlags == C.SELECTION_FLAG_DEFAULT
-                    ) {
-                        audioTracks.add(
-                            Locale(
-                                player.currentTrackGroups.get(i).getFormat(0).language.toString()
-                            ).displayLanguage
-                        )
-
-
+                    val trackGroup = player.currentTrackGroups[i]
+                    for (j in 0 until trackGroup.length) {
+                        val format = trackGroup.getFormat(j)
+                        val mimeType = format.sampleMimeType
+                        val language = format.language
+                        val id = format.id
+                        if (mimeType?.contains("audio") == true && id != null && language != null) {
+                            audioLanguages.add(Pair(id, language))
+                        }
                     }
                 }
 
-                val tempTracks = audioTracks.toArray(arrayOfNulls<CharSequence>(audioTracks.size))
+                val languageNames = audioLanguages.mapIndexed { index, pair ->
+                    "Audio Track #${index + 1} ${pair.second}"
+                }.toTypedArray()
 
-                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
+                val audioOptions = arrayOfNulls<CharSequence>(languageNames.size + 1)
+                audioOptions[0] = "Disable Audio"
+                for (i in languageNames.indices) {
+                    audioOptions[i + 1] = languageNames[i]
+                }
+
+                MaterialAlertDialogBuilder(this)
                     .setTitle("Select Audio Track")
-                    .setOnCancelListener {
-                        playVideo()
+                    .setItems(audioOptions) { _, position ->
+                        if (position == 0) {
+                            showToast(this, "Audio Disabled")
+                            val parameters = trackSelector.buildUponParameters()
+                            for (rendererIndex in 0 until player.rendererCount) {
+                                if (player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
+                                    parameters.setRendererDisabled(rendererIndex, true)
+                                }
+                            }
+                            trackSelector.setParameters(parameters)
+                        } else {
+                            val selectedLanguage = audioLanguages[position - 1].second
+                            showToast(this, "$selectedLanguage Selected")
+                            val parameters = trackSelector.buildUponParameters()
+                            for (rendererIndex in 0 until player.rendererCount) {
+                                if (player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
+                                    parameters.setRendererDisabled(rendererIndex, false)
+                                }
+                            }
+                            trackSelector.setParameters(
+                                parameters.setPreferredAudioLanguage(selectedLanguage)
+                            )
+                        }
                     }
-                    .setItems(tempTracks) { _, position ->
-                        showToast(this, audioTracks[position] + "Selected")
-                        trackSelector.setParameters(
-                            trackSelector.buildUponParameters()
-                                .setPreferredAudioLanguage(audioTracks[position])
-                        )
-
-                    }
-                    .create()
                     .show()
 
+                Log.d("trackGroup", "Track groups length: ${player.currentTrackGroups.length}")
             }
+
+
 
             bindingPopUp.speedPopUp.setOnClickListener {
                 dialog.dismiss()
@@ -457,8 +480,10 @@ class PlayerActivity : AppCompatActivity() {
             }
 
 
-
             bindingPopUp.pipPopUp.setOnClickListener {
+                activityPlayerBinding.playerViewPlayerActivity.hideController()
+                activityPlayerBinding.topController.visibility=View.GONE
+                activityPlayerBinding.bottomController.visibility=View.GONE
 
                 val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
                 val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -466,8 +491,7 @@ class PlayerActivity : AppCompatActivity() {
                         AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
                         android.os.Process.myUid(),
                         packageName
-                    ) ==
-                            AppOpsManager.MODE_ALLOWED
+                    ) == AppOpsManager.MODE_ALLOWED
                 } else {
                     false
                 }
@@ -476,7 +500,6 @@ class PlayerActivity : AppCompatActivity() {
                     if (status) {
                         this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
                         dialog.dismiss()
-                        activityPlayerBinding.playerViewPlayerActivity.hideController()
                         playVideo()
                         pipStatus = 0
                     } else {
@@ -491,9 +514,8 @@ class PlayerActivity : AppCompatActivity() {
                     dialog.dismiss()
                     playVideo()
                 }
-
-
             }
+
 
 
         }
@@ -542,6 +564,11 @@ class PlayerActivity : AppCompatActivity() {
     private fun visibilityControl() {
         if (isLocked) {
             activityPlayerBinding.lockEnablePlayerActivity.visibility = View.VISIBLE
+        }
+        if (isInPictureInPictureMode){
+            activityPlayerBinding.playerViewPlayerActivity.hideController()
+            activityPlayerBinding.topController.visibility=View.GONE
+            activityPlayerBinding.bottomController.visibility=View.GONE
         }
 
         runnable = Runnable {
@@ -670,6 +697,9 @@ class PlayerActivity : AppCompatActivity() {
                 3 -> intent.putExtra("class", "allVideos")
                 4 -> intent.putExtra("class", "nowPlaying")
             }
+            activityPlayerBinding.playerViewPlayerActivity.showController()
+            activityPlayerBinding.topController.visibility=View.VISIBLE
+            activityPlayerBinding.bottomController.visibility=View.VISIBLE
             startActivity(intent)
         }
         if (!isInPictureInPictureMode) pauseVideo()
