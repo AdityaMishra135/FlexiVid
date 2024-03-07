@@ -237,12 +237,12 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         activityPlayerBinding.lockEnablePlayerActivity.setOnClickListener {
-                isLocked = true
-                activityPlayerBinding.playerViewPlayerActivity.hideController()
-                activityPlayerBinding.playerViewPlayerActivity.useController = false
-                activityPlayerBinding.topController.visibility = View.GONE
-                activityPlayerBinding.bottomController.visibility = View.GONE
-                activityPlayerBinding.lockDisablePlayerActivity.visibility = View.VISIBLE
+            isLocked = true
+            activityPlayerBinding.playerViewPlayerActivity.hideController()
+            activityPlayerBinding.playerViewPlayerActivity.useController = false
+            activityPlayerBinding.topController.visibility = View.GONE
+            activityPlayerBinding.bottomController.visibility = View.GONE
+            activityPlayerBinding.lockDisablePlayerActivity.visibility = View.VISIBLE
         }
 
         activityPlayerBinding.lockDisablePlayerActivity.setOnClickListener {
@@ -402,8 +402,6 @@ class PlayerActivity : AppCompatActivity() {
                 Log.d("trackGroup", "Track groups length: ${player.currentTrackGroups.length}")
             }
 
-
-
             bindingPopUp.speedPopUp.setOnClickListener {
                 dialog.dismiss()
 
@@ -482,8 +480,8 @@ class PlayerActivity : AppCompatActivity() {
 
             bindingPopUp.pipPopUp.setOnClickListener {
                 activityPlayerBinding.playerViewPlayerActivity.hideController()
-                activityPlayerBinding.topController.visibility=View.GONE
-                activityPlayerBinding.bottomController.visibility=View.GONE
+                activityPlayerBinding.topController.visibility = View.GONE
+                activityPlayerBinding.bottomController.visibility = View.GONE
 
                 val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
                 val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -515,7 +513,6 @@ class PlayerActivity : AppCompatActivity() {
                     playVideo()
                 }
             }
-
 
 
         }
@@ -565,10 +562,10 @@ class PlayerActivity : AppCompatActivity() {
         if (isLocked) {
             activityPlayerBinding.lockEnablePlayerActivity.visibility = View.VISIBLE
         }
-        if (isInPictureInPictureMode){
+        if (isInPictureInPictureMode) {
             activityPlayerBinding.playerViewPlayerActivity.hideController()
-            activityPlayerBinding.topController.visibility=View.GONE
-            activityPlayerBinding.bottomController.visibility=View.GONE
+            activityPlayerBinding.topController.visibility = View.GONE
+            activityPlayerBinding.bottomController.visibility = View.GONE
         }
 
         runnable = Runnable {
@@ -698,8 +695,8 @@ class PlayerActivity : AppCompatActivity() {
                 4 -> intent.putExtra("class", "nowPlaying")
             }
             activityPlayerBinding.playerViewPlayerActivity.showController()
-            activityPlayerBinding.topController.visibility=View.VISIBLE
-            activityPlayerBinding.bottomController.visibility=View.VISIBLE
+            activityPlayerBinding.topController.visibility = View.VISIBLE
+            activityPlayerBinding.bottomController.visibility = View.VISIBLE
             startActivity(intent)
         }
         if (!isInPictureInPictureMode) pauseVideo()
