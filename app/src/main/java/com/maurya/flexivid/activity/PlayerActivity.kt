@@ -38,7 +38,7 @@ import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
-import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
+import com.maurya.flexivid.databinding.PopupAudioSpeedBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.util.OnDoubleClickListener
@@ -268,9 +268,6 @@ class PlayerActivity : AppCompatActivity() {
             val bindingPopUp = PopupMoreFeaturesBinding.bind(popUpDialog)
             val dialog =
                 MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(popUpDialog)
-                    .setOnCancelListener {
-                        playVideo()
-                    }
                     .create()
 
             dialog.show()
@@ -417,21 +414,25 @@ class PlayerActivity : AppCompatActivity() {
             //for audio booster
             bindingPopUp.audioBoosterPopUp.setOnClickListener {
                 dialog.dismiss()
-                val popUpDialogBooster = LayoutInflater.from(this)
-                    .inflate(R.layout.popup_audio_booster, activityPlayerBinding.root, false)
-                val bindingPopUpBooster = PopupAudioBoosterBinding.bind(popUpDialogBooster)
 
-                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle).setView(
-                    popUpDialogBooster
-                )
-                    .setOnCancelListener {
-                        playVideo()
-                    }
+                val popUpDialogBooster = LayoutInflater.from(this)
+                    .inflate(R.layout.popup_audio_speed, activityPlayerBinding.root, false)
+                val bindingPopUpBooster = PopupAudioSpeedBinding.bind(popUpDialogBooster)
+
+                bindingPopUpBooster.speedSlider.valueFrom = 0f
+                bindingPopUpBooster.speedSlider.valueTo = 100f
+
+
+                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
+                    .setView(popUpDialogBooster)
                     .create()
                     .show()
 
-                bindingPopUpBooster.verticalSeekbar.setOnProgressChangeListener {
-                    loudnessEnhancer.setTargetGain(it * 100)
+                bindingPopUpBooster.speedSlider.addOnChangeListener { _, value, fromUser ->
+                    if (fromUser) {
+                        loudnessEnhancer.setTargetGain((value * 100).toInt())
+                        showToast(this, "Audio boosted to ${value.toInt()}%")
+                    }
                 }
 
             }
