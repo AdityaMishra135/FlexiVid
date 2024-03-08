@@ -49,12 +49,5 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         return sharedPreferences.getString("sorting_order", null)
     }
 
-    fun saveLastSpeedIndex(index: Int) {
-        editor.putInt("last_speed_index", index).apply()
-    }
-
-    fun getLastSpeedIndex(): Int {
-        return sharedPreferences.getInt("last_speed_index", 3)
-    }
 }
 
