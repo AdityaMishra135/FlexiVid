@@ -42,15 +42,20 @@ import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.util.OnDoubleClickListener
+import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getPathFromURI
 import com.maurya.flexivid.util.showToast
 import com.maurya.flexivid.util.showTrackSelectionDialog
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
+@AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
     private lateinit var activityPlayerBinding: ActivityPlayerBinding
     private lateinit var runnable: Runnable
@@ -60,11 +65,15 @@ class PlayerActivity : AppCompatActivity() {
 
     private var timer: Timer? = null
 
+    @Inject
+    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
+
     companion object {
         private var repeat: Boolean = false
         lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
         var position: Int = -1
+        var isTimerOn: Boolean = false
         var isFullScreen: Boolean = false
         var isLocked: Boolean = false
         var pipStatus: Int = 0
@@ -88,6 +97,8 @@ class PlayerActivity : AppCompatActivity() {
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+
+        sharedPreferencesHelper = SharedPreferenceHelper(this)
 
         activityPlayerBinding.videoTitlePlayerActivity.isSelected = true
         activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
@@ -288,6 +299,7 @@ class PlayerActivity : AppCompatActivity() {
                 "Subtitle Track #${index + 1} ${pair.second}"
             }.toTypedArray()
 
+            //for subtitle
             bindingPopUp.subtitlePopUp.setOnClickListener {
                 dialog.dismiss()
 
@@ -309,6 +321,7 @@ class PlayerActivity : AppCompatActivity() {
 
             }
 
+            //for audio Tracks
             bindingPopUp.audioTracksPopUp.setOnClickListener {
                 dialog.dismiss()
 
@@ -326,6 +339,87 @@ class PlayerActivity : AppCompatActivity() {
                     true,
                     audioLanguages
                 )
+            }
+
+            //for speed I am using here slider
+            bindingPopUp.speedPopUp.setOnClickListener {
+                dialog.dismiss()
+
+                val speedOptions =
+                    arrayOf("0.25x", "0.50x", "0.75x", "1.0x", "1.25x", "1.50x", "1.75x", "2.0x")
+
+                val popUpDialogSpeed = LayoutInflater.from(this)
+                    .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
+                val bindingSpeed = PopupVideoSpeedBinding.bind(popUpDialogSpeed)
+
+                bindingSpeed.speedSlider.valueFrom = 0f
+                bindingSpeed.speedSlider.valueTo = speedOptions.size - 1.toFloat()
+
+                bindingSpeed.speedSlider.setLabelFormatter { value ->
+                    speedOptions[value.toInt()]
+                }
+
+
+                val lastSpeedIndex = sharedPreferencesHelper.getLastSpeedIndex()
+                bindingSpeed.speedSlider.value = lastSpeedIndex.toFloat()
+
+                bindingSpeed.speedSlider.addOnChangeListener { _, value, fromUser ->
+                    if (fromUser) {
+                        val selectedSpeedIndex = value.toInt()
+                        val selectedSpeed = speedOptions[selectedSpeedIndex]
+                        player.setPlaybackSpeed(selectedSpeed.substringBefore("x").toFloat())
+                        showToast(this, "Selected playback speed: $selectedSpeed")
+                        sharedPreferencesHelper.saveLastSpeedIndex(selectedSpeedIndex)
+                    }
+                }
+
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Playback Speed")
+                    .setView(popUpDialogSpeed)
+                    .setNegativeButton("Close") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+            }
+
+            //for sleep using same slider as in speed
+            bindingPopUp.sleepTimerPopUp.setOnClickListener {
+                dialog.dismiss()
+
+                val presetDurations = arrayOf("15 min", "30 min", "45 min", "1 hr")
+                val timeIntervals = intArrayOf(15, 30, 45, 60)
+
+                val customDuration = "Set Custom Time"
+
+                val customView = LayoutInflater.from(this)
+                    .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
+                val bindingSlider = PopupVideoSpeedBinding.bind(customView)
+
+                bindingSlider.speedSlider.valueFrom = 0f
+                bindingSlider.speedSlider.valueTo = presetDurations.size - 1.toFloat()
+                bindingSlider.speedSlider.setLabelFormatter { value ->
+                    presetDurations[value.toInt()]
+                }
+
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Select Sleep Timer")
+                    .setView(customView)
+                    .setNeutralButton(customDuration) { _, _ ->
+                        timer?.cancel()
+                        showCustomTimePicker()
+                    }
+                    .setPositiveButton("Set") { _, _ ->
+                        timer?.cancel()
+                        val selectedDurationIndex = bindingSlider.speedSlider.value.toInt()
+                        startCountdownTimer(timeIntervals[selectedDurationIndex] * 60 * 1000L)
+                    }
+                    .setNegativeButton("Cancel") { self, _ ->
+                        self.dismiss()
+                    }
+                    .create()
+                    .show()
+
             }
 
 
@@ -352,85 +446,6 @@ class PlayerActivity : AppCompatActivity() {
             }
 
 
-            bindingPopUp.speedPopUp.setOnClickListener {
-                dialog.dismiss()
-
-                val speedOptions = arrayOf("0.25x", "0.50x", "0.75x", "1.0x", "1.25x", "1.50x", "1.75x", "2.0x")
-
-                val popUpDialogSpeed = LayoutInflater.from(this)
-                    .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
-                val bindingSpeed = PopupVideoSpeedBinding.bind(popUpDialogSpeed)
-
-                bindingSpeed.speedSlider.valueFrom = 0f
-                bindingSpeed.speedSlider.valueTo = speedOptions.size - 1.toFloat()
-
-                bindingSpeed.speedSlider.setLabelFormatter { value ->
-                    speedOptions[value.toInt()]
-                }
-
-                bindingSpeed.speedSlider.value = 3f // Default speed: 1.0x
-
-                bindingSpeed.speedSlider.addOnChangeListener { _, value, fromUser ->
-                    if (fromUser) {
-                        val selectedSpeedIndex = value.toInt()
-                        val selectedSpeed = speedOptions[selectedSpeedIndex]
-                        player.setPlaybackSpeed(selectedSpeed.substringBefore("x").toFloat())
-                        showToast(this, "Selected playback speed: $selectedSpeed")
-                    }
-                }
-
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Playback Speed")
-                    .setView(popUpDialogSpeed)
-                    .setNegativeButton("Close") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
-            }
-
-
-
-
-            bindingPopUp.sleepTimerPopUp.setOnClickListener {
-                dialog.dismiss()
-
-                val timePicker = MaterialTimePicker.Builder()
-                    .setTimeFormat(TimeFormat.CLOCK_12H)
-                    .setHour(0)
-                    .setMinute(0)
-                    .setTitleText("Select Sleep Timer")
-                    .build()
-
-                timePicker.addOnPositiveButtonClickListener { self ->
-                    val selectedHour = timePicker.hour
-                    val selectedMinute = timePicker.minute
-
-                    val selectedTime = String.format(
-                        Locale.getDefault(),
-                        "%02d:%02d",
-                        selectedHour,
-                        selectedMinute
-                    )
-                    val selectedTimeMillis = (selectedHour * 60 + selectedMinute) * 60 * 1000L
-
-                    timer = Timer()
-                    val task = object : TimerTask() {
-                        override fun run() {
-                            moveTaskToBack(true)
-                            exitProcess(1)
-                        }
-                    }
-                    timer!!.schedule(task, selectedTimeMillis)
-                    showToast(this, "Sleep timer set for $selectedTime")
-                }
-
-                timePicker.addOnNegativeButtonClickListener {
-                    showToast(this, "Sleep timer reset")
-                }
-
-                timePicker.show(supportFragmentManager, "SleepTimerPicker")
-            }
 
 
             bindingPopUp.pipPopUp.setOnClickListener {
@@ -473,6 +488,64 @@ class PlayerActivity : AppCompatActivity() {
 
 
     }
+
+
+    private fun showCustomTimePicker() {
+        val timePicker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_24H) // Set to CLOCK_24H for 24-hour format
+            .setHour(0)
+            .setMinute(0)
+            .setTitleText("Set Custom Time")
+            .build()
+
+        timePicker.addOnPositiveButtonClickListener { _ ->
+            val selectedHour = timePicker.hour
+            val selectedMinute = timePicker.minute
+
+            val selectedTimeMillis = (selectedHour * 60 + selectedMinute) * 60 * 1000L
+
+            startCountdownTimer(selectedTimeMillis)
+        }
+
+        timePicker.show(supportFragmentManager, "CustomTimePicker")
+    }
+
+    private fun startCountdownTimer(durationMillis: Long) {
+        timer = Timer()
+        val task = object : TimerTask() {
+            override fun run() {
+                timerExpired()
+            }
+        }
+        timer!!.schedule(task, durationMillis)
+
+        val durationMinutes =
+            TimeUnit.MILLISECONDS.toMinutes(durationMillis)
+        showToast(this, "Sleep timer set for $durationMinutes min")
+        isTimerOn = true
+    }
+
+    private fun timerExpired() {
+        runOnUiThread {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Timer Expired")
+                .setMessage("Do you want to exit the application?")
+                .setPositiveButton("Yes") { _, _ ->
+                    moveTaskToBack(true)
+                    exitProcess(1)
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                    showToast(this, "Sleep timer is resetted")
+                    isTimerOn = false
+                    timer?.cancel()
+                }
+                .setCancelable(false)
+                .create()
+                .show()
+        }
+    }
+
 
     private fun initializeLayout() {
         when (intent.getStringExtra("class")) {

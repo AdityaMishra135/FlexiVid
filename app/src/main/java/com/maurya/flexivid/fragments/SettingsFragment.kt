@@ -58,7 +58,7 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view = fragmentSettingsBinding.root
 
-        sharedPreferencesHelper = SharedPreferenceHelper((requireContext()))
+        sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
 
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
