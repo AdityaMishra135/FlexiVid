@@ -351,38 +351,44 @@ class PlayerActivity : AppCompatActivity() {
 
             }
 
+
             bindingPopUp.speedPopUp.setOnClickListener {
                 dialog.dismiss()
 
-                val speedOptions =
-                    arrayOf("0.25x", "0.50x", "1.0x", "1.25x", "1.50x", "1.75x", "2.0x")
+                val speedOptions = arrayOf("0.25x", "0.50x", "0.75x", "1.0x", "1.25x", "1.50x", "1.75x", "2.0x")
 
                 val popUpDialogSpeed = LayoutInflater.from(this)
                     .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
                 val bindingSpeed = PopupVideoSpeedBinding.bind(popUpDialogSpeed)
 
                 bindingSpeed.speedSlider.valueFrom = 0f
-                bindingSpeed.speedSlider.valueTo = speedOptions.size.toFloat()
+                bindingSpeed.speedSlider.valueTo = speedOptions.size - 1.toFloat()
 
                 bindingSpeed.speedSlider.setLabelFormatter { value ->
                     speedOptions[value.toInt()]
                 }
 
-                bindingSpeed.speedSlider.value = 2f
+                bindingSpeed.speedSlider.value = 3f // Default speed: 1.0x
+
+                bindingSpeed.speedSlider.addOnChangeListener { _, value, fromUser ->
+                    if (fromUser) {
+                        val selectedSpeedIndex = value.toInt()
+                        val selectedSpeed = speedOptions[selectedSpeedIndex]
+                        player.setPlaybackSpeed(selectedSpeed.substringBefore("x").toFloat())
+                        showToast(this, "Selected playback speed: $selectedSpeed")
+                    }
+                }
 
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Playback Speed")
                     .setView(popUpDialogSpeed)
-                    .setPositiveButton("Set") { self, _ ->
-                        val selectedSpeedIndex = bindingSpeed.speedSlider.value.toInt()
-                        val selectedSpeed = speedOptions[selectedSpeedIndex]
-                        showToast(this, "Selected playback speed: $selectedSpeed")
-                        self.dismiss()
+                    .setNegativeButton("Close") { dialog, _ ->
+                        dialog.dismiss()
                     }
                     .create()
                     .show()
-
             }
+
 
 
 
