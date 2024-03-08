@@ -5,30 +5,23 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
-import android.provider.MediaStore.*
-import android.provider.MediaStore.Video.*
 import android.provider.MediaStore.Video.Media.*
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.documentfile.provider.DocumentFile
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity.Companion.folderList
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
-import com.maurya.flexivid.fragments.VideosFragment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -165,6 +158,50 @@ suspend fun getAllVideos(
 
         return@withContext tempList
     }
+
+
+
+ fun showTrackSelectionDialog(
+     context: Context,
+     trackSelector: DefaultTrackSelector,
+     title: String,
+     options: Array<CharSequence?>,
+     isAudioTrack: Boolean,
+     trackLanguages: List<Pair<String?, String?>>
+) {
+    MaterialAlertDialogBuilder(context)
+        .setTitle(title)
+        .setItems(options) { _, position ->
+            val parameters = trackSelector.buildUponParameters()
+            if (position == 0) {
+                showToast(context, "${title.split(" ")[0]} Disabled")
+                for (rendererIndex in 0 until PlayerActivity.player.rendererCount) {
+                    if (isAudioTrack && PlayerActivity.player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO ||
+                        !isAudioTrack && PlayerActivity.player.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT
+                    ) {
+                        parameters.setRendererDisabled(rendererIndex, true)
+                    }
+                }
+            } else {
+                val selectedLanguage = trackLanguages[position - 1].second
+                showToast(context, "$selectedLanguage Selected")
+                for (rendererIndex in 0 until PlayerActivity.player.rendererCount) {
+                    if (isAudioTrack && PlayerActivity.player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO ||
+                        !isAudioTrack && PlayerActivity.player.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT
+                    ) {
+                        parameters.setRendererDisabled(rendererIndex, false)
+                    }
+                }
+                if (!isAudioTrack) {
+                    parameters.setPreferredTextLanguage(selectedLanguage)
+                } else {
+                    parameters.setPreferredAudioLanguage(selectedLanguage)
+                }
+            }
+            trackSelector.setParameters(parameters)
+        }
+        .show()
+}
 
 
 fun getVideosFromFolderPath(context: Context, folderId: String): ArrayList<VideoDataClass> {

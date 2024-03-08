@@ -3,7 +3,6 @@ package com.maurya.flexivid.activity
 import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.PictureInPictureParams
-import android.app.PictureInPictureUiState
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -11,54 +10,41 @@ import android.content.res.Configuration
 import android.media.MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
-import android.os.Build
 import android.os.Build.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer.Builder
-import com.google.android.exoplayer2.source.TrackGroup
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
-import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
-import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
-import com.maurya.flexivid.databinding.ActivityFolderBinding
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupAudioBoosterBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
-import com.maurya.flexivid.fragments.VideosFragment
 import com.maurya.flexivid.util.OnDoubleClickListener
 import com.maurya.flexivid.util.getPathFromURI
-import com.maurya.flexivid.util.getVideosFromFolderPath
 import com.maurya.flexivid.util.showToast
+import com.maurya.flexivid.util.showTrackSelectionDialog
 import java.io.File
 import java.util.Locale
 import java.util.Timer
@@ -264,7 +250,6 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         activityPlayerBinding.menuPlayerActivity.setOnClickListener {
-            pauseVideo()
             val popUpDialog = LayoutInflater.from(this)
                 .inflate(R.layout.popup_more_features, activityPlayerBinding.root, false)
             val bindingPopUp = PopupMoreFeaturesBinding.bind(popUpDialog)
@@ -275,52 +260,75 @@ class PlayerActivity : AppCompatActivity() {
                     }
                     .create()
 
-
             dialog.show()
+
+            val audioLanguages = ArrayList<Pair<String?, String?>>()
+            val subtitleLanguages = ArrayList<Pair<String?, String?>>()
+
+            for (i in 0 until player.currentTrackGroups.length) {
+                val trackGroup = player.currentTrackGroups[i]
+                for (j in 0 until trackGroup.length) {
+                    val format = trackGroup.getFormat(j)
+                    val mimeType = format.sampleMimeType
+                    val language = format.language
+                    val id = format.id
+                    if (mimeType?.contains("audio") == true && id != null && language != null) {
+                        audioLanguages.add(Pair(id, language))
+                    } else if (mimeType?.contains("text") == true && id != null && language != null) {
+                        subtitleLanguages.add(Pair(id, language))
+                    }
+                }
+            }
+
+            val audioNames = audioLanguages.mapIndexed { index, pair ->
+                "Audio Track #${index + 1} ${pair.second}"
+            }.toTypedArray()
+
+            val subtitleNames = subtitleLanguages.mapIndexed { index, pair ->
+                "Subtitle Track #${index + 1} ${pair.second}"
+            }.toTypedArray()
 
             bindingPopUp.subtitlePopUp.setOnClickListener {
                 dialog.dismiss()
-                playVideo()
 
-                val subtitleTracks = ArrayList<String>()
-                subtitleTracks.add("Subtitle Off")
-
-                for (i in 0 until player.currentTrackGroups.length) {
-                    if (player.currentTrackGroups.get(i)
-                            .getFormat(0).sampleMimeType == MimeTypes.TEXT_VTT
-                    ) {
-                        subtitleTracks.add(
-                            Locale(
-                                player.currentTrackGroups.get(i).getFormat(0).language.toString()
-                            ).displayLanguage
-                        )
-                    }
+                val subtitleOptions = arrayOfNulls<CharSequence>(subtitleNames.size + 1)
+                subtitleOptions[0] = "Disable Subtitle"
+                for (i in subtitleNames.indices) {
+                    subtitleOptions[i + 1] = subtitleNames[i]
                 }
 
-                val tempTracks = subtitleTracks.toTypedArray<CharSequence>()
+                showTrackSelectionDialog(
+                    this,
+                    trackSelector,
+                    "Select Subtitle Track",
+                    subtitleOptions,
+                    false,
+                    subtitleLanguages
+                )
 
-                MaterialAlertDialogBuilder(this, R.style.PopUpWindowStyle)
-                    .setTitle("Select Subtitle Track")
-                    .setItems(tempTracks) { _, position ->
-                        if (position == 0) {
-                            trackSelector.setParameters(
-                                trackSelector.buildUponParameters().clearSelectionOverrides()
-                            )
-                            showToast(this, "Subtitles Off")
-                        } else {
-                            showToast(this, subtitleTracks[position] + " Selected")
-                            trackSelector.setParameters(
-                                trackSelector.buildUponParameters()
-                                    .setPreferredTextLanguage(subtitleTracks[position])
-                            )
-                        }
-                    }
-                    .setOnCancelListener {
-                        playVideo()
-                    }
-                    .create()
-                    .show()
+
             }
+
+            bindingPopUp.audioTracksPopUp.setOnClickListener {
+                dialog.dismiss()
+
+                val audioOptions = arrayOfNulls<CharSequence>(audioNames.size + 1)
+                audioOptions[0] = "Disable Audio"
+                for (i in audioNames.indices) {
+                    audioOptions[i + 1] = audioNames[i]
+                }
+
+                showTrackSelectionDialog(
+                    this,
+                    trackSelector,
+                    "Select Audio Track",
+                    audioOptions,
+                    true,
+                    audioLanguages
+                )
+            }
+
+
 
             bindingPopUp.audioBoosterPopUp.setOnClickListener {
                 dialog.dismiss()
@@ -341,65 +349,6 @@ class PlayerActivity : AppCompatActivity() {
                     loudnessEnhancer.setTargetGain(it * 100)
                 }
 
-            }
-
-            bindingPopUp.audioTracksPopUp.setOnClickListener {
-                dialog.dismiss()
-
-                val audioLanguages = ArrayList<Pair<String?, String?>>()
-
-                for (i in 0 until player.currentTrackGroups.length) {
-                    val trackGroup = player.currentTrackGroups[i]
-                    for (j in 0 until trackGroup.length) {
-                        val format = trackGroup.getFormat(j)
-                        val mimeType = format.sampleMimeType
-                        val language = format.language
-                        val id = format.id
-                        if (mimeType?.contains("audio") == true && id != null && language != null) {
-                            audioLanguages.add(Pair(id, language))
-                        }
-                    }
-                }
-
-                val languageNames = audioLanguages.mapIndexed { index, pair ->
-                    "Audio Track #${index + 1} ${pair.second}"
-                }.toTypedArray()
-
-                val audioOptions = arrayOfNulls<CharSequence>(languageNames.size + 1)
-                audioOptions[0] = "Disable Audio"
-                for (i in languageNames.indices) {
-                    audioOptions[i + 1] = languageNames[i]
-                }
-
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Select Audio Track")
-                    .setItems(audioOptions) { _, position ->
-                        if (position == 0) {
-                            showToast(this, "Audio Disabled")
-                            val parameters = trackSelector.buildUponParameters()
-                            for (rendererIndex in 0 until player.rendererCount) {
-                                if (player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
-                                    parameters.setRendererDisabled(rendererIndex, true)
-                                }
-                            }
-                            trackSelector.setParameters(parameters)
-                        } else {
-                            val selectedLanguage = audioLanguages[position - 1].second
-                            showToast(this, "$selectedLanguage Selected")
-                            val parameters = trackSelector.buildUponParameters()
-                            for (rendererIndex in 0 until player.rendererCount) {
-                                if (player.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
-                                    parameters.setRendererDisabled(rendererIndex, false)
-                                }
-                            }
-                            trackSelector.setParameters(
-                                parameters.setPreferredAudioLanguage(selectedLanguage)
-                            )
-                        }
-                    }
-                    .show()
-
-                Log.d("trackGroup", "Track groups length: ${player.currentTrackGroups.length}")
             }
 
             bindingPopUp.speedPopUp.setOnClickListener {
@@ -479,7 +428,6 @@ class PlayerActivity : AppCompatActivity() {
 
 
             bindingPopUp.pipPopUp.setOnClickListener {
-                activityPlayerBinding.playerViewPlayerActivity.hideController()
                 activityPlayerBinding.topController.visibility = View.GONE
                 activityPlayerBinding.bottomController.visibility = View.GONE
 
