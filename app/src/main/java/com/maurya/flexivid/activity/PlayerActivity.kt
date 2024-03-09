@@ -465,7 +465,7 @@ class PlayerActivity : AppCompatActivity() {
             bindingPopUp.pipPopUp.setOnClickListener {
                 activityPlayerBinding.topController.visibility = View.GONE
                 activityPlayerBinding.bottomController.visibility = View.GONE
-                activityPlayerBinding.playPausePlayerActivity.visibility=View.GONE
+                activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
 
 
                 val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
@@ -500,7 +500,6 @@ class PlayerActivity : AppCompatActivity() {
             }
 
         }
-
 
     }
 
