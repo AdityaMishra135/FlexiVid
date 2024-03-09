@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -38,21 +39,16 @@ import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.R
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
-import com.maurya.flexivid.databinding.PopupAudioSpeedBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.util.OnDoubleClickListener
-import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getPathFromURI
 import com.maurya.flexivid.util.showToast
 import com.maurya.flexivid.util.showTrackSelectionDialog
-import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlin.system.exitProcess
 
 
@@ -62,6 +58,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var trackSelector: DefaultTrackSelector
     private lateinit var loudnessEnhancer: LoudnessEnhancer
+    private lateinit var mediaSession: MediaSessionCompat
+
 
     private var timer: Timer? = null
 
@@ -77,6 +75,7 @@ class PlayerActivity : AppCompatActivity() {
 
         //speed
         var lastSpeedIndex: Int = 3
+
         var isFullScreen: Boolean = false
         var isLocked: Boolean = false
         var pipStatus: Int = 0
@@ -160,6 +159,31 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         listeners()
+
+
+        //for pip Mode to setup Control in pip Mode
+        mediaSession = MediaSessionCompat(this, "YourMediaSessionTag")
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        val callback = object : MediaSessionCompat.Callback() {
+            override fun onPlay() {
+                player.play()
+            }
+
+            override fun onPause() {
+                player.pause()
+            }
+
+            override fun onSkipToNext() {
+                nextPrevVideo(true)
+            }
+
+            override fun onSkipToPrevious() {
+                nextPrevVideo(false)
+            }
+        }
+
+        mediaSession.setCallback(callback)
+        mediaSession.isActive = true
 
     }
 
@@ -416,8 +440,8 @@ class PlayerActivity : AppCompatActivity() {
                 dialog.dismiss()
 
                 val popUpDialogBooster = LayoutInflater.from(this)
-                    .inflate(R.layout.popup_audio_speed, activityPlayerBinding.root, false)
-                val bindingPopUpBooster = PopupAudioSpeedBinding.bind(popUpDialogBooster)
+                    .inflate(R.layout.popup_video_speed, activityPlayerBinding.root, false)
+                val bindingPopUpBooster = PopupVideoSpeedBinding.bind(popUpDialogBooster)
 
                 bindingPopUpBooster.speedSlider.valueFrom = 0f
                 bindingPopUpBooster.speedSlider.valueTo = 100f
@@ -437,12 +461,12 @@ class PlayerActivity : AppCompatActivity() {
 
             }
 
-
-
-
+            //for pip Mode
             bindingPopUp.pipPopUp.setOnClickListener {
                 activityPlayerBinding.topController.visibility = View.GONE
                 activityPlayerBinding.bottomController.visibility = View.GONE
+                activityPlayerBinding.playPausePlayerActivity.visibility=View.GONE
+
 
                 val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
                 val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -474,7 +498,6 @@ class PlayerActivity : AppCompatActivity() {
                     playVideo()
                 }
             }
-
 
         }
 
@@ -733,6 +756,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         player.pause()
+        mediaSession.release()
 
     }
 
