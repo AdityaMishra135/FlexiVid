@@ -696,7 +696,6 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
-
     private fun nextPrevVideo(isNext: Boolean = true) {
 
 //        if (!repeat){

@@ -36,8 +36,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="30dp"
             android:padding="7dp"
-            android:src="@drawable/icon_theme"
-            app:tint="?attr/themeColor" />
+            android:src="@drawable/icon_theme" />
 
         <TextView
             android:id="@+id/darkModeText"
