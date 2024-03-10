@@ -120,7 +120,7 @@ class SettingsFragment : Fragment() {
                 .show()
 
             when (uiIndex) {
-                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_circle)
                 1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
                 2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
                 3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
@@ -133,6 +133,10 @@ class SettingsFragment : Fragment() {
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(0)
+
+
+
+
             }
 
             bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {

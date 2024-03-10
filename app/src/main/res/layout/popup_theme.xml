@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="10dp"
     android:paddingVertical="20dp">
 
     <TextView
@@ -15,7 +14,7 @@
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="15dp"
         android:fontFamily="@font/font_title"
-        android:text="Select Theme"
+        android:text="Select Skin"
         android:textColor="@color/ImageViewAndTextViewColour"
         android:textSize="20sp" />
 
@@ -27,7 +26,7 @@
         android:orientation="horizontal">
 
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeLightGreenPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -37,7 +36,7 @@
             android:tint="@color/light_green" />
 
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeYellowPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -46,7 +45,7 @@
             android:src="@drawable/icon_circle"
             android:tint="@color/yellow" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeLightBluePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -62,10 +61,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeLightRedPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -74,7 +73,7 @@
             android:src="@drawable/icon_circle"
             android:tint="@color/light_red" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themePinkPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -83,7 +82,7 @@
             android:src="@drawable/icon_circle"
             android:tint="@color/pink" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themePurplePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -100,10 +99,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeLightOrangePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -112,7 +111,7 @@
             android:src="@drawable/icon_circle"
             android:tint="@color/light_orange" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeBluePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -121,7 +120,7 @@
             android:src="@drawable/icon_circle"
             android:tint="@color/deep_blue" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/themeLightBrownPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
