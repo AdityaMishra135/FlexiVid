@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PopUpWindowStyle"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingHorizontal="10dp"
     android:paddingVertical="20dp">
 
     <TextView
@@ -18,27 +19,30 @@
         android:textColor="@color/ImageViewAndTextViewColour"
         android:textSize="20sp" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="30dp"
         android:orientation="horizontal">
 
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeLightGreenPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="5dp"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_green" />
+
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeYellowPopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="5dp"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/yellow" />
 
@@ -46,8 +50,8 @@
             android:id="@+id/themeLightBluePopUpTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="5dp"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_blue" />
 
@@ -56,7 +60,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
@@ -64,24 +68,27 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeLightRedPopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_red" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themePinkPopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/pink" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themePurplePopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/purple" />
 
@@ -91,7 +98,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
@@ -99,24 +106,27 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeLightOrangePopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_orange" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeBluePopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/deep_blue" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/themeLightBrownPopUpTheme"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="7dp"
             android:src="@drawable/icon_circle"
             android:tint="@color/light_brown" />
 
