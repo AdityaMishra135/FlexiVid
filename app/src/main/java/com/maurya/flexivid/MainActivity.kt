@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        navController.navigate(R.id.videosFragment)
-//        navController.navigate(R.id.settingsFragment)
+//        navController.navigate(R.id.videosFragment)
+        navController.navigate(R.id.settingsFragment)
 
 
         binding.bottomNavMainActivity.setOnItemSelectedListener {
@@ -74,22 +74,16 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
 //            videoList= getAllVideos(applicationContext,20,0)
-            videoList= getAllVideos(applicationContext)
+            videoList = getAllVideos(applicationContext)
         }
 
-        Log.d("FileData", videoList.size.toString())
-
-
-//
-//        setTheme(sharedPreferencesHelper.getUiColor())
+        setTheme(sharedPreferencesHelper.getUiColor())
     }
 
 
     fun visibilityBottomNav(visible: Boolean) {
         if (!visible) {
             binding.bottomNavMainActivity.visibility = View.VISIBLE
-
-
         } else {
             binding.bottomNavMainActivity.visibility = View.GONE
         }
@@ -181,8 +175,6 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .show()
     }
-
-
 
 
 }

@@ -64,7 +64,7 @@ class SettingsFragment : Fragment() {
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
         themeIndex = sharedPreferencesHelper.getUiColor()
-        requireContext().theme.applyStyle(customThemeList[themeIndex], true)
+
 
         listeners()
         return view
@@ -108,39 +108,39 @@ class SettingsFragment : Fragment() {
             }
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 0)
+                sharedPreferencesHelper.saveUiColor(0)
             }
 
             bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 1)
+                sharedPreferencesHelper.saveUiColor(1)
             }
 
             bindingCustomTheme.themeLightBluePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 2)
+                sharedPreferencesHelper.saveUiColor(2)
             }
 
             bindingCustomTheme.themeLightRedPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 3)
+                sharedPreferencesHelper.saveUiColor(3)
             }
 
             bindingCustomTheme.themePinkPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 4)
+                sharedPreferencesHelper.saveUiColor(4)
             }
 
             bindingCustomTheme.themePurplePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 5)
+                sharedPreferencesHelper.saveUiColor(5)
             }
 
             bindingCustomTheme.themeLightOrangePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 6)
+                sharedPreferencesHelper.saveUiColor(6)
             }
 
             bindingCustomTheme.themeBluePopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 7)
+                sharedPreferencesHelper.saveUiColor(7)
             }
 
             bindingCustomTheme.themeLightBrownPopUpTheme.setOnClickListener {
-                sharedPreferencesHelper.saveUiColor(requireActivity(), 8)
+                sharedPreferencesHelper.saveUiColor(8)
             }
 
 

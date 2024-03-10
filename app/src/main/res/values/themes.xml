@@ -46,6 +46,7 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+
     // custom theme
     <attr name="themeColor" format="color" />
 
