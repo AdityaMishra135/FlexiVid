@@ -7,7 +7,6 @@
 
     <color name="red">#BD0404</color>
 
-
     <!--   custom theme color-->
     <color name="light_green">#7CFF5F</color>
     <color name="light_red">#FF4D4D</color>
@@ -36,6 +35,8 @@
     <color name="UploadBackgroundColour">#FFFFFF</color>
 
     <color name="StatusBarColour">@color/statusBarLight</color>
+
+    <color name="SplashColour">@color/statusBarLight</color>
 
     <color name="ViewColor">#EAE0E0</color>
 

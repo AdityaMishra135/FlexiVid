@@ -1,11 +1,8 @@
 package com.maurya.flexivid.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -19,14 +16,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.R
 import com.maurya.flexivid.databinding.FragmentSettingsBinding
 import com.maurya.flexivid.databinding.PopupAboutDialogBinding
 import com.maurya.flexivid.databinding.PopupThemeBinding
 import com.maurya.flexivid.util.SharedPreferenceHelper
+import com.maurya.flexivid.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.system.exitProcess
 
 
 @AndroidEntryPoint
@@ -36,24 +36,10 @@ class SettingsFragment : Fragment() {
 
     private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
 
-    private val colorList = listOf(
-        R.color.light_green,
-        R.color.yellow,
-        R.color.light_blue,
-        R.color.light_red,
-        R.color.pink,
-        R.color.purple,
-        R.color.light_orange,
-        R.color.deep_blue,
-        R.color.light_brown
-    )
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
-    companion object {
-        var uiIndex: Int = 0
-    }
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -68,26 +54,16 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        uiIndex = sharedPreferencesHelper.getUiColor()
-        if (uiIndex != -1) {
-            fragmentSettingsBinding.modeImage.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    colorList[uiIndex]
-                ), PorterDuff.Mode.SRC_ATOP
-            )
-        } else {
-            fragmentSettingsBinding.modeImage.setBackgroundColor(R.color.ImageViewAndTextViewColour)
-        }
-
         listeners()
+
+
         return view
+
     }
 
     private fun listeners() {
 
+        //Theme
         fragmentSettingsBinding.themeLayout.setOnClickListener {
             var checkedTheme = sharedPreferencesHelper.theme
             val dialog = MaterialAlertDialogBuilder(requireContext())
@@ -107,20 +83,34 @@ class SettingsFragment : Fragment() {
                 .setCancelable(false)
                 .show()
 
+            dialog.setCanceledOnTouchOutside(true)
+
             dialog.setOnDismissListener {
                 dialog.dismiss()
             }
         }
 
+        //Ui Skin
         fragmentSettingsBinding.uiSkinLayout.setOnClickListener {
+            showToast(requireContext(), "Feature Coming Soon...")
+
+            /*
             val customView = layoutInflater.inflate(R.layout.popup_theme, null)
             val bindingCustomTheme = PopupThemeBinding.bind(customView)
-            MaterialAlertDialogBuilder(requireContext()).setView(customView)
+
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(customView)
                 .create()
-                .show()
+
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.show()
+
+uiIndex = sharedPreferencesHelper.getUiColor()
 
             when (uiIndex) {
-                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_circle)
+                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_circle)
+
                 1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
                 2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
                 3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
@@ -133,48 +123,56 @@ class SettingsFragment : Fragment() {
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(0)
-
-
-
-
+////                requireActivity().recreate()
+//                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeYellowPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(1)
+//                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeLightBluePopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(2)
+//                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeLightRedPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(3)
+//                restartApp(requireContext())
             }
 
             bindingCustomTheme.themePinkPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(4)
+//                restartApp(requireContext())
             }
 
             bindingCustomTheme.themePurplePopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(5)
+                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeLightOrangePopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(6)
+                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeBluePopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(7)
+                restartApp(requireContext())
             }
 
             bindingCustomTheme.themeLightBrownPopUpTheme.setOnClickListener {
                 sharedPreferencesHelper.saveUiColor(8)
+                restartApp(requireContext())
             }
 
 
+             */
+
         }
 
-
+        //About
         fragmentSettingsBinding.aboutLayout.setOnClickListener {
             val popUpDialog = LayoutInflater.from(requireContext())
                 .inflate(R.layout.popup_about_dialog, fragmentSettingsBinding.root, false)
@@ -224,6 +222,7 @@ class SettingsFragment : Fragment() {
 
         }
 
+        //Feedback
         fragmentSettingsBinding.feedbackLayout.setOnClickListener {
             val websiteUrl =
                 "https://github.com/notrealmaurya"
@@ -231,6 +230,7 @@ class SettingsFragment : Fragment() {
             startActivity(intent)
         }
 
+        //Exit App
         fragmentSettingsBinding.exitLayout.setOnClickListener {
             requireActivity().finish()
         }

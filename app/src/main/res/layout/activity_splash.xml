@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/StatusBarColour"
+    android:background="@color/SplashColour"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".activity.SplashActivity">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lotteView"
-        android:layout_width="150dp"
-        android:layout_height="220dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="40dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
+        android:scaleType="center"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="splash.json"
+        app:lottie_fileName="splash1.json"
         app:lottie_loop="true" />
 
 

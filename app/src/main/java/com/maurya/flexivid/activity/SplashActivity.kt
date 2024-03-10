@@ -41,11 +41,9 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             },
-//            2250
-            2
+            2250
+
         )
 
-
-        setTheme(sharedPreferencesHelper.getUiColor())
     }
 }

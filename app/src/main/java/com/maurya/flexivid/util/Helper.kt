@@ -1,7 +1,10 @@
 package com.maurya.flexivid.util
 
+import android.R
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -9,6 +12,7 @@ import android.provider.MediaStore.Video.Media.*
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,6 +28,8 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlin.system.exitProcess
+
 
 const val MAX_VIDEO_COUNT = 100
 fun showToast(context: Context, message: String) {
@@ -160,14 +166,13 @@ suspend fun getAllVideos(
     }
 
 
-
- fun showTrackSelectionDialog(
-     context: Context,
-     trackSelector: DefaultTrackSelector,
-     title: String,
-     options: Array<CharSequence?>,
-     isAudioTrack: Boolean,
-     trackLanguages: List<Pair<String?, String?>>
+fun showTrackSelectionDialog(
+    context: Context,
+    trackSelector: DefaultTrackSelector,
+    title: String,
+    options: Array<CharSequence?>,
+    isAudioTrack: Boolean,
+    trackLanguages: List<Pair<String?, String?>>
 ) {
     MaterialAlertDialogBuilder(context)
         .setTitle(title)
@@ -274,7 +279,8 @@ fun getFormattedDate(lastModified: String): String {
     val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
     return sdf.format(Date(lastModified))
 }
-fun getPathFromURI(context: Context , uri : Uri): String {
+
+fun getPathFromURI(context: Context, uri: Uri): String {
     var filePath = ""
     // ExternalStorageProvider
     val docId = DocumentsContract.getDocumentId(uri)
@@ -326,3 +332,29 @@ fun sendIntent(context: Context, position: Int, reference: String) {
     intent.putExtra("class", reference)
     ContextCompat.startActivity(context, intent, null)
 }
+
+
+
+
+//Ui SKin
+/*
+fun tintDrawable(context: Context, drawableResId: Int, colorResId: Int): Drawable? {
+    val drawable = ContextCompat.getDrawable(context, drawableResId)
+    drawable?.let {
+        val wrappedDrawable = DrawableCompat.wrap(it)
+        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, colorResId))
+        return wrappedDrawable
+    }
+    return null
+}
+
+fun restartApp(context: Context) {
+    val packageName = context.packageName
+    val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+    if (launchIntent != null) {
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(launchIntent)
+        android.os.Process.killProcess(android.os.Process.myPid())
+    }
+}
+*/

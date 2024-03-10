@@ -35,16 +35,19 @@
             android:launchMode="singleTask"
             android:theme="@style/playerActivityTheme"
             tools:ignore="DiscouragedApi" />
+
         <activity
             android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

@@ -30,13 +30,6 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
 
-    fun saveUiColor(color: Int) {
-        sharedPreferences.edit().putInt("view_color", color).apply()
-    }
-
-    fun getUiColor(): Int {
-        return sharedPreferences.getInt("view_color", -1)
-    }
 
     fun saveSortingOrder(sortingOrder: String) {
         sharedPreferences.edit().putString("sorting_order", sortingOrder).apply()
@@ -46,5 +39,28 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         return sharedPreferences.getString("sorting_order", null)
     }
 
+
+
+    //Ui SKin
+    /*
+    val colorList = listOf(
+        R.color.light_green,
+        R.color.yellow,
+        R.color.light_blue,
+        R.color.light_red,
+        R.color.pink,
+        R.color.purple,
+        R.color.light_orange,
+        R.color.deep_blue,
+        R.color.light_brown
+    )
+    fun saveUiColor(color: Int) {
+        sharedPreferences.edit().putInt("view_color", color).apply()
+    }
+
+    fun getUiColor(): Int {
+        return sharedPreferences.getInt("view_color", -1)
+    }
+     */
 }
 

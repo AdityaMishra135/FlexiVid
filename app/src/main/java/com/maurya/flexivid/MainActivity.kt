@@ -2,8 +2,10 @@ package com.maurya.flexivid
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +16,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -24,7 +27,6 @@ import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -33,8 +35,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
-//    @Inject
-//    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
+    //    @Inject
+    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
@@ -48,12 +50,40 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        sharedPreferencesHelper = SharedPreferenceHelper(this)
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
         navController.navigate(R.id.videosFragment)
 //        navController.navigate(R.id.settingsFragment)
+
+
+        //ui skin
+        /*
+        val drawableIds = arrayOf(
+            R.drawable.icon_theme,
+            R.drawable.icon_ui_skin,
+            R.drawable.icon_feedback,
+            R.drawable.icon_about,
+            R.drawable.icon_video,
+            R.drawable.icon_folder,
+            R.drawable.icon_settings,
+            R.drawable.icon_rightarrow,
+            R.drawable.icon_exit,
+        )
+
+        drawableIds.forEachIndexed { _, drawableId ->
+            tintDrawable(
+                this,
+                drawableId,
+                sharedPreferencesHelper.colorList[sharedPreferencesHelper.getUiColor()]
+            )
+        }
+        */
+
 
 
         binding.bottomNavMainActivity.setOnItemSelectedListener {
