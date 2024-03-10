@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.R
 import com.maurya.flexivid.databinding.FragmentSettingsBinding
@@ -32,23 +33,23 @@ class SettingsFragment : Fragment() {
 
     private val themeList = arrayOf("Light Mode", "Dark Mode", "Auto")
 
-    private val customThemeList = arrayOf(
-        R.style.themeLightGreen,
-        R.style.themeYellow,
-        R.style.themeLightBlue,
-        R.style.themeLightRed,
-        R.style.themePink,
-        R.style.themePurple,
-        R.style.themeLightOrange,
-        R.style.themeBlue,
-        R.style.themeLightBrown
+    private val colorList = listOf(
+        R.color.light_green,
+        R.color.yellow,
+        R.color.light_blue,
+        R.color.light_red,
+        R.color.pink,
+        R.color.purple,
+        R.color.light_orange,
+        R.color.deep_blue,
+        R.color.light_brown
     )
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
-        var themeIndex: Int = 0
+        var uiIndex: Int = 0
     }
 
     override fun onCreateView(
@@ -63,8 +64,12 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
-        themeIndex = sharedPreferencesHelper.getUiColor()
-
+        uiIndex = sharedPreferencesHelper.getUiColor()
+        if (uiIndex != -1) {
+            fragmentSettingsBinding.modeImage.setBackgroundColor(ContextCompat.getColor(requireContext(), colorList[uiIndex]))
+        }else{
+            fragmentSettingsBinding.modeImage.setBackgroundColor(Color.BLUE)
+        }
 
         listeners()
         return view
@@ -103,7 +108,7 @@ class SettingsFragment : Fragment() {
                 .create()
                 .show()
 
-            when (themeIndex) {
+            when (uiIndex) {
                 in 0..8 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
             }
 

@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
-    @Inject
-    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
+//    @Inject
+//    lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
@@ -48,13 +48,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-//        navController.navigate(R.id.videosFragment)
-        navController.navigate(R.id.settingsFragment)
+        navController.navigate(R.id.videosFragment)
+//        navController.navigate(R.id.settingsFragment)
 
 
         binding.bottomNavMainActivity.setOnItemSelectedListener {
@@ -77,7 +76,6 @@ class MainActivity : AppCompatActivity() {
             videoList = getAllVideos(applicationContext)
         }
 
-        setTheme(sharedPreferencesHelper.getUiColor())
     }
 
 

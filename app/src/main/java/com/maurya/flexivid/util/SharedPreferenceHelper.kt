@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
+import com.maurya.flexivid.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,12 +30,12 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
 
-    fun saveUiColor(themeIndex: Int) {
-        sharedPreferences.edit().putInt(keyTheme, themeIndex).apply()
+    fun saveUiColor(color: Int) {
+        sharedPreferences.edit().putInt("view_color", color).apply()
     }
 
     fun getUiColor(): Int {
-        return sharedPreferences.getInt(keyTheme, 0)
+        return sharedPreferences.getInt("view_color", -1)
     }
 
     fun saveSortingOrder(sortingOrder: String) {
