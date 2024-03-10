@@ -1,8 +1,11 @@
 package com.maurya.flexivid.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -52,6 +55,7 @@ class SettingsFragment : Fragment() {
         var uiIndex: Int = 0
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,11 +68,18 @@ class SettingsFragment : Fragment() {
         fragmentSettingsBinding.darkModeText.text =
             "Theme: ${themeList[sharedPreferencesHelper.theme]}"
 
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         uiIndex = sharedPreferencesHelper.getUiColor()
         if (uiIndex != -1) {
-            fragmentSettingsBinding.modeImage.setBackgroundColor(ContextCompat.getColor(requireContext(), colorList[uiIndex]))
-        }else{
-            fragmentSettingsBinding.modeImage.setBackgroundColor(Color.BLUE)
+            fragmentSettingsBinding.modeImage.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    colorList[uiIndex]
+                ), PorterDuff.Mode.SRC_ATOP
+            )
+        } else {
+            fragmentSettingsBinding.modeImage.setBackgroundColor(R.color.ImageViewAndTextViewColour)
         }
 
         listeners()
@@ -109,7 +120,15 @@ class SettingsFragment : Fragment() {
                 .show()
 
             when (uiIndex) {
-                in 0..8 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                0 -> bindingCustomTheme.themeLightGreenPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                1 -> bindingCustomTheme.themeYellowPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                2 -> bindingCustomTheme.themeLightBluePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                3 -> bindingCustomTheme.themeLightRedPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                4 -> bindingCustomTheme.themePinkPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                5 -> bindingCustomTheme.themePurplePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                6 -> bindingCustomTheme.themeLightOrangePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                7 -> bindingCustomTheme.themeBluePopUpTheme.setBackgroundResource(R.drawable.bg_circle)
+                8 -> bindingCustomTheme.themeLightBrownPopUpTheme.setBackgroundResource(R.drawable.bg_circle)
             }
 
             bindingCustomTheme.themeLightGreenPopUpTheme.setOnClickListener {
