@@ -11,13 +11,12 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lotteView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="220dp"
         android:layout_gravity="center"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="splash1.json"
+        app:lottie_fileName="splash.json"
         app:lottie_loop="true" />
 
 

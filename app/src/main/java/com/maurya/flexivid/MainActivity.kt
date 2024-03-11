@@ -2,10 +2,8 @@ package com.maurya.flexivid
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,26 +14,28 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
+import com.maurya.flexivid.fragments.VideosFragment
+import com.maurya.flexivid.util.OnVideoFetchListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
 
 
-    //    @Inject
+    @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
@@ -45,20 +45,17 @@ class MainActivity : AppCompatActivity() {
         var search: Boolean = false
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         sharedPreferencesHelper = SharedPreferenceHelper(this)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-
-        navController.navigate(R.id.videosFragment)
-//        navController.navigate(R.id.settingsFragment)
 
 
         //ui skin
@@ -85,6 +82,14 @@ class MainActivity : AppCompatActivity() {
         */
 
 
+        binding.bottomNavMainActivity.selectedItemId = R.id.videosBottomNav
+//        navController.navigate(R.id.videosFragment)
+
+        val videosFragment = VideosFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, videosFragment, "videosFragmentTag")
+            .commit()
+
 
         binding.bottomNavMainActivity.setOnItemSelectedListener {
             when (it.itemId) {
@@ -93,21 +98,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.settingsBottomNav -> navController.navigate(R.id.settingsFragment)
                 else -> navController.navigate(R.id.videosFragment)
             }
-
             true
         }
 
         permission()
 
-
-
         lifecycleScope.launch {
-//            videoList= getAllVideos(applicationContext,20,0)
-            videoList = getAllVideos(applicationContext)
+            videoList = getAllVideos(applicationContext, this@MainActivity)
         }
 
+        Log.d("MAinActivityItemClass", videoList.size.toString())
     }
 
+
+    override suspend fun onVideosFetched(videoList: ArrayList<VideoDataClass>) {
+        val videosFragment = supportFragmentManager.findFragmentByTag("videosFragmentTag") as? VideosFragment
+        videosFragment?.updateRecyclerView(videoList)
+        Log.d("MainItemClass", videoList.size.toString())
+    }
 
     fun visibilityBottomNav(visible: Boolean) {
         if (!visible) {
@@ -116,6 +124,7 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavMainActivity.visibility = View.GONE
         }
     }
+
 
     private fun permission() {
         if (ContextCompat.checkSelfPermission(

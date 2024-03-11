@@ -1,10 +1,7 @@
 package com.maurya.flexivid.util
 
-import android.R
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -12,14 +9,15 @@ import android.provider.MediaStore.Video.Media.*
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.folderList
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
+import com.maurya.flexivid.fragments.VideosFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -28,7 +26,6 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.pow
-import kotlin.system.exitProcess
 
 
 const val MAX_VIDEO_COUNT = 100
@@ -36,93 +33,22 @@ fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-/*
 suspend fun getAllVideos(
     context: Context,
-    pageSize: Int,
-    pageNumber: Int
+    listener: OnVideoFetchListener
 ): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
         val tempFolderList = HashSet<String>()
 
-
         val projection = arrayOf(
             _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
         )
-
         val cursor = context.contentResolver.query(
             EXTERNAL_CONTENT_URI, projection, null, null,
             "$DATE_ADDED DESC"
         )
-
-        cursor?.moveToPosition(pageNumber * pageSize)
-
-
         cursor?.use {
-            var count = 0
-            while (it.moveToNext() && count < pageSize) {
-                val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
-                val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
-                val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
-                val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
-                val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
-                val data = it.getString(it.getColumnIndexOrThrow(DATA))
-                val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
-                val folderPath = data.substringBeforeLast("/")
-                val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
-                val fileCursor = File(data)
-
-                if (fileCursor.exists()) {
-                    val imageUri = Uri.fromFile(fileCursor)
-                    val videoData = VideoDataClass(
-                        idCursor,
-                        videoNameCursor,
-                        folderNameCursor,
-                        durationCursor,
-                        videoSizeCursor,
-                        data,
-                        imageUri,
-                        dateModified
-                    )
-                    tempList.add(videoData)
-                    count++
-                } else {
-                    Log.w("getAllVideos", "File does not exist: $data")
-                }
-
-
-                if (!tempFolderList.contains(folderNameCursor)) {
-                    tempFolderList.add(folderNameCursor)
-                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
-                }
-
-            }
-        }
-
-        return@withContext tempList
-    }
-
-*/
-suspend fun getAllVideos(
-    context: Context
-): ArrayList<VideoDataClass> =
-    withContext(Dispatchers.IO) {
-        val tempList = ArrayList<VideoDataClass>()
-        val tempFolderList = HashSet<String>()
-
-
-        val projection = arrayOf(
-            _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
-        )
-
-        val cursor = context.contentResolver.query(
-            EXTERNAL_CONTENT_URI, projection, null, null,
-            "$DATE_ADDED DESC"
-        )
-
-        cursor?.use {
-            var count = 0
             while (it.moveToNext()) {
                 val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
                 val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
@@ -148,7 +74,6 @@ suspend fun getAllVideos(
                         dateModified
                     )
                     tempList.add(videoData)
-                    count++
                 } else {
                     Log.w("getAllVideos", "File does not exist: $data")
                 }
@@ -160,6 +85,8 @@ suspend fun getAllVideos(
                 }
 
             }
+            listener.onVideosFetched(tempList)
+            Log.d("HelperItemClass",tempList.size.toString())
         }
 
         return@withContext tempList
@@ -332,8 +259,6 @@ fun sendIntent(context: Context, position: Int, reference: String) {
     intent.putExtra("class", reference)
     ContextCompat.startActivity(context, intent, null)
 }
-
-
 
 
 //Ui SKin

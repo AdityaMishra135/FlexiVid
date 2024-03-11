@@ -46,15 +46,15 @@ class AdapterVideo(
             folderName.text = currentItem.folderName
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
-            holder.image.setImageResource(R.drawable.mp4)
+//            holder.image.setImageResource(R.drawable.mp4)
 
-//            Glide.with(context)
-//                .asBitmap()
-//                .load(currentItem.image)
-//                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-//                .centerCrop()
-//                .error(R.drawable.mp4)
-//                .into(image)
+            Glide.with(context)
+                .asBitmap()
+                .load(currentItem.image)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .centerCrop()
+                .error(R.drawable.mp4)
+                .into(image)
 
             root.setOnClickListener {
 
