@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/LayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".activity.PlayerActivity">
 
     <com.google.android.exoplayer2.ui.PlayerView
@@ -16,9 +16,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:keepScreenOn="true"
-        app:controller_layout_id="@layout/custom_control_player"
-
-        />
+        app:controller_layout_id="@layout/custom_control_player" />
 
     <ImageView
         android:id="@+id/lockDisablePlayerActivity"
@@ -28,8 +26,9 @@
         android:layout_marginTop="25dp"
         android:backgroundTint="@android:color/transparent"
         android:padding="12dp"
+        android:src="@drawable/icon_lock"
         android:visibility="gone"
-        android:src="@drawable/icon_lock" />
+        app:tint="#FFFFFF" />
 
     <LinearLayout
         android:id="@+id/topController"
@@ -50,6 +49,7 @@
             android:backgroundTint="@android:color/transparent"
             android:padding="15dp"
             android:src="@drawable/icon_back"
+            app:tint="#FFFFFF"
 
             />
 
@@ -65,7 +65,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:text="Video Name"
-            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"
 
             />
@@ -77,8 +77,7 @@
             android:backgroundTint="@android:color/transparent"
             android:padding="12dp"
             android:src="@drawable/icon_menu"
-
-            />
+            app:tint="#FFFFFF" />
 
         <ImageView
             android:id="@+id/lockEnablePlayerActivity"
@@ -87,7 +86,8 @@
             android:layout_marginEnd="10dp"
             android:backgroundTint="@android:color/transparent"
             android:padding="12dp"
-            android:src="@drawable/icon_unlock" />
+            android:src="@drawable/icon_unlock"
+            app:tint="#FFFFFF" />
 
 
     </LinearLayout>
@@ -114,7 +114,8 @@
             android:focusable="true"
             android:padding="11dp"
             android:src="@drawable/icon_fast_backward"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:tint="#FFFFFF" />
 
         <ImageView
             android:id="@+id/playPausePlayerActivity"
@@ -125,7 +126,8 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="12dp"
-            android:src="@drawable/icon_play" />
+            android:src="@drawable/icon_play"
+            app:tint="#FFFFFF" />
 
         <ImageView
             android:id="@+id/fastForwardPlayerActivity"
@@ -139,7 +141,7 @@
             android:padding="11dp"
             android:src="@drawable/icon_fast_forward"
             android:visibility="gone"
-            />
+            app:tint="#FFFFFF" />
 
 
     </LinearLayout>
@@ -164,6 +166,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:padding="12dp"
                 android:src="@drawable/icon_orientation"
+                app:tint="#FFFFFF"
 
                 />
 
@@ -174,6 +177,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:padding="12dp"
                 android:src="@drawable/icon_repeat"
+                app:tint="#FFFFFF"
 
                 />
 
@@ -185,6 +189,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:padding="12dp"
                 android:src="@drawable/icon_previous"
+                app:tint="#FFFFFF"
 
                 />
 
@@ -194,7 +199,8 @@
                 android:layout_height="55dp"
                 android:backgroundTint="@android:color/transparent"
                 android:padding="12dp"
-                android:src="@drawable/icon_next" />
+                android:src="@drawable/icon_next"
+                app:tint="#FFFFFF" />
 
             <ImageView
                 android:id="@+id/maximizeMinimizePlayerActivity"
@@ -203,7 +209,8 @@
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="@android:color/transparent"
                 android:padding="14dp"
-                android:src="@drawable/icon_maximize" />
+                android:src="@drawable/icon_maximize"
+                app:tint="#FFFFFF" />
 
 
         </LinearLayout>

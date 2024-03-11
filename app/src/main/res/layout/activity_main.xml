@@ -13,8 +13,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomNavMainActivity"
-        app:navGraph="@navigation/nav_graph" />
+        android:layout_above="@id/bottomNavMainActivity" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,8 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="@color/StatusBarColour"
+        android:background="@color/SplashColour"
         app:itemIconTint="@color/BottomNavigationTintColour"
+        android:elevation="10dp"
         app:itemTextAppearanceActive="@color/ImageViewAndTextViewColour"
         app:itemTextAppearanceInactive="@android:color/darker_gray"
         app:menu="@menu/bottom_nav" />

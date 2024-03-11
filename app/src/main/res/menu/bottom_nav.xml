@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/videosBottomNav"
         android:enabled="true"
         android:icon="@drawable/icon_video"
+        android:background="@drawable/bg_circle"
         android:title="Videos" />
     <item
         android:id="@+id/foldersBottomNav"
         android:enabled="true"
+        android:background="@drawable/bg_circle"
         android:icon="@drawable/icon_folder"
         android:title="Folders" />
     <item
         android:id="@+id/settingsBottomNav"
         android:enabled="true"
+        android:background="@drawable/bg_circle"
         android:icon="@drawable/icon_settings"
         android:title="Settings" />
 </menu>
