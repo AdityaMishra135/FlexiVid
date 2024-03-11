@@ -73,7 +73,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
 
-        checkProgress()
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(13)
@@ -81,7 +80,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
             adapter = adapterVideo
-
             /*
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -149,7 +147,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
     }
 
-
     private fun showSortingMenu() {
         val inflater =
             requireActivity().getSystemService(AppCompatActivity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -193,7 +190,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
 
     }
-
 
     private fun sortMusicList(sortBy: String, videoList: ArrayList<VideoDataClass>) {
         when (sortBy) {
@@ -471,7 +467,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.progressBar.visibility = View.GONE
         }
     }
-
 
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

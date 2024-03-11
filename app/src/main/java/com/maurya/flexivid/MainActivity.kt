@@ -87,40 +87,32 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 
         binding.bottomNavMainActivity.selectedItemId = R.id.videosBottomNav
 
-        val videosFragment = VideosFragment()
+        var selectedFragmentId: Int = R.id.videosBottomNav
+        var currentFragment: Fragment = VideosFragment()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, videosFragment, "videosFragmentTag")
+            .replace(R.id.nav_host_fragment, currentFragment, "videosFragmentTag")
             .commit()
 
-        var currentFragment: Fragment? = null
-
         binding.bottomNavMainActivity.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.videosBottomNav -> {
-                    if (currentFragment !is VideosFragment) {
-                        replaceFragment(VideosFragment())
-                    }
-                }
-                R.id.foldersBottomNav -> {
-                    if (currentFragment !is FoldersFragment) {
-                        replaceFragment(FoldersFragment())
-                    }
-                }
-                R.id.settingsBottomNav -> {
-                    if (currentFragment !is SettingsFragment) {
-                        replaceFragment(SettingsFragment())
-                    }
-                }
-                else -> {
-                    if (currentFragment !is VideosFragment) {
-                        replaceFragment(VideosFragment())
-                    }
-                }
+            if (selectedFragmentId == menuItem.itemId) {
+                return@setOnItemSelectedListener true
             }
+
+            selectedFragmentId = menuItem.itemId
+
+            val selectedFragment = when (menuItem.itemId) {
+                R.id.videosBottomNav -> VideosFragment()
+                R.id.foldersBottomNav -> FoldersFragment()
+                R.id.settingsBottomNav -> SettingsFragment()
+                else -> VideosFragment()
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, selectedFragment)
+                .commit()
 
             true
         }
-
 
         permission()
 
