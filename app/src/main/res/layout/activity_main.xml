@@ -18,12 +18,12 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavMainActivity"
+        style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/SplashColour"
+        android:background="@drawable/bg_bottomnav"
         app:itemIconTint="@color/BottomNavigationTintColour"
-        android:elevation="10dp"
         app:itemTextAppearanceActive="@color/ImageViewAndTextViewColour"
         app:itemTextAppearanceInactive="@android:color/darker_gray"
         app:menu="@menu/bottom_nav" />

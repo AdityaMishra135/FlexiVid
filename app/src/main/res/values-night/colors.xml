@@ -18,4 +18,6 @@
 
     <color name="BottomNavigationTintColour">#61DBFF</color>
 
+    <color name="BottomNavBgColor">#202930</color>
+
 </resources>
