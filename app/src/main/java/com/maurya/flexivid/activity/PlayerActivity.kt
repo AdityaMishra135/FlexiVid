@@ -483,7 +483,6 @@ class PlayerActivity : AppCompatActivity() {
                     if (status) {
                         this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
                         dialog.dismiss()
-                        playVideo()
                         pipStatus = 0
                     } else {
                         val intent = Intent(
@@ -495,7 +494,6 @@ class PlayerActivity : AppCompatActivity() {
                 } else {
                     showToast(this, "Feature Not Supported!!")
                     dialog.dismiss()
-                    playVideo()
                 }
             }
 
@@ -779,6 +777,5 @@ class PlayerActivity : AppCompatActivity() {
             startActivity(intent)
         }
         if (!isInPictureInPictureMode) pauseVideo()
-
     }
 }

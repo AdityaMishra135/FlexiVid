@@ -29,19 +29,19 @@
             android:name=".activity.PlayerActivity"
             android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="false"
-            android:resizeableActivity="true"
-            android:supportsPictureInPicture="true"
-            android:screenOrientation="fullSensor"
             android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:screenOrientation="sensorLandscape"
+            android:supportsPictureInPicture="true"
             android:theme="@style/playerActivityTheme"
             tools:ignore="DiscouragedApi" />
 
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -50,10 +50,11 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.FolderActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
     </application>
 
