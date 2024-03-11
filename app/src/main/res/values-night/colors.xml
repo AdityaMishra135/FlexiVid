@@ -16,4 +16,6 @@
 
     <color name="ViewColor">#4C4C4C</color>
 
+    <color name="BottomNavigationTintColour">#61DBFF</color>
+
 </resources>

@@ -14,12 +14,15 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
+import com.maurya.flexivid.fragments.FoldersFragment
+import com.maurya.flexivid.fragments.SettingsFragment
 import com.maurya.flexivid.fragments.VideosFragment
 import com.maurya.flexivid.util.OnVideoFetchListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
@@ -83,23 +86,41 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 
 
         binding.bottomNavMainActivity.selectedItemId = R.id.videosBottomNav
-//        navController.navigate(R.id.videosFragment)
 
         val videosFragment = VideosFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment, videosFragment, "videosFragmentTag")
             .commit()
 
+        var currentFragment: Fragment? = null
 
-        binding.bottomNavMainActivity.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.foldersBottomNav -> navController.navigate(R.id.foldersFragment)
-                R.id.videosBottomNav -> navController.navigate(R.id.videosFragment)
-                R.id.settingsBottomNav -> navController.navigate(R.id.settingsFragment)
-                else -> navController.navigate(R.id.videosFragment)
+        binding.bottomNavMainActivity.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.videosBottomNav -> {
+                    if (currentFragment !is VideosFragment) {
+                        replaceFragment(VideosFragment())
+                    }
+                }
+                R.id.foldersBottomNav -> {
+                    if (currentFragment !is FoldersFragment) {
+                        replaceFragment(FoldersFragment())
+                    }
+                }
+                R.id.settingsBottomNav -> {
+                    if (currentFragment !is SettingsFragment) {
+                        replaceFragment(SettingsFragment())
+                    }
+                }
+                else -> {
+                    if (currentFragment !is VideosFragment) {
+                        replaceFragment(VideosFragment())
+                    }
+                }
             }
+
             true
         }
+
 
         permission()
 
@@ -107,14 +128,19 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
             videoList = getAllVideos(applicationContext, this@MainActivity)
         }
 
-        Log.d("MAinActivityItemClass", videoList.size.toString())
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, fragment)
+            .commit()
     }
 
 
     override suspend fun onVideosFetched(videoList: ArrayList<VideoDataClass>) {
-        val videosFragment = supportFragmentManager.findFragmentByTag("videosFragmentTag") as? VideosFragment
+        val videosFragment =
+            supportFragmentManager.findFragmentByTag("videosFragmentTag") as? VideosFragment
         videosFragment?.updateRecyclerView(videoList)
-        Log.d("MainItemClass", videoList.size.toString())
     }
 
     fun visibilityBottomNav(visible: Boolean) {

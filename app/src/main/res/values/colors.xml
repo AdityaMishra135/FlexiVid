@@ -32,6 +32,8 @@
 
     <color name="ImageViewAndTextViewColour">#000000</color>
 
+    <color name="BottomNavigationTintColour">#1463FF</color>
+
     <color name="UploadBackgroundColour">#FFFFFF</color>
 
     <color name="StatusBarColour">@color/statusBarLight</color>

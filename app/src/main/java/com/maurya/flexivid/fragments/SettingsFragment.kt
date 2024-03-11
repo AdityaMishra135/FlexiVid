@@ -40,6 +40,9 @@ class SettingsFragment : Fragment() {
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
+    companion object{
+        var isInitialized:Boolean =false
+    }
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(
@@ -48,6 +51,8 @@ class SettingsFragment : Fragment() {
     ): View? {
         fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view = fragmentSettingsBinding.root
+
+        isInitialized=true
 
         sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
 
@@ -236,4 +241,9 @@ uiIndex = sharedPreferencesHelper.getUiColor()
         }
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isInitialized =false
+    }
 }

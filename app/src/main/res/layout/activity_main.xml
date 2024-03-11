@@ -23,7 +23,7 @@
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:backgroundTint="@color/StatusBarColour"
-        app:itemIconTint="#007DFA"
+        app:itemIconTint="@color/BottomNavigationTintColour"
         app:itemTextAppearanceActive="@color/ImageViewAndTextViewColour"
         app:itemTextAppearanceInactive="@android:color/darker_gray"
         app:menu="@menu/bottom_nav" />

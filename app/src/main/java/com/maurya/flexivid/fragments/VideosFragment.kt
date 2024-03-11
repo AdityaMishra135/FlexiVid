@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,22 +45,19 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class VideosFragment : Fragment(), OnItemClickListener {
-//
-//    var isLoading = false
-//    var isLastPage = false
-//    var currentPage = 1
-//    var visibleThreshold = 5
 
-    companion object {
-        lateinit var fragmentVideosBinding: FragmentVideosBinding
-        lateinit var adapterVideo: AdapterVideo
 
-    }
+    private lateinit var fragmentVideosBinding: FragmentVideosBinding
+    private lateinit var adapterVideo: AdapterVideo
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
-    private var sortingOrder: String =""
+    private var sortingOrder: String = ""
+
+    companion object{
+        var isInitialized:Boolean =false
+    }
 
 
     override fun onCreateView(
@@ -69,10 +67,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
         fragmentVideosBinding = FragmentVideosBinding.inflate(inflater, container, false)
         val view = fragmentVideosBinding.root
 
+        isInitialized=true
+
         Log.d("FragmentItemClass", videoList.size.toString())
 
         sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
 
+        checkProgress()
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(13)
@@ -144,13 +145,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
         withContext(Dispatchers.Main) {
             fragmentVideosBinding.progressBar.visibility = View.GONE
             Log.d("UpdateItemClass", videoList.size.toString())
-            sortMusicList(sortingOrder,videoList)
+            sortMusicList(sortingOrder, videoList)
         }
     }
 
 
     private fun showSortingMenu() {
-
         val inflater =
             requireActivity().getSystemService(AppCompatActivity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView = inflater.inflate(R.layout.layout_home_menu, null)
@@ -461,8 +461,17 @@ class VideosFragment : Fragment(), OnItemClickListener {
         if (PlayerActivity.position != -1) {
             fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.VISIBLE
         }
-
+        checkProgress()
     }
+
+    private fun checkProgress() {
+        if (fragmentVideosBinding.recyclerViewVideosFragment.isEmpty()) {
+            fragmentVideosBinding.progressBar.visibility = View.VISIBLE
+        } else {
+            fragmentVideosBinding.progressBar.visibility = View.GONE
+        }
+    }
+
 
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
