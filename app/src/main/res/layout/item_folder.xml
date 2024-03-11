@@ -14,8 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         android:padding="5dp"
-        android:src="@drawable/icon_folder"
-        />
+        android:src="@drawable/icon_folder" />
 
 
     <LinearLayout
@@ -31,7 +30,10 @@
             android:id="@+id/folderNameFolderItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="marquee"
             android:fontFamily="@font/font_title"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Hip Hinge"
             android:textAllCaps="false"

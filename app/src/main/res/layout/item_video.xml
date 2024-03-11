@@ -42,6 +42,9 @@
             android:fontFamily="@font/font_title"
             android:singleLine="true"
             android:text="Hip Hinge"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
             android:textAllCaps="false"
             android:textColor="@color/ImageViewAndTextViewColour"
             android:textSize="18sp" />

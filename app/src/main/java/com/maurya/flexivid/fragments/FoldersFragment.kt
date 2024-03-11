@@ -17,9 +17,6 @@ class FoldersFragment : Fragment(), OnItemClickListener {
 
     private lateinit var fragmentFoldersBinding: FragmentFoldersBinding
     private lateinit var adapterFolder: AdapterFolder
-    companion object{
-        var isInitialized:Boolean =false
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +25,6 @@ class FoldersFragment : Fragment(), OnItemClickListener {
         fragmentFoldersBinding = FragmentFoldersBinding.inflate(inflater, container, false)
         val view = fragmentFoldersBinding.root
 
-        isInitialized=true
 
         fragmentFoldersBinding.recyclerViewFoldersFragment.setHasFixedSize(true)
         fragmentFoldersBinding.recyclerViewFoldersFragment.setItemViewCacheSize(13)
@@ -40,7 +36,6 @@ class FoldersFragment : Fragment(), OnItemClickListener {
         fragmentFoldersBinding.recyclerViewFoldersFragment.adapter = adapterFolder
 
 
-
         listeners()
         return view
     }
@@ -50,10 +45,7 @@ class FoldersFragment : Fragment(), OnItemClickListener {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        isInitialized =false
-    }
+
     override fun onItemClickListener(position: Int) {
 
 

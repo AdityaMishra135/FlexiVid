@@ -26,9 +26,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:ellipsize="marquee"
             android:fontFamily="@font/font_link"
             android:gravity="center_vertical"
+            android:marqueeRepeatLimit="marquee_forever"
             android:paddingHorizontal="40dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:text="Folder Name"
             android:textAllCaps="false"
             android:textColor="@color/ImageViewAndTextViewColour"
@@ -36,28 +40,14 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.core.widget.NestedScrollView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFolderActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/topLayout"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/item_video" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewFolderActivity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:listitem="@layout/item_video" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

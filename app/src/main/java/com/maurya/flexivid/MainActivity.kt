@@ -35,7 +35,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 
-    private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
 
 
@@ -56,11 +55,6 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
         setContentView(binding.root)
 
         sharedPreferencesHelper = SharedPreferenceHelper(this)
-
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
 
         //ui skin
         /*

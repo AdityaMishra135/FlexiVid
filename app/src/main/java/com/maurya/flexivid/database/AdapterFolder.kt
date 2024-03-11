@@ -18,20 +18,22 @@ class AdapterFolder(
     private val context: Context,
     private var listener: OnItemClickListener,
     private val itemList: MutableList<FolderDataClass> = mutableListOf()
-) : RecyclerView.Adapter<AdapterFolder.DayHolder>() {
+) : RecyclerView.Adapter<AdapterFolder.FolderHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderHolder {
         val binding = ItemFolderBinding.inflate(LayoutInflater.from(context), parent, false)
 
-        return DayHolder(binding)
+        return FolderHolder(binding)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: DayHolder, position: Int) {
+    override fun onBindViewHolder(holder: FolderHolder, position: Int) {
         val currentItem = itemList[position]
 
         with(holder) {
+            folderName.isSelected = true
+
             folderName.text = currentItem.folderName
 
             val textToShow = countVideoFilesInFolder(currentItem.folderPath)
@@ -41,7 +43,6 @@ class AdapterFolder(
             } else {
                 folderItemCount.text = "$textToShow videos"
             }
-
 
             root.setOnClickListener {
                 val intent = Intent(context, FolderActivity::class.java)
@@ -60,7 +61,7 @@ class AdapterFolder(
     }
 
 
-    inner class DayHolder(binding: ItemFolderBinding) :
+    inner class FolderHolder(binding: ItemFolderBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
         val folderName = binding.folderNameFolderItem
