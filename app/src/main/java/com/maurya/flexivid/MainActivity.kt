@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -120,13 +121,21 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
             videoList = getAllVideos(applicationContext, this@MainActivity)
         }
 
+
+//        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                val fragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+//                if (fragment is VideosFragment) {
+//                    fragment.handleBackPressed()
+//                } else {
+//                    finish()
+//                }
+//            }
+//        })
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)
-            .commit()
-    }
+
+
 
 
     override suspend fun onVideosFetched(videoList: ArrayList<VideoDataClass>) {

@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isEmpty
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
+import com.maurya.flexivid.MainActivity.Companion.searchList
 import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
@@ -54,9 +56,10 @@ class VideosFragment : Fragment(), OnItemClickListener {
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     private var sortingOrder: String = ""
+    private var searchViewVisible: Boolean = false
 
-    companion object{
-        var isInitialized:Boolean =false
+    companion object {
+        var isInitialized: Boolean = false
     }
 
 
@@ -67,7 +70,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
         fragmentVideosBinding = FragmentVideosBinding.inflate(inflater, container, false)
         val view = fragmentVideosBinding.root
 
-        isInitialized=true
+        isInitialized = true
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+
 
         Log.d("FragmentItemClass", videoList.size.toString())
 
@@ -117,6 +122,19 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         }
 
+
+        sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
+
+        changeVisibility(false)
+
+        listener()
+        return view
+    }
+
+    private fun listener() {
+
+        searchVisibility(false)
+
         fragmentVideosBinding.nowPlayingVideoFragment.setOnClickListener {
             val intent = Intent(requireContext(), PlayerActivity::class.java)
             intent.putExtra("class", "nowPlaying")
@@ -132,12 +150,69 @@ class VideosFragment : Fragment(), OnItemClickListener {
             changeVisibility(false)
         }
 
-        sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
 
-        changeVisibility(false)
+        fragmentVideosBinding.searchViewImage.setOnClickListener {
+            searchVisibility(true)
+            searchViewVisible = true
+            fragmentVideosBinding.searchViewVideoFragment.requestFocus()
+            fragmentVideosBinding.searchViewVideoFragment.onActionViewExpanded()
+        }
 
-        return view
+
+        fragmentVideosBinding.searchViewVideoFragment.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = true
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchList = ArrayList()
+                if (newText != null) {
+                    val userInput = newText.lowercase()
+                    for (song in videoList) {
+                        if (song.videoName.lowercase().contains(userInput))
+                            searchList.add(song)
+                    }
+                    MainActivity.search = true
+                    adapterVideo.updateSearchList(searchList)
+                }
+                return true
+            }
+        })
+
+
+        fragmentVideosBinding.searchViewClose.setOnClickListener {
+            fragmentVideosBinding.searchViewVideoFragment.setQuery("", false)
+            searchList.clear()
+            MainActivity.search = false
+            searchVisibility(false)
+        }
+
     }
+
+    private fun searchVisibility(isVisible: Boolean) {
+        if (isVisible) {
+            fragmentVideosBinding.searchViewImage.visibility = View.GONE
+            fragmentVideosBinding.videoTitle.visibility = View.GONE
+            fragmentVideosBinding.sortingVideoFragment.visibility = View.GONE
+            fragmentVideosBinding.searchViewVideoFragment.visibility = View.VISIBLE
+            fragmentVideosBinding.searchViewClose.visibility = View.VISIBLE
+        } else {
+            fragmentVideosBinding.searchViewImage.visibility = View.VISIBLE
+            fragmentVideosBinding.videoTitle.visibility = View.VISIBLE
+            fragmentVideosBinding.sortingVideoFragment.visibility = View.VISIBLE
+            fragmentVideosBinding.searchViewVideoFragment.visibility = View.GONE
+            fragmentVideosBinding.searchViewClose.visibility = View.GONE
+
+        }
+    }
+
+    fun handleBackPressed() {
+        if (searchViewVisible) {
+            searchVisibility(false)
+            searchViewVisible = false
+        } else {
+            activity?.onBackPressed()
+        }
+    }
+
 
     suspend fun updateRecyclerView(videoList: ArrayList<VideoDataClass>) {
         withContext(Dispatchers.Main) {
