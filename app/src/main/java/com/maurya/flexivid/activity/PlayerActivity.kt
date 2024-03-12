@@ -502,6 +502,8 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun timerMainDialog() {
 
         val presetDurations = arrayOf("15 min", "30 min", "45 min", "1 hr")
@@ -760,6 +762,37 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+
+    override fun onStop() {
+        super.onStop()
+
+        val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            appOps.checkOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                android.os.Process.myUid(),
+                packageName
+            ) == AppOpsManager.MODE_ALLOWED
+        } else {
+            false
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            if (status) {
+                this.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+                pipStatus = 0
+            } else {
+                val intent = Intent(
+                    "android.settings.PICTURE_IN_PICTURE_SETTINGS",
+                    Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            }
+        } else {
+            showToast(this, "Feature Not Supported!!")
+        }
+
+    }
 
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
