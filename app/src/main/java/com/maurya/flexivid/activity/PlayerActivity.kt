@@ -16,6 +16,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -620,10 +621,13 @@ class PlayerActivity : AppCompatActivity() {
             "nowPlaying" -> {
                 playerList = ArrayList()
                 activityPlayerBinding.videoTitlePlayerActivity.text = playerList[position].videoName
-                activityPlayerBinding.playerViewPlayerActivity.player = player
                 playVideo()
                 fullScreen(enable = isFullScreen)
                 visibilityControl()
+
+                Log.d("NowPlayingClass", playerList[position].videoName)
+                Log.d("NowPlayingClass", playerList[position].folderName)
+                Log.d("NowPlayingClass", playerList[position].path)
 
             }
         }

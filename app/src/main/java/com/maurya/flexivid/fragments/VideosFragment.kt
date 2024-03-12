@@ -128,6 +128,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         changeVisibility(false)
 
         listener()
+
         return view
     }
 
@@ -139,7 +140,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
             val intent = Intent(requireContext(), PlayerActivity::class.java)
             intent.putExtra("class", "nowPlaying")
             startActivity(intent)
-
         }
 
         fragmentVideosBinding.sortingVideoFragment.setOnClickListener {
@@ -295,15 +295,11 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.topToolBarLayoutLongCLick.visibility = View.GONE
             fragmentVideosBinding.bottomToolBarLayoutLongCLick.visibility = View.GONE
             fragmentVideosBinding.videoNameLayout.visibility = View.VISIBLE
-            fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.VISIBLE
-
-
         } else {
             (activity as MainActivity).visibilityBottomNav(true)
             fragmentVideosBinding.topToolBarLayoutLongCLick.visibility = View.VISIBLE
             fragmentVideosBinding.bottomToolBarLayoutLongCLick.visibility = View.VISIBLE
             fragmentVideosBinding.videoNameLayout.visibility = View.GONE
-            fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.GONE
         }
 
     }
