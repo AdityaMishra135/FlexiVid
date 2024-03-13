@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,6 +40,7 @@ import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
+import com.maurya.flexivid.viewModelsObserver.ViewModelObserverVideoFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -58,6 +61,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
     private var sortingOrder: String = ""
     private var searchViewVisible: Boolean = false
 
+    private lateinit var viewModel: ViewModelObserverVideoFragment
+
     companion object {
         var isInitialized: Boolean = false
     }
@@ -73,8 +78,11 @@ class VideosFragment : Fragment(), OnItemClickListener {
         isInitialized = true
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
-
         Log.d("FragmentItemClass", videoList.size.toString())
+
+        viewModel = ViewModelProvider(this)[ViewModelObserverVideoFragment::class.java]
+        lifecycle.addObserver(viewModel)
+
 
         sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
 
@@ -126,6 +134,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
         sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
 
         changeVisibility(false)
+
+        viewModel.videoList.observe(viewLifecycleOwner, Observer { videos ->
+            adapterVideo.updateVideoList(videos)
+        })
+
+        viewModel.fetchVideos(requireContext())
 
         listener()
 
@@ -538,35 +552,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.progressBar.visibility = View.GONE
         }
     }
-
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.search_view, menu)
-//        val searchItem = menu.findItem(R.id.searchViewVideo)
-//        val searchView = searchItem?.actionView as SearchView?
-//
-//        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//                if (newText != null) {
-//                    MainActivity.searchList = ArrayList()
-//                    for (video in videoList) {
-//                        if (video.videoName.lowercase().contains(newText.lowercase())) {
-//                            MainActivity.searchList.add(video)
-//                        }
-//                    }
-//                    MainActivity.search = true
-//                    adapterVideo.updateSearchList(MainActivity.searchList)
-//                }
-//                return true
-//            }
-//        })
-//
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
 
 
 }

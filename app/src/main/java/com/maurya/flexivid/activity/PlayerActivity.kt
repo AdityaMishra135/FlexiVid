@@ -503,7 +503,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
 
-
     private fun timerMainDialog() {
 
         val presetDurations = arrayOf("15 min", "30 min", "45 min", "1 hr")
