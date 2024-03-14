@@ -18,6 +18,7 @@ import com.maurya.flexivid.MainActivity.Companion.folderList
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
+import com.maurya.flexivid.database.AdapterVideo
 import com.maurya.flexivid.fragments.VideosFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -147,6 +148,27 @@ suspend fun getVideosFromFolderPath(
 
         return@withContext tempList
     }
+
+
+//sorting Video List
+ fun sortMusicList(
+    sortBy: String,
+    videoList: ArrayList<VideoDataClass>,
+    adapterVideo: AdapterVideo
+) {
+    when (sortBy) {
+        "DATE_ADDED ASC" -> videoList.sortBy { it.dateModified }
+        "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
+        "SIZE ASC" -> videoList.sortBy { it.durationText }
+        "SIZE DESC" -> videoList.sortByDescending { it.durationText }
+        "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
+        "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
+        else -> {
+            videoList.sortByDescending { it.dateModified }
+        }
+    }
+    adapterVideo.notifyDataSetChanged()
+}
 
 
 fun countVideoFilesInFolder(folderPath: String): Int {

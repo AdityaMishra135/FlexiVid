@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.FoldersFragment">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true" />
 
     <LinearLayout
         android:id="@+id/topLayout"

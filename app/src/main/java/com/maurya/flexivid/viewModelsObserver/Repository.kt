@@ -1,9 +1,10 @@
 package com.maurya.flexivid.viewModelsObserver
 
 import android.content.Context
-import android.util.Log
+import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.util.getAllVideos
+import com.maurya.flexivid.util.getVideosFromFolderPath
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -11,22 +12,41 @@ import javax.inject.Inject
 class Repository @Inject constructor(){
 
     private val _videosStateFlow =
-        MutableStateFlow<VideoResult<ArrayList<VideoDataClass>>>(VideoResult.Loading())
+        MutableStateFlow<ModelResult<ArrayList<VideoDataClass>>>(ModelResult.Loading())
 
-    val videosStateFlow: StateFlow<VideoResult<ArrayList<VideoDataClass>>> get() = _videosStateFlow
+    val videosStateFlow: StateFlow<ModelResult<ArrayList<VideoDataClass>>> get() = _videosStateFlow
 
-    private val _statusStateFlow = MutableStateFlow<VideoResult<String>>(VideoResult.Loading())
-    val statusStateFlow: StateFlow<VideoResult<String>> get() = _statusStateFlow
+    private val _foldersStateFlow =
+        MutableStateFlow<ModelResult<ArrayList<FolderDataClass>>>(ModelResult.Loading())
+
+    val foldersStateFlow: StateFlow<ModelResult<ArrayList<FolderDataClass>>> get() = _foldersStateFlow
+
+
+    private val _statusStateFlow = MutableStateFlow<ModelResult<String>>(ModelResult.Loading())
+    val statusStateFlow: StateFlow<ModelResult<String>> get() = _statusStateFlow
 
     suspend fun getVideos(context: Context) {
-        _videosStateFlow.emit(VideoResult.Loading())
+        _videosStateFlow.emit(ModelResult.Loading())
         try {
             val videos = getAllVideos(context)
-            _videosStateFlow.emit(VideoResult.Success(videos))
+            _videosStateFlow.emit(ModelResult.Success(videos))
         } catch (e: Exception) {
-            _videosStateFlow.emit(VideoResult.Error("Failed to fetch videos: ${e.message}"))
+            _videosStateFlow.emit(ModelResult.Error("Failed to fetch videos: ${e.message}"))
         }
     }
+
+    suspend fun getFolders(context: Context, folderID: String) {
+        _foldersStateFlow.emit(ModelResult.Loading())
+        try {
+            val folders = getVideosFromFolderPath(context, folderID)
+            _foldersStateFlow.emit(ModelResult.Success(folders))
+        } catch (e: Exception) {
+            _foldersStateFlow.emit(ModelResult.Error("Failed to fetch folders: ${e.message}"))
+        }
+    }
+
+
+
 
     /*
         suspend fun createNotes(noteRequest: NoteRequest) {
@@ -71,3 +91,4 @@ class Repository @Inject constructor(){
 
     */
 }
+

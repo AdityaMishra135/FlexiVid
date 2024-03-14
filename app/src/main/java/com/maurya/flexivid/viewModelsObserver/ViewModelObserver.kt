@@ -27,6 +27,16 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
             }
         }
     }
+    fun fetchFolders(context: Context,folderId:String) {
+        viewModelScope.launch {
+            try {
+                repository.getVideos(context)
+            } catch (e: Exception) {
+                showToast(context, e.message.toString())
+            }
+        }
+    }
+
 
 //    private val _videoList = MutableLiveData<ArrayList<VideoDataClass>>()
 //    val videoList: LiveData<ArrayList<VideoDataClass>> = _videoList

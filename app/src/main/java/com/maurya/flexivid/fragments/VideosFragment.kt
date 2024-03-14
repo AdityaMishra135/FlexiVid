@@ -6,8 +6,6 @@ import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -43,12 +41,11 @@ import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
-import com.maurya.flexivid.viewModelsObserver.VideoResult
+import com.maurya.flexivid.util.sortMusicList
+import com.maurya.flexivid.viewModelsObserver.ModelResult
 import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -81,7 +78,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -104,20 +100,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         lifecycle.addObserver(viewModel)
         viewModel.fetchVideos(requireContext())
 
-        when (sortingOrder) {
-            "DATE_ADDED ASC" -> videoList.sortBy { it.dateModified }
-            "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
-            "SIZE ASC" -> videoList.sortBy { it.durationText }
-            "SIZE DESC" -> videoList.sortByDescending { it.durationText }
-            "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
-            "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
-            else -> {
-                videoList.sortByDescending { it.dateModified }
-            }
-        }
-
-        Log.d("SortingItemClass",sortingOrder)
-
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(13)
@@ -132,13 +114,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 viewModel.videosStateFLow.collect {
                     fragmentVideosBinding.progressBar.visibility = View.GONE
                     when (it) {
-                        is VideoResult.Success -> {
+                        is ModelResult.Success -> {
                             videoList.clear()
                             videoList.addAll(it.data!!)
-                            adapterVideo.notifyDataSetChanged()
+                            sortMusicList(sortingOrder, videoList, adapterVideo)
                         }
 
-                        is VideoResult.Error -> {
+                        is ModelResult.Error -> {
                             Toast.makeText(
                                 requireContext(),
                                 it.message.toString(),
@@ -147,7 +129,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
                                 .show()
                         }
 
-                        is VideoResult.Loading -> {
+                        is ModelResult.Loading -> {
                             fragmentVideosBinding.progressBar.visibility = View.VISIBLE
                         }
 
@@ -266,38 +248,20 @@ class VideosFragment : Fragment(), OnItemClickListener {
             R.id.nameZtoALayoutPopUpMenu,
             R.id.largestFirstLayoutPopUpMenu,
             R.id.smallestFirstLayoutPopUpMenu,
-            R.id.oldestFirstLayoutPopUpMenu,
-            R.id.newestFirstLayoutPopUpMenu
+            R.id.newestFirstLayoutPopUpMenu,
+            R.id.oldestFirstLayoutPopUpMenu
         )
 
         layoutIds.forEachIndexed { index, layoutId ->
             val layout = popupView.findViewById<LinearLayout>(layoutId)
             layout.setOnClickListener {
-                sortMusicList(sortOptions[index], videoList)
+                sortMusicList(sortOptions[index], videoList, adapterVideo)
+                sharedPreferencesHelper.saveSortingOrder(sortOptions[index])
                 popupWindow.dismiss()
             }
         }
 
 
-    }
-
-    private fun sortMusicList(sortBy: String, videoList: ArrayList<VideoDataClass>) {
-        when (sortBy) {
-            "DATE_ADDED ASC" -> videoList.sortBy { it.dateModified }
-            "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
-            "SIZE ASC" -> videoList.sortBy { it.durationText }
-            "SIZE DESC" -> videoList.sortByDescending { it.durationText }
-            "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
-            "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
-            else -> {
-                videoList.sortByDescending { it.dateModified }
-            }
-        }
-        fragmentVideosBinding.recyclerViewVideosFragment.visibility = View.VISIBLE
-        adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
-        fragmentVideosBinding.recyclerViewVideosFragment.adapter = adapterVideo
-        adapterVideo.notifyDataSetChanged()
-        sharedPreferencesHelper.saveSortingOrder(sortBy)
     }
 
 
