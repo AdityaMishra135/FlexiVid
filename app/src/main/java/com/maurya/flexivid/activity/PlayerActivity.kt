@@ -42,6 +42,7 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
+import com.maurya.flexivid.fragments.VideosFragment
 import com.maurya.flexivid.util.OnDoubleClickListener
 import com.maurya.flexivid.util.getPathFromURI
 import com.maurya.flexivid.util.showToast
@@ -603,7 +604,7 @@ class PlayerActivity : AppCompatActivity() {
         when (intent.getStringExtra("class")) {
             "allVideos" -> {
                 playerList = ArrayList()
-                playerList.addAll(MainActivity.videoList)
+                playerList.addAll(VideosFragment.videoList)
                 createPlayer()
             }
 

@@ -36,7 +36,7 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
     }
 
     fun getSortingOrder(): String? {
-        return sharedPreferences.getString("sorting_order", null)
+        return sharedPreferences.getString("sorting_order",null)
     }
 
 

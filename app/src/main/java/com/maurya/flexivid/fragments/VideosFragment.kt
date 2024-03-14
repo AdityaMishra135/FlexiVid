@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,20 +17,22 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.searchList
-import com.maurya.flexivid.MainActivity.Companion.videoList
 import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
@@ -40,9 +43,11 @@ import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
 import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
-import com.maurya.flexivid.viewModelsObserver.ViewModelObserverVideoFragment
+import com.maurya.flexivid.viewModelsObserver.VideoResult
+import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -61,10 +66,19 @@ class VideosFragment : Fragment(), OnItemClickListener {
     private var sortingOrder: String = ""
     private var searchViewVisible: Boolean = false
 
-    private lateinit var viewModel: ViewModelObserverVideoFragment
+    private val viewModel by viewModels<ViewModelObserver>()
+
+    private val sortOptions = arrayOf(
+        "DISPLAY_NAME ASC",
+        "DISPLAY_NAME DESC",
+        "SIZE DESC",
+        "SIZE ASC",
+        "DATE_ADDED DESC",
+        "DATE_ADDED ASC"
+    )
 
     companion object {
-        var isInitialized: Boolean = false
+        var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
 
 
@@ -74,17 +88,35 @@ class VideosFragment : Fragment(), OnItemClickListener {
     ): View {
         fragmentVideosBinding = FragmentVideosBinding.inflate(inflater, container, false)
         val view = fragmentVideosBinding.root
-
-        isInitialized = true
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
-        Log.d("FragmentItemClass", videoList.size.toString())
+        changeVisibility(false)
 
-        viewModel = ViewModelProvider(this)[ViewModelObserverVideoFragment::class.java]
-        lifecycle.addObserver(viewModel)
+        return view
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         sharedPreferencesHelper = SharedPreferenceHelper(requireContext())
+        sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
+
+        lifecycle.addObserver(viewModel)
+        viewModel.fetchVideos(requireContext())
+
+        when (sortingOrder) {
+            "DATE_ADDED ASC" -> videoList.sortBy { it.dateModified }
+            "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
+            "SIZE ASC" -> videoList.sortBy { it.durationText }
+            "SIZE DESC" -> videoList.sortByDescending { it.durationText }
+            "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
+            "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
+            else -> {
+                videoList.sortByDescending { it.dateModified }
+            }
+        }
+
+        Log.d("SortingItemClass",sortingOrder)
 
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
@@ -93,57 +125,40 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
             adapter = adapterVideo
-            /*
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val totalItemCount = layoutManager.itemCount
-                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                    val endHasBeenReached = lastVisibleItem + 1 >= totalItemCount
-                    if (totalItemCount > 0 && endHasBeenReached) {
-                        if (!isLoading && !isLastPage) {
-                            isLoading = true
-                            val endIndex = totalItemCount + PAGE_SIZE
-                            if (endIndex < videoList.size) {
-                                adapterVideo.addItems(
-                                    videoList.subList(
-                                        totalItemCount,
-                                        endIndex
-                                    )
-                                )
-                            } else {
-                                adapterVideo.addItems(
-                                    videoList.subList(
-                                        totalItemCount,
-                                        videoList.size
-                                    )
-                                )
-                                isLastPage = true
-                            }
-                            isLoading = false
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.videosStateFLow.collect {
+                    fragmentVideosBinding.progressBar.visibility = View.GONE
+                    when (it) {
+                        is VideoResult.Success -> {
+                            videoList.clear()
+                            videoList.addAll(it.data!!)
+                            adapterVideo.notifyDataSetChanged()
                         }
+
+                        is VideoResult.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                it.message.toString(),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+
+                        is VideoResult.Loading -> {
+                            fragmentVideosBinding.progressBar.visibility = View.VISIBLE
+                        }
+
+                        else -> {}
                     }
                 }
-            })
-            */
-
+            }
         }
 
 
-        sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
-
-        changeVisibility(false)
-
-        viewModel.videoList.observe(viewLifecycleOwner, Observer { videos ->
-            adapterVideo.updateVideoList(videos)
-        })
-
-        viewModel.fetchVideos(requireContext())
-
         listener()
-
-        return view
     }
 
     private fun listener() {
@@ -227,15 +242,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
     }
 
-
-    suspend fun updateRecyclerView(videoList: ArrayList<VideoDataClass>) {
-        withContext(Dispatchers.Main) {
-            fragmentVideosBinding.progressBar.visibility = View.GONE
-            Log.d("UpdateItemClass", videoList.size.toString())
-            sortMusicList(sortingOrder, videoList)
-        }
-    }
-
     private fun showSortingMenu() {
         val inflater =
             requireActivity().getSystemService(AppCompatActivity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -264,11 +270,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
             R.id.newestFirstLayoutPopUpMenu
         )
 
-        val sortOptions = arrayOf(
-            "a_to_z", "z_to_a", "largest_size_first",
-            "smallest_size_first", "oldest_date_first", "newest_date_first"
-        )
-
         layoutIds.forEachIndexed { index, layoutId ->
             val layout = popupView.findViewById<LinearLayout>(layoutId)
             layout.setOnClickListener {
@@ -282,12 +283,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     private fun sortMusicList(sortBy: String, videoList: ArrayList<VideoDataClass>) {
         when (sortBy) {
-            "newest_date_first" -> videoList.sortByDescending { it.dateModified }
-            "oldest_date_first" -> videoList.sortBy { it.dateModified }
-            "largest_size_first" -> videoList.sortByDescending { it.durationText }
-            "smallest_size_first" -> videoList.sortBy { it.durationText }
-            "a_to_z" -> videoList.sortBy { it.videoName }
-            "z_to_a" -> videoList.sortByDescending { it.videoName }
+            "DATE_ADDED ASC" -> videoList.sortBy { it.dateModified }
+            "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
+            "SIZE ASC" -> videoList.sortBy { it.durationText }
+            "SIZE DESC" -> videoList.sortByDescending { it.durationText }
+            "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
+            "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
             else -> {
                 videoList.sortByDescending { it.dateModified }
             }
@@ -298,6 +299,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         adapterVideo.notifyDataSetChanged()
         sharedPreferencesHelper.saveSortingOrder(sortBy)
     }
+
 
     override fun onItemClickListener(position: Int) {
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.provider.MediaStore.Video.Media.*
 import android.util.Log
 import android.widget.Toast
@@ -30,8 +31,7 @@ import kotlin.math.pow
 
 //for fetching video files and video folders
 suspend fun getAllVideos(
-    context: Context,
-    listener: OnVideoFetchListener
+    context: Context
 ): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
@@ -42,8 +42,9 @@ suspend fun getAllVideos(
         )
         val cursor = context.contentResolver.query(
             EXTERNAL_CONTENT_URI, projection, null, null,
-            "$DATE_ADDED DESC"
+            "DATE_ADDED DESC"
         )
+
         cursor?.use {
             while (it.moveToNext()) {
                 val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
@@ -80,8 +81,6 @@ suspend fun getAllVideos(
                 }
 
             }
-            listener.onVideosFetched(tempList)
-            Log.d("HelperItemClass", tempList.size.toString())
         }
 
         return@withContext tempList
@@ -90,8 +89,7 @@ suspend fun getAllVideos(
 //using in Folder Activity to retrieve video files from path
 suspend fun getVideosFromFolderPath(
     context: Context,
-    folderId: String,
-    listener: OnVideoFetchListener
+    folderId: String
 ): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
@@ -144,12 +142,12 @@ suspend fun getVideosFromFolderPath(
 
 
             }
-            listener.onVideosFetched(tempList)
             Log.d("HelperItemClassFolder", tempList.size.toString())
         }
 
         return@withContext tempList
     }
+
 
 fun countVideoFilesInFolder(folderPath: String): Int {
     val folder = File(folderPath)

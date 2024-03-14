@@ -12,7 +12,6 @@ import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivitySplashBinding
 import com.maurya.flexivid.util.SharedPreferenceHelper
-import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,8 +40,8 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             },
-            2250
-
+//            2250
+2
         )
 
     }

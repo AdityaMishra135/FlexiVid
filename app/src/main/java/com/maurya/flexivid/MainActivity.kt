@@ -9,40 +9,32 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ActivityMainBinding
 import com.maurya.flexivid.fragments.FoldersFragment
 import com.maurya.flexivid.fragments.SettingsFragment
 import com.maurya.flexivid.fragments.VideosFragment
-import com.maurya.flexivid.util.OnVideoFetchListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
-import com.maurya.flexivid.util.getAllVideos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), OnVideoFetchListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
 
     @Inject
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     companion object {
-        var videoList: ArrayList<VideoDataClass> = arrayListOf()
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
         var folderList: ArrayList<FolderDataClass> = arrayListOf()
         var search: Boolean = false
@@ -111,10 +103,6 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 
         permission()
 
-        lifecycleScope.launch {
-            videoList = getAllVideos(applicationContext, this@MainActivity)
-        }
-
 
 //        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
 //            override fun handleOnBackPressed() {
@@ -128,15 +116,6 @@ class MainActivity : AppCompatActivity(), OnVideoFetchListener {
 //        })
     }
 
-
-
-
-
-    override suspend fun onVideosFetched(videoList: ArrayList<VideoDataClass>) {
-        val videosFragment =
-            supportFragmentManager.findFragmentByTag("videosFragmentTag") as? VideosFragment
-        videosFragment?.updateRecyclerView(videoList)
-    }
 
     fun visibilityBottomNav(visible: Boolean) {
         if (!visible) {
