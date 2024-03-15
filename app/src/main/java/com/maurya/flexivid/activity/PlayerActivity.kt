@@ -616,7 +616,7 @@ class PlayerActivity : AppCompatActivity() {
 
             "folderActivity" -> {
                 playerList = ArrayList()
-                playerList.addAll(FolderActivity.currentFolderVideos)
+                playerList.addAll(FolderActivity.currentFolderVideosList)
                 createPlayer()
             }
 

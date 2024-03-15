@@ -112,15 +112,16 @@ class VideosFragment : Fragment(), OnItemClickListener {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.videosStateFLow.collect {
-                    fragmentVideosBinding.progressBar.visibility = View.GONE
                     when (it) {
                         is ModelResult.Success -> {
+                            fragmentVideosBinding.progressBar.visibility = View.GONE
                             videoList.clear()
                             videoList.addAll(it.data!!)
                             sortMusicList(sortingOrder, videoList, adapterVideo)
                         }
 
                         is ModelResult.Error -> {
+                            fragmentVideosBinding.progressBar.visibility = View.GONE
                             Toast.makeText(
                                 requireContext(),
                                 it.message.toString(),
@@ -138,7 +139,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
-
 
         listener()
     }

@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".activity.FolderActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/topLayout"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/StatusBarColour">
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true" />
 
-        <ImageView
+
+    <LinearLayout
+        android:id="@+id/topLayout"
+        style="@style/StatusBarLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backImgFolderActivity"
             android:layout_width="30dp"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
             android:src="@drawable/icon_back" />
 
         <TextView
@@ -26,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
             android:ellipsize="marquee"
             android:fontFamily="@font/font_link"
             android:gravity="center_vertical"
@@ -38,16 +47,18 @@
             android:textColor="@color/ImageViewAndTextViewColour"
             android:textSize="30sp" />
 
-    </androidx.appcompat.widget.Toolbar>
+
+    </LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFolderActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/topLayout"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_video" />
 
 
-</LinearLayout>
+</RelativeLayout>

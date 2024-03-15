@@ -18,6 +18,7 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
     val videosStateFLow get() = repository.videosStateFlow
 
     val foldersStateFLow get() = repository.foldersStateFlow
+    val videoFromFoldersStateFLow get() = repository.videosFromFolderStateFlow
     val statusStateFlow get() = repository.statusStateFlow
 
     fun fetchVideos(context: Context) {

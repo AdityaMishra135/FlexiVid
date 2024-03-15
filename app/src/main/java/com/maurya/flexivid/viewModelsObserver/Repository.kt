@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 class Repository @Inject constructor() {
 
+
+    private var videos: ArrayList<VideoDataClass>? = null
+    private var folders: ArrayList<FolderDataClass>? = null
+
     private val _videosStateFlow =
         MutableStateFlow<ModelResult<ArrayList<VideoDataClass>>>(ModelResult.Loading())
 
@@ -33,22 +37,32 @@ class Repository @Inject constructor() {
     val statusStateFlow: StateFlow<ModelResult<String>> get() = _statusStateFlow
 
     suspend fun getVideos(context: Context) {
-        _videosStateFlow.emit(ModelResult.Loading())
-        try {
-            val videos = getAllVideos(context)
-            _videosStateFlow.emit(ModelResult.Success(videos))
-        } catch (e: Exception) {
-            _videosStateFlow.emit(ModelResult.Error("Failed to fetch videos: ${e.message}"))
+        if (videos == null) {
+            _videosStateFlow.emit(ModelResult.Loading())
+            try {
+                val fetchedVideos = getAllVideos(context)
+                videos = fetchedVideos
+                _videosStateFlow.emit(ModelResult.Success(fetchedVideos))
+            } catch (e: Exception) {
+                _videosStateFlow.emit(ModelResult.Error("Failed to fetch videos: ${e.message}"))
+            }
+        } else {
+            _videosStateFlow.emit(ModelResult.Success(videos!!))
         }
     }
 
     suspend fun getFolders(context: Context) {
-        _foldersStateFlow.emit(ModelResult.Loading())
-        try {
-            val folders = getAllFolders(context)
-            _foldersStateFlow.emit(ModelResult.Success(folders))
-        } catch (e: Exception) {
-            _foldersStateFlow.emit(ModelResult.Error("Failed to fetch folders: ${e.message}"))
+        if (folders == null) {
+            _foldersStateFlow.emit(ModelResult.Loading())
+            try {
+                val fetchedFolders = getAllFolders(context)
+                folders = fetchedFolders
+                _foldersStateFlow.emit(ModelResult.Success(fetchedFolders))
+            } catch (e: Exception) {
+                _foldersStateFlow.emit(ModelResult.Error("Failed to fetch folders: ${e.message}"))
+            }
+        } else {
+            _foldersStateFlow.emit(ModelResult.Success(folders!!))
         }
     }
 
@@ -106,5 +120,6 @@ class Repository @Inject constructor() {
         }
 
     */
+
 }
 
