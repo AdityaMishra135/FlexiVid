@@ -14,7 +14,6 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
-import com.maurya.flexivid.MainActivity.Companion.folderList
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
@@ -36,7 +35,6 @@ suspend fun getAllVideos(
 ): ArrayList<VideoDataClass> =
     withContext(Dispatchers.IO) {
         val tempList = ArrayList<VideoDataClass>()
-        val tempFolderList = ArrayList<String>()
 
         val projection = arrayOf(
             _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
@@ -75,17 +73,44 @@ suspend fun getAllVideos(
                 } else {
                     Log.w("getAllVideos", "File does not exist: $data")
                 }
-
-                if (!tempFolderList.contains(folderNameCursor) && !folderNameCursor.contains("Internal Storage")) {
-                    tempFolderList.add(folderNameCursor)
-                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
-                }
-
             }
         }
 
         return@withContext tempList
     }
+
+//for fetching folders
+suspend fun getAllFolders(
+    context: Context
+): ArrayList<FolderDataClass> =
+    withContext(Dispatchers.IO) {
+
+        val tempFolderList = ArrayList<String>()
+        val folderList = ArrayList<FolderDataClass>()
+
+        val projection = arrayOf(
+            _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
+        )
+        val cursor = context.contentResolver.query(
+            EXTERNAL_CONTENT_URI, projection, null, null,
+            "DATE_ADDED DESC"
+        )
+        cursor?.use {
+            while (it.moveToNext()) {
+                val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
+                val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
+                val data = it.getString(it.getColumnIndexOrThrow(DATA))
+                val folderPath = data.substringBeforeLast("/")
+
+                if (!tempFolderList.contains(folderNameCursor) && !folderNameCursor.contains("Internal Storage")) {
+                    tempFolderList.add(folderNameCursor)
+                    folderList.add(FolderDataClass(folderIdCursor, folderNameCursor, folderPath, 0))
+                }
+            }
+        }
+        return@withContext folderList
+    }
+
 
 //using in Folder Activity to retrieve video files from path
 suspend fun getVideosFromFolderPath(
@@ -143,7 +168,6 @@ suspend fun getVideosFromFolderPath(
 
 
             }
-            Log.d("HelperItemClassFolder", tempList.size.toString())
         }
 
         return@withContext tempList
@@ -151,7 +175,7 @@ suspend fun getVideosFromFolderPath(
 
 
 //sorting Video List
- fun sortMusicList(
+fun sortMusicList(
     sortBy: String,
     videoList: ArrayList<VideoDataClass>,
     adapterVideo: AdapterVideo

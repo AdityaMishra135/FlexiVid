@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
-        var folderList: ArrayList<FolderDataClass> = arrayListOf()
         var search: Boolean = false
     }
 

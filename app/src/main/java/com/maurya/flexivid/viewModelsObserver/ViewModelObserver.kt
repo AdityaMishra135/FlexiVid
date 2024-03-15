@@ -16,6 +16,8 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
     ViewModel(), DefaultLifecycleObserver {
 
     val videosStateFLow get() = repository.videosStateFlow
+
+    val foldersStateFLow get() = repository.foldersStateFlow
     val statusStateFlow get() = repository.statusStateFlow
 
     fun fetchVideos(context: Context) {
@@ -27,14 +29,26 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
             }
         }
     }
-    fun fetchFolders(context: Context,folderId:String) {
+
+    fun fetchFolders(context: Context) {
         viewModelScope.launch {
             try {
-                repository.getVideos(context)
+                repository.getFolders(context)
             } catch (e: Exception) {
                 showToast(context, e.message.toString())
             }
         }
+    }
+
+    fun fetchVideosFromFolder(context: Context, folderId: String) {
+        viewModelScope.launch {
+            try {
+                repository.getVideosFromFolder(context, folderId)
+            } catch (e: Exception) {
+                showToast(context, e.message.toString())
+            }
+        }
+
     }
 
 
