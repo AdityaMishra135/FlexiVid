@@ -18,7 +18,7 @@
         android:keepScreenOn="true"
         app:controller_layout_id="@layout/custom_control_player" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lockDisablePlayerActivity"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -42,17 +42,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backPlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:backgroundTint="@android:color/transparent"
             android:padding="15dp"
             android:src="@drawable/icon_back"
-            app:tint="#FFFFFF"
-
-            />
-
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/videoTitlePlayerActivity"
@@ -70,7 +67,7 @@
 
             />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/menuPlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -79,7 +76,7 @@
             android:src="@drawable/icon_menu"
             app:tint="#FFFFFF" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/lockEnablePlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -92,18 +89,16 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/middleController"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomController"
         android:layout_below="@id/topController"
         android:gravity="center"
         android:orientation="horizontal">
 
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/fastBackwardPlayerActivity"
             android:layout_width="65dp"
             android:layout_height="70dp"
@@ -117,7 +112,7 @@
             android:visibility="gone"
             app:tint="#FFFFFF" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/playPausePlayerActivity"
             android:layout_width="60dp"
             android:layout_height="65dp"
@@ -129,7 +124,7 @@
             android:src="@drawable/icon_play"
             app:tint="#FFFFFF" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/fastForwardPlayerActivity"
             android:layout_width="65dp"
             android:layout_height="70dp"
@@ -145,77 +140,5 @@
 
 
     </LinearLayout>
-
-    <HorizontalScrollView
-        android:id="@+id/bottomController"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end|bottom"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/orientationPlayerActivity"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:backgroundTint="@android:color/transparent"
-                android:padding="12dp"
-                android:src="@drawable/icon_orientation"
-                app:tint="#FFFFFF"
-
-                />
-
-            <ImageView
-                android:id="@+id/repeatPlayerActivity"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:backgroundTint="@android:color/transparent"
-                android:padding="12dp"
-                android:src="@drawable/icon_repeat"
-                app:tint="#FFFFFF"
-
-                />
-
-
-            <ImageView
-                android:id="@+id/previousPlayerActivity"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:backgroundTint="@android:color/transparent"
-                android:padding="12dp"
-                android:src="@drawable/icon_previous"
-                app:tint="#FFFFFF"
-
-                />
-
-            <ImageView
-                android:id="@+id/nextPlayerActivity"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:backgroundTint="@android:color/transparent"
-                android:padding="12dp"
-                android:src="@drawable/icon_next"
-                app:tint="#FFFFFF" />
-
-            <ImageView
-                android:id="@+id/maximizeMinimizePlayerActivity"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginEnd="10dp"
-                android:backgroundTint="@android:color/transparent"
-                android:padding="14dp"
-                android:src="@drawable/icon_maximize"
-                app:tint="#FFFFFF" />
-
-
-        </LinearLayout>
-
-
-    </HorizontalScrollView>
 
 </RelativeLayout>

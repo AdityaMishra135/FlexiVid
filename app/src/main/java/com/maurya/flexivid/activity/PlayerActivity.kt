@@ -21,10 +21,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.widget.ImageViewCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -51,6 +53,7 @@ import java.io.File
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 import kotlin.system.exitProcess
 
 
@@ -64,6 +67,13 @@ class PlayerActivity : AppCompatActivity() {
 
 
     private var timer: Timer? = null
+
+
+    private lateinit var nextButton: ImageView
+    private lateinit var prevButton: ImageView
+    private lateinit var orientationButton: ImageView
+    private lateinit var repeatButton: ImageView
+    private lateinit var maximizeMinimize: ImageView
 
     companion object {
         private var repeat: Boolean = false
@@ -90,9 +100,7 @@ class PlayerActivity : AppCompatActivity() {
         window.attributes.layoutInDisplayCutoutMode =
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         activityPlayerBinding = ActivityPlayerBinding.inflate(layoutInflater)
-
         setContentView(activityPlayerBinding.root)
-
         setTheme(R.style.playerActivityTheme)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -102,6 +110,17 @@ class PlayerActivity : AppCompatActivity() {
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
+
+        nextButton =
+            activityPlayerBinding.playerViewPlayerActivity.findViewById(R.id.nextPlayerActivity)
+        prevButton =
+            activityPlayerBinding.playerViewPlayerActivity.findViewById(R.id.previousPlayerActivity)
+        orientationButton =
+            activityPlayerBinding.playerViewPlayerActivity.findViewById(R.id.orientationPlayerActivity)
+        repeatButton =
+            activityPlayerBinding.playerViewPlayerActivity.findViewById(R.id.repeatPlayerActivity)
+        maximizeMinimize =
+            activityPlayerBinding.playerViewPlayerActivity.findViewById(R.id.maximizeMinimizePlayerActivity)
 
         activityPlayerBinding.videoTitlePlayerActivity.isSelected = true
         activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
@@ -157,10 +176,8 @@ class PlayerActivity : AppCompatActivity() {
                 initializeLayout()
             }
         } catch (e: Exception) {
-            showToast(this, e.message.toString())
+            Log.d("playerClass",e.message.toString())
         }
-
-        listeners()
 
 
         //for pip Mode to setup Control in pip Mode
@@ -186,6 +203,9 @@ class PlayerActivity : AppCompatActivity() {
 
         mediaSession.setCallback(callback)
         mediaSession.isActive = true
+
+
+        listeners()
 
     }
 
@@ -228,30 +248,32 @@ class PlayerActivity : AppCompatActivity() {
             })
         }
 
-        activityPlayerBinding.nextPlayerActivity.setOnClickListener {
+
+        nextButton.setOnClickListener {
             nextPrevVideo(true)
         }
 
-        activityPlayerBinding.previousPlayerActivity.setOnClickListener {
+
+        prevButton.setOnClickListener {
             nextPrevVideo(false)
         }
 
-        activityPlayerBinding.repeatPlayerActivity.setOnClickListener {
+        repeatButton.setOnClickListener {
             if (repeat) {
                 repeat = false
                 player.repeatMode = Player.REPEAT_MODE_OFF
-                activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat)
+                repeatButton.setImageResource(R.drawable.icon_repeat)
 
             } else {
                 repeat = true
                 player.repeatMode = Player.REPEAT_MODE_ONE
-                activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat_one)
+                repeatButton.setImageResource(R.drawable.icon_repeat_one)
 
             }
 
         }
 
-        activityPlayerBinding.maximizeMinimizePlayerActivity.setOnClickListener {
+        maximizeMinimize.setOnClickListener {
             if (isFullScreen) {
                 isFullScreen = false
                 fullScreen(false)
@@ -266,7 +288,6 @@ class PlayerActivity : AppCompatActivity() {
             activityPlayerBinding.playerViewPlayerActivity.hideController()
             activityPlayerBinding.playerViewPlayerActivity.useController = false
             activityPlayerBinding.topController.visibility = View.GONE
-            activityPlayerBinding.bottomController.visibility = View.GONE
             activityPlayerBinding.lockDisablePlayerActivity.visibility = View.VISIBLE
         }
 
@@ -275,11 +296,10 @@ class PlayerActivity : AppCompatActivity() {
             activityPlayerBinding.playerViewPlayerActivity.useController = true
             activityPlayerBinding.playerViewPlayerActivity.showController()
             activityPlayerBinding.topController.visibility = View.VISIBLE
-            activityPlayerBinding.bottomController.visibility = View.VISIBLE
             activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
         }
 
-        activityPlayerBinding.orientationPlayerActivity.setOnClickListener {
+        orientationButton.setOnClickListener {
             val currentOrientation = resources.configuration.orientation
             requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -466,7 +486,6 @@ class PlayerActivity : AppCompatActivity() {
             //for pip Mode
             bindingPopUp.pipPopUp.setOnClickListener {
                 activityPlayerBinding.topController.visibility = View.GONE
-                activityPlayerBinding.bottomController.visibility = View.GONE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
 
 
@@ -634,9 +653,9 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         if (repeat) {
-            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat_one)
+            repeatButton.setImageResource(R.drawable.icon_repeat_one)
         } else {
-            activityPlayerBinding.repeatPlayerActivity.setImageResource(R.drawable.icon_repeat)
+            repeatButton.setImageResource(R.drawable.icon_repeat)
         }
 
     }
@@ -648,17 +667,14 @@ class PlayerActivity : AppCompatActivity() {
         if (isInPictureInPictureMode) {
             activityPlayerBinding.playerViewPlayerActivity.hideController()
             activityPlayerBinding.topController.visibility = View.GONE
-            activityPlayerBinding.bottomController.visibility = View.GONE
         }
 
         runnable = Runnable {
             if (activityPlayerBinding.playerViewPlayerActivity.isControllerVisible) {
                 activityPlayerBinding.topController.visibility = View.VISIBLE
-                activityPlayerBinding.bottomController.visibility = View.VISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.VISIBLE
             } else {
                 activityPlayerBinding.topController.visibility = View.INVISIBLE
-                activityPlayerBinding.bottomController.visibility = View.INVISIBLE
                 activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
             }
             Handler(Looper.getMainLooper()).postDelayed(runnable, 100)
@@ -744,27 +760,38 @@ class PlayerActivity : AppCompatActivity() {
             activityPlayerBinding.playerViewPlayerActivity.resizeMode =
                 RESIZE_MODE_FILL
             player.videoScalingMode = VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-            activityPlayerBinding.maximizeMinimizePlayerActivity.setImageResource(R.drawable.icon_minimize)
+            maximizeMinimize.setImageResource(R.drawable.icon_minimize)
         } else {
             activityPlayerBinding.playerViewPlayerActivity.resizeMode =
                 RESIZE_MODE_FIT
             player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
-            activityPlayerBinding.maximizeMinimizePlayerActivity.setImageResource(R.drawable.icon_maximize)
+            maximizeMinimize.setImageResource(R.drawable.icon_maximize)
 
         }
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        player.pause()
-        mediaSession.release()
-
+//        if (!isInPictureInPictureMode) {
+//            pipDialog()
+//        }
     }
 
+    override fun onPause() {
+        super.onPause()
+        pipDialog()
+    }
 
-    override fun onStop() {
-        super.onStop()
+//    override fun onUserLeaveHint() {
+//        super.onUserLeaveHint()
+//        pipDialog()
+//    }
+
+    private fun pipDialog() {
+
+        activityPlayerBinding.topController.visibility = View.GONE
+        activityPlayerBinding.playPausePlayerActivity.visibility = View.GONE
+
 
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val status = if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -791,7 +818,6 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             showToast(this, "Feature Not Supported!!")
         }
-
     }
 
     override fun onPictureInPictureModeChanged(
@@ -800,7 +826,6 @@ class PlayerActivity : AppCompatActivity() {
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (pipStatus != 0) {
-            finish()
             val intent = Intent(this, PlayerActivity::class.java)
             when (pipStatus) {
                 1 -> intent.putExtra("class", "folderActivity")
@@ -810,9 +835,12 @@ class PlayerActivity : AppCompatActivity() {
             }
             activityPlayerBinding.playerViewPlayerActivity.showController()
             activityPlayerBinding.topController.visibility = View.VISIBLE
-            activityPlayerBinding.bottomController.visibility = View.VISIBLE
             startActivity(intent)
         }
-        if (!isInPictureInPictureMode) pauseVideo()
+        if (isInPictureInPictureMode) {
+            pauseVideo()
+        } else {
+            playVideo()
+        }
     }
 }
