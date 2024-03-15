@@ -112,6 +112,7 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         setContentView(activityPlayerBinding.root)
         setTheme(R.style.playerActivityTheme)
 
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
 
         gestureDetectorCompat = GestureDetectorCompat(this, this)
@@ -904,8 +905,9 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         return true
     }
 
-    private fun setScreenBrightness(value: Int){
-        val d = 1.0f/30
+
+    private fun setScreenBrightness(value: Int) {
+        val d = 1.0f / 30
         val lp = this.window.attributes
         lp.screenBrightness = d * value
         this.window.attributes = lp
