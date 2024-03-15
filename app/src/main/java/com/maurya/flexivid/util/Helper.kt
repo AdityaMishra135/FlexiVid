@@ -8,16 +8,20 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.MediaStore.Video.Media.*
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
+import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.database.AdapterVideo
+import com.maurya.flexivid.databinding.ActivityPlayerBinding
+import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.fragments.VideosFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -193,6 +197,8 @@ fun sortMusicList(
     }
     adapterVideo.notifyDataSetChanged()
 }
+
+
 
 
 fun countVideoFilesInFolder(folderPath: String): Int {

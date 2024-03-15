@@ -81,6 +81,7 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
     private var minSwipeY: Float = 0f
 
     companion object {
+        private var audioManager: AudioManager? = null
         private var repeat: Boolean = false
         lateinit var player: ExoPlayer
         var playerList: ArrayList<VideoDataClass> = arrayListOf()
@@ -97,6 +98,9 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         var isLocked: Boolean = false
         var pipStatus: Int = 0
         var nowPlayingId: String = ""
+
+        private var brightness: Int = 0
+        private var volume: Int = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +112,10 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         setContentView(activityPlayerBinding.root)
         setTheme(R.style.playerActivityTheme)
 
+
+
+        gestureDetectorCompat = GestureDetectorCompat(this, this)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, activityPlayerBinding.root).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
@@ -116,10 +124,6 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         }
 
         findViewById<TextView>(R.id.videoTitlePlayerActivity).isSelected = true
-
-        activityPlayerBinding.lockDisablePlayerActivity.visibility = View.GONE
-
-        player = Builder(this).build()
 
         try {
             //for handling video file intent (Improved Version)
@@ -666,12 +670,11 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
             }
 
             "nowPlaying" -> {
-                playerList = ArrayList()
                 findViewById<TextView>(R.id.videoTitlePlayerActivity).text =
                     playerList[position].videoName
+                doubleTapEnable()
                 playVideo()
                 fullScreen(enable = isFullScreen)
-                visibilityControl()
             }
         }
         if (repeat) {
@@ -701,6 +704,7 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
 
         trackSelector = DefaultTrackSelector(this)
         player = ExoPlayer.Builder(this).setTrackSelector(trackSelector).build()
+        doubleTapEnable()
 
         findViewById<TextView>(R.id.videoTitlePlayerActivity).text = playerList[position].videoName
         activityPlayerBinding.playerViewPlayerActivity.player = player
@@ -723,7 +727,6 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
         loudnessEnhancer.enabled = true
         nowPlayingId = playerList[position].id
-
     }
 
     private fun nextPrevVideo(isNext: Boolean = true) {
@@ -876,29 +879,36 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
 
         if (abs(distanceX) < abs(distanceY) && abs(minSwipeY) > 50) {
             if (event.x < sWidth / 2) {
-//                //brightness
-//                binding.brightnessIcon.visibility = View.VISIBLE
-//                binding.volumeIcon.visibility = View.GONE
-//                val increase = distanceY > 0
-//                val newValue = if (increase) brightness + 1 else brightness - 1
-//                if (newValue in 0..30) brightness = newValue
-//                binding.brightnessIcon.text = brightness.toString()
-//                setScreenBrightness(brightness)
-//            } else {
-//                //volume
-//                binding.brightnessIcon.visibility = View.GONE
-//                binding.volumeIcon.visibility = View.VISIBLE
-//                val maxVolume = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-//                val increase = distanceY > 0
-//                val newValue = if (increase) volume + 1 else volume - 1
-//                if (newValue in 0..maxVolume) volume = newValue
-//                binding.volumeIcon.text = volume.toString()
-//                audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
+                //brightness
+                activityPlayerBinding.brightnessIcon.visibility = View.VISIBLE
+                activityPlayerBinding.volumeIcon.visibility = View.GONE
+                val increase = distanceY > 0
+                val newValue = if (increase) brightness + 1 else brightness - 1
+                if (newValue in 0..30) brightness = newValue
+                activityPlayerBinding.brightnessIcon.text = brightness.toString()
+                setScreenBrightness(brightness)
+            } else {
+                //volume
+                activityPlayerBinding.brightnessIcon.visibility = View.GONE
+                activityPlayerBinding.volumeIcon.visibility = View.VISIBLE
+                val maxVolume = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                val increase = distanceY > 0
+                val newValue = if (increase) volume + 1 else volume - 1
+                if (newValue in 0..maxVolume) volume = newValue
+                activityPlayerBinding.volumeIcon.text = volume.toString()
+                audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
             }
             minSwipeY = 0f
         }
 
         return true
+    }
+
+    private fun setScreenBrightness(value: Int){
+        val d = 1.0f/30
+        val lp = this.window.attributes
+        lp.screenBrightness = d * value
+        this.window.attributes = lp
     }
 
 
