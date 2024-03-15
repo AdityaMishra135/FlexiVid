@@ -48,42 +48,40 @@
         android:visibility="gone"
         app:tint="#FFFFFF" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/brightnessIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"
-        android:background="#42000000"
-        android:drawableLeft="@drawable/icon_brightness"
-        android:text="O"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlHardcoded" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/brightnessIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/icon_brightness"
+            android:drawableTint="#FFFFFF"
+            android:text="O"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/volumeIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"
-        android:background="#42000000"
-        android:drawableLeft="@drawable/icon_volume"
-        android:text="0"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlHardcoded" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/volumeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/icon_volume"
+            android:drawableTint="#FFFFFF"
+            android:text="O"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
+    </LinearLayout>
 
 </RelativeLayout>

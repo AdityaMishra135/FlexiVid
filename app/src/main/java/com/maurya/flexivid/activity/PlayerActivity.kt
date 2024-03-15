@@ -301,9 +301,9 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         findViewById<ImageView>(R.id.orientationPlayerActivity).setOnClickListener {
             val currentOrientation = resources.configuration.orientation
             requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
             } else {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             }
         }
 
@@ -536,8 +536,8 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
                 activityPlayerBinding.playerViewPlayerActivity.isDoubleTapEnabled = true
                 gestureDetectorCompat.onTouchEvent(motionEvent)
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
-//                    binding.brightnessIcon.visibility = View.GONE
-//                    binding.volumeIcon.visibility = View.GONE
+                    activityPlayerBinding.brightnessIcon.visibility = View.GONE
+                    activityPlayerBinding.volumeIcon.visibility = View.GONE
                     //for immersive mode
                     WindowCompat.setDecorFitsSystemWindows(window, false)
                     WindowInsetsControllerCompat(
