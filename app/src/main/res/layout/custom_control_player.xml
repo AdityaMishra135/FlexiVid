@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,108 +9,217 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/topController"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center_vertical"
-        android:background="@android:color/transparent"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/backPlayerActivity"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="15dp"
+            android:src="@drawable/icon_back"
+            app:tint="#FFFFFF" />
 
         <TextView
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="00:00"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <com.google.android.exoplayer2.ui.DefaultTimeBar
-            android:id="@id/exo_progress"
+            android:id="@+id/videoTitlePlayerActivity"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            app:buffered_color="#80FFFFFF"
-            app:played_color="@color/white"
-            app:scrubber_color="@color/white"
-            app:scrubber_disabled_size="5dp"
-            app:scrubber_enabled_size="10dp"
-            app:unplayed_color="#80FFFFFF" />
-
-        <TextView
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="Loading..."
-            android:textColor="@color/white"
+            android:backgroundTint="@android:color/transparent"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="Video Name"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"
-            android:textStyle="bold" />
+
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/menuPlayerActivity"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="12dp"
+            android:src="@drawable/icon_menu"
+            app:tint="#FFFFFF" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/lockEnablePlayerActivity"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@android:color/transparent"
+            android:padding="12dp"
+            android:src="@drawable/icon_unlock"
+            app:tint="#FFFFFF" />
+
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/middleController"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@android:color/transparent"
-        android:gravity="end|center_vertical"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomController"
+        android:layout_below="@id/topController"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/orientationPlayerActivity"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="12dp"
-            android:src="@drawable/icon_orientation"
-            app:tint="#FFFFFF"
-            />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/repeatPlayerActivity"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="12dp"
-            android:src="@drawable/icon_repeat"
-            app:tint="#FFFFFF"
-
-            />
-
+            android:id="@+id/fastBackwardPlayerActivity"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="11dp"
+            android:src="@drawable/icon_fast_backward"
+            android:visibility="invisible" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/previousPlayerActivity"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:id="@+id/playPausePlayerActivity"
+            android:layout_width="60dp"
+            android:layout_height="65dp"
+            android:background="?android:selectableItemBackground"
             android:backgroundTint="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
             android:padding="12dp"
-            android:src="@drawable/icon_previous"
-            app:tint="#FFFFFF"
-
-            />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/nextPlayerActivity"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="12dp"
-            android:src="@drawable/icon_next"
+            android:src="@drawable/icon_play"
             app:tint="#FFFFFF" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/maximizeMinimizePlayerActivity"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="14dp"
-            android:src="@drawable/icon_maximize"
-            app:tint="#FFFFFF" />
+            android:id="@+id/fastForwardPlayerActivity"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="11dp"
+            android:src="@drawable/icon_fast_forward"
+            android:visibility="invisible" />
 
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bottomController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="00:00"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.google.android.exoplayer2.ui.DefaultTimeBar
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                app:buffered_color="#80FFFFFF"
+                app:played_color="@color/white"
+                app:scrubber_color="@color/white"
+                app:scrubber_disabled_size="5dp"
+                app:scrubber_enabled_size="10dp"
+                app:unplayed_color="#80FFFFFF" />
+
+            <TextView
+                android:id="@id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="Loading..."
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@android:color/transparent"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/orientationPlayerActivity"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="12dp"
+                android:src="@drawable/icon_orientation"
+                app:tint="#FFFFFF" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/repeatPlayerActivity"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="12dp"
+                android:src="@drawable/icon_repeat"
+                app:tint="#FFFFFF"
+
+                />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/previousPlayerActivity"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="12dp"
+                android:src="@drawable/icon_previous"
+                app:tint="#FFFFFF"
+
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/nextPlayerActivity"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="12dp"
+                android:src="@drawable/icon_next"
+                app:tint="#FFFFFF" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/maximizeMinimizePlayerActivity"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="14dp"
+                android:src="@drawable/icon_maximize"
+                app:tint="#FFFFFF" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -98,6 +98,8 @@ dependencies {
     implementation("com.github.lukelorusso:VerticalSeekBar:1.2.7")
 
 
+    //for doubleTapFeature
+    implementation("com.github.vkay94:DoubleTapPlayerView:1.0.4")
 
 
 }

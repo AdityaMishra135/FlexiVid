@@ -7,16 +7,34 @@
     android:background="#000000"
     tools:context=".activity.PlayerActivity">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/playerViewPlayerActivity"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:keepScreenOn="true"
-        app:controller_layout_id="@layout/custom_control_player" />
+        android:layout_alignParentBottom="true">
+
+        <com.github.vkay94.dtpv.DoubleTapPlayerView
+            android:id="@+id/playerViewPlayerActivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:keepScreenOn="true"
+            app:controller_layout_id="@layout/custom_control_player"
+            app:dtpv_controller="@id/ytOverlay"
+            app:show_buffering="always" />
+
+        <com.github.vkay94.dtpv.youtube.YouTubeOverlay
+            android:id="@+id/ytOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000"
+            android:visibility="invisible"
+            app:yt_playerView="@id/playerViewPlayerActivity" />
+
+    </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/lockDisablePlayerActivity"
@@ -30,115 +48,5 @@
         android:visibility="gone"
         app:tint="#FFFFFF" />
 
-    <LinearLayout
-        android:id="@+id/topController"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/backPlayerActivity"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="15dp"
-            android:src="@drawable/icon_back"
-            app:tint="#FFFFFF" />
-
-        <TextView
-            android:id="@+id/videoTitlePlayerActivity"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:backgroundTint="@android:color/transparent"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text="Video Name"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-
-            />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/menuPlayerActivity"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="12dp"
-            android:src="@drawable/icon_menu"
-            app:tint="#FFFFFF" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/lockEnablePlayerActivity"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="12dp"
-            android:src="@drawable/icon_unlock"
-            app:tint="#FFFFFF" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/middleController"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/topController"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fastBackwardPlayerActivity"
-            android:layout_width="65dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="?android:selectableItemBackground"
-            android:backgroundTint="@android:color/transparent"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="11dp"
-            android:src="@drawable/icon_fast_backward"
-            android:visibility="gone"
-            app:tint="#FFFFFF" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/playPausePlayerActivity"
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:background="?android:selectableItemBackground"
-            android:backgroundTint="@android:color/transparent"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="12dp"
-            android:src="@drawable/icon_play"
-            app:tint="#FFFFFF" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fastForwardPlayerActivity"
-            android:layout_width="65dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="?android:selectableItemBackground"
-            android:backgroundTint="@android:color/transparent"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="11dp"
-            android:src="@drawable/icon_fast_forward"
-            android:visibility="gone"
-            app:tint="#FFFFFF" />
-
-
-    </LinearLayout>
 
 </RelativeLayout>
