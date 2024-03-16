@@ -11,7 +11,7 @@ data class VideoDataClass(
     val size: String,
     var path: String,
     var image: Uri,
-    val dateModified: String,
+    val dateModified: Long,
     var isChecked: Boolean = false
 )
 

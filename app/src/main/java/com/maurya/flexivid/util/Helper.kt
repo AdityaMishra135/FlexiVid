@@ -26,9 +26,11 @@ import com.maurya.flexivid.fragments.VideosFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -53,12 +55,10 @@ suspend fun getAllVideos(
                 val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
                 val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
                 val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
-                val folderIdCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_ID))
                 val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
                 val data = it.getString(it.getColumnIndexOrThrow(DATA))
                 val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
-                val folderPath = data.substringBeforeLast("/")
-                val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
+                val dateModified = it.getLong(it.getColumnIndexOrThrow(DATE_MODIFIED))
                 val fileCursor = File(data)
 
                 if (fileCursor.exists()) {
@@ -143,7 +143,7 @@ suspend fun getVideosFromFolderPath(
                 val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
                 val imagePathCursor = it.getString(it.getColumnIndexOrThrow(DATA))
                 val videoSizeCursor = it.getString(it.getColumnIndexOrThrow(SIZE))
-                val dateModified = it.getString(it.getColumnIndexOrThrow(DATE_MODIFIED))
+                val dateModified = it.getLong(it.getColumnIndexOrThrow(DATE_MODIFIED))
 
 
                 try {
@@ -230,18 +230,20 @@ fun countVideoFilesInFolder(folderPath: String): Int {
 // for converting bytes to MB and GB
 fun getFormattedFileSize(sizeInBytes: Long): String {
     if (sizeInBytes <= 0) return "0 B"
+
     val units = arrayOf("B", "KB", "MB", "GB", "TB")
-    val digitGroups = (log10(sizeInBytes.toDouble()) / log10(1024.0)).toInt()
-    return String.format(
-        "%.1f %s",
-        sizeInBytes / 1024.0.pow(digitGroups.toDouble()),
-        units[digitGroups]
-    )
+    val digitGroups = (ln(sizeInBytes.toDouble()) / ln(1024.0)).toInt()
+
+    val sizeInUnit = sizeInBytes / 1024.0.pow(digitGroups.toDouble())
+    return "%.1f %s".format(sizeInUnit, units[digitGroups])
 }
 
-fun getFormattedDate(lastModified: String): String {
-    val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
-    return sdf.format(Date(lastModified))
+
+fun getFormattedDate(epochTime: Long): String {
+    val date = Date(epochTime * 1000)
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+
+    return dateFormat.format(date)
 }
 
 fun getPathFromURI(context: Context, uri: Uri): String {

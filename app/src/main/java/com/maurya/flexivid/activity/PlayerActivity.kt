@@ -14,8 +14,6 @@ import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
 import android.os.Build.*
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
@@ -25,7 +23,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -33,13 +30,11 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.widget.ImageViewCompat
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer.Builder
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -53,7 +48,6 @@ import com.maurya.flexivid.databinding.ActivityPlayerBinding
 import com.maurya.flexivid.databinding.PopupMoreFeaturesBinding
 import com.maurya.flexivid.databinding.PopupVideoSpeedBinding
 import com.maurya.flexivid.fragments.VideosFragment
-import com.maurya.flexivid.util.OnDoubleClickListener
 import com.maurya.flexivid.util.getPathFromURI
 import com.maurya.flexivid.util.showToast
 import com.maurya.flexivid.util.showTrackSelectionDialog
@@ -62,7 +56,6 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.system.exitProcess
 
 
@@ -149,7 +142,7 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
                             size = "",
                             path = path,
                             image = Uri.fromFile(file),
-                            dateModified = file.lastModified().toString()
+                            dateModified = file.lastModified()
                         )
                         playerList.add(video)
                         cursor.close()
@@ -164,7 +157,7 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
                             size = "",
                             path = tempPath,
                             image = Uri.fromFile(tempFile),
-                            dateModified = tempFile.lastModified().toString()
+                            dateModified = tempFile.lastModified()
                         )
                         playerList.add(video)
                         cursor.close()
@@ -222,31 +215,6 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
                 playVideo()
             }
 
-        }
-
-        findViewById<ImageView>(R.id.fastForwardPlayerActivity).setOnClickListener {
-            OnDoubleClickListener(callback = object : OnDoubleClickListener.Callback {
-                override fun doubleClicked() {
-                    activityPlayerBinding.playerViewPlayerActivity.showController()
-                    findViewById<ImageView>(R.id.fastForwardPlayerActivity).visibility =
-                        View.VISIBLE
-                    player.seekTo(player.currentPosition + 1000)
-                }
-
-            })
-        }
-
-
-        findViewById<ImageView>(R.id.fastBackwardPlayerActivity).setOnClickListener {
-            OnDoubleClickListener(callback = object : OnDoubleClickListener.Callback {
-                override fun doubleClicked() {
-                    activityPlayerBinding.playerViewPlayerActivity.showController()
-                    findViewById<ImageView>(R.id.fastBackwardPlayerActivity).visibility =
-                        View.VISIBLE
-                    player.seekTo(player.currentPosition - 1000)
-                }
-
-            })
         }
 
 

@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import com.maurya.flexivid.databinding.FragmentVideosBinding
 import com.maurya.flexivid.databinding.PopupDetailsBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.SharedPreferenceHelper
+import com.maurya.flexivid.util.getFormattedDate
 import com.maurya.flexivid.util.getFormattedFileSize
 import com.maurya.flexivid.util.showToast
 import com.maurya.flexivid.util.sortMusicList
@@ -47,6 +49,9 @@ import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
@@ -304,7 +309,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         selectedFiles: List<VideoDataClass>
     ) {
 
-        if (selectedFiles.size < 2) {
+        if (selectedFiles.size == 1) {
 
             fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
                 val tempFile = adapterVideo.getFile(position)
@@ -322,7 +327,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
                 renameEditText.requestFocus()
                 renameEditText.setText(tempFile.videoName)
-                renameEditText.setSelection(0, tempFile.videoName.lastIndexOf('.'))
+                renameEditText.selectAll()
                 renameSheetDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
                 renameCancelText.setOnClickListener {
@@ -368,6 +373,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
             }
 
         } else {
+            fragmentVideosBinding.bottomRenameVideoFragment.isClickable = false
             fragmentVideosBinding.bottomRenameIMG.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
@@ -402,61 +408,38 @@ class VideosFragment : Fragment(), OnItemClickListener {
             val popupDetailsNameText = bindingPopUp.popupDetailsNameText
             val popupDetailsPathText = bindingPopUp.popupDetailsPathText
             val popupDetailsSizeText = bindingPopUp.popupDetailsSizeText
-            val popupDetailsLastModifiedText = bindingPopUp.popupDetailsSizeText
+            val popupDetailsLastModifiedText = bindingPopUp.popupDetailsLastModifiedText
             val popupDetailsOKText = bindingPopUp.popupDetailsOKText
+            val popupLocationLayout = bindingPopUp.popUpLocationLayout
+            val popupLastModifiedLayout = bindingPopUp.popUpLastModifiedLayout
+
+            popupDetailsPathText.isSelected = true
 
             if (selectedFiles.size == 1) {
                 val selectedFile = selectedFiles[0]
-                popupDetailsNameText.text = "Name: ${selectedFile.videoName}"
-                popupDetailsPathText.text = "Path: ${selectedFile.path}"
+                popupDetailsNameText.text = selectedFile.videoName
+                popupDetailsPathText.text = selectedFile.path
+
+                Log.d("fragmentDateItemClass", getFormattedDate(selectedFile.dateModified))
+                popupDetailsLastModifiedText.text = getFormattedDate(selectedFile.dateModified)
             } else {
                 popupDetailsNameText.visibility = View.GONE
-                popupDetailsPathText.visibility = View.GONE
+                popupLocationLayout.visibility = View.GONE
+                popupLastModifiedLayout.visibility = View.GONE
             }
 
             var totalSizeInBytes: Long = 0
             selectedFiles.forEach { selectedFile ->
                 totalSizeInBytes += selectedFile.size.toLong()
             }
-            popupDetailsSizeText.text = "Total Size: ${getFormattedFileSize(totalSizeInBytes)}"
-            val lastModified = selectedFiles.maxByOrNull { it.dateModified }?.dateModified ?: 0
-            popupDetailsLastModifiedText.text = lastModified.toString()
+
+            popupDetailsSizeText.text = getFormattedFileSize(totalSizeInBytes)
 
             popupDetailsOKText.setOnClickListener { dialog.dismiss() }
 
             dialog.show()
         }
 
-        fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener {
-
-            if (selectedFiles.isNotEmpty()) {
-                val fileUris = ArrayList<Uri>()
-                val fileNames = ArrayList<String>()
-
-                for (selectedFile in selectedFiles) {
-                    val file = File(selectedFile.path)
-                    val fileUri = FileProvider.getUriForFile(
-                        requireContext(),
-                        "${requireContext().packageName}.provider",
-                        file
-                    )
-                    fileUris.add(fileUri)
-                    fileNames.add(file.name)
-                }
-
-                if (fileUris.isNotEmpty()) {
-                    val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
-                    shareIntent.type = "*/*"
-                    shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
-                    startActivity(
-                        Intent.createChooser(
-                            shareIntent,
-                            "Share ${fileNames.size} files"
-                        )
-                    )
-                }
-            }
-        }
 
 
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
@@ -471,7 +454,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
             val deleteDeleteText = deleteSheetView.findViewById<TextView>(R.id.deleteDeleteText)
             val deleteCancelText = deleteSheetView.findViewById<TextView>(R.id.deleteCancelText)
 
-            deleteSelectedText.text = "Delete $selectedFiles selected items"
+            deleteSelectedText.text = "Delete ${selectedFiles.size} selected items"
 
             deleteDeleteText.setOnClickListener {
                 val toDelete = videoList.filter { it.isChecked }
@@ -500,6 +483,30 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
 
 
+        //for sending files
+        fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener {
+
+            val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
+            shareIntent.type = "video/*"
+
+            val fileUris = ArrayList<Uri>()
+            val fileNames = ArrayList<String>()
+            for (videoData in selectedFiles) {
+                val file = File(videoData.path)
+                val uri = Uri.parse(file.path)
+                fileUris.add(uri)
+                fileNames.add(file.name)
+            }
+
+            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
+            val chooserTitle = "Share ${fileNames.size} Video Files"
+            ContextCompat.startActivity(
+                requireContext(),
+                Intent.createChooser(shareIntent, chooserTitle),
+                null
+            )
+
+        }
     }
 
 

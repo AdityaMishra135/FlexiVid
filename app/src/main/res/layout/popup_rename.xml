@@ -58,8 +58,9 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_edittext"
-                android:paddingStart="15dp"
                 android:text="HELLO"
+                android:paddingHorizontal="15dp"
+                android:singleLine="true"
                 android:textColor="@color/ImageViewAndTextViewColour"
                 android:textSize="14sp" />
 

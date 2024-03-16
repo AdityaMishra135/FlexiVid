@@ -40,7 +40,6 @@ class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Co
     }
 
 
-
     //Ui SKin
     /*
     val colorList = listOf(

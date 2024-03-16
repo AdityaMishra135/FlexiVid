@@ -12,7 +12,6 @@
         android:id="@+id/topController"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="25dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +23,7 @@
             android:id="@+id/backPlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginStart="35dp"
             android:backgroundTint="@android:color/transparent"
             android:padding="15dp"
             android:src="@drawable/icon_back"
@@ -58,7 +58,7 @@
             android:id="@+id/lockEnablePlayerActivity"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="30dp"
             android:backgroundTint="@android:color/transparent"
             android:padding="12dp"
             android:src="@drawable/icon_unlock"
@@ -78,15 +78,6 @@
 
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fastBackwardPlayerActivity"
-            android:layout_width="65dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="11dp"
-            android:src="@drawable/icon_fast_backward"
-            android:visibility="invisible" />
-
-        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/playPausePlayerActivity"
             android:layout_width="60dp"
             android:layout_height="65dp"
@@ -97,15 +88,6 @@
             android:padding="12dp"
             android:src="@drawable/icon_play"
             app:tint="#FFFFFF" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fastForwardPlayerActivity"
-            android:layout_width="65dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="11dp"
-            android:src="@drawable/icon_fast_forward"
-            android:visibility="invisible" />
 
 
     </LinearLayout>

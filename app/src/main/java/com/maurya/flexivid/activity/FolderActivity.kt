@@ -109,15 +109,4 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
     }
 
 
-//    override suspend fun onVideosFetched(videoList: ArrayList<VideoDataClass>) {
-////        fragmentVideosBinding.progressBar.visibility = View.GONE
-////        fragmentVideosBinding.recyclerViewVideosFragment.visibility = View.VISIBLE
-//        Log.d("UpdateItemClassOnVideoFetchedFolder", videoList.size.toString())
-//
-//        adapterVideo =
-//            AdapterVideo(this, this, videoList, isFolder = true)
-//        activityFolderBinding.recyclerViewFolderActivity.adapter = adapterVideo
-//        adapterVideo.notifyDataSetChanged()
-//    }
-
 }
