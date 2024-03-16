@@ -52,16 +52,6 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
 
     }
 
-
-//    private val _videoList = MutableLiveData<ArrayList<VideoDataClass>>()
-//    val videoList: LiveData<ArrayList<VideoDataClass>> = _videoList
-//
-//    fun fetchVideos(context: Context) {
-//        viewModelScope.launch {
-//            _videoList.value = getAllVideos(context)
-//        }
-//    }
-
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
 

@@ -3,6 +3,7 @@ package com.maurya.flexivid.database
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -42,11 +43,13 @@ class AdapterVideo(
         with(holder) {
             videoTitle.isSelected = true
 
-            videoTitle.text = currentItem.videoName
+            val videoNameWithoutExtension = currentItem.videoName.substringBeforeLast('.')
+            videoTitle.text = videoNameWithoutExtension
             folderName.text = currentItem.folderName
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
-//            holder.image.setImageResource(R.drawable.mp4)
+            Log.d("videoNameItemClass",currentItem.videoName)
+            Log.d("videoPathItemClass",currentItem.path)
 
             Glide.with(context)
                 .asBitmap()

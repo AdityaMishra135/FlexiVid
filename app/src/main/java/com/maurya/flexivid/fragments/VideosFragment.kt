@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.searchList
@@ -103,7 +105,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         sortingOrder = sharedPreferencesHelper.getSortingOrder().toString()
 
         lifecycle.addObserver(viewModel)
-        viewModel.fetchVideos(requireContext())
 
         fragmentVideosBinding.recyclerViewVideosFragment.apply {
             setHasFixedSize(true)
@@ -113,7 +114,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
             adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
             adapter = adapterVideo
         }
+        fetchVideosUsingViewModel()
 
+        listener()
+    }
+
+    private fun fetchVideosUsingViewModel() {
+        viewModel.fetchVideos(requireContext())
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.videosStateFLow.collect {
@@ -144,8 +151,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
-
-        listener()
     }
 
     private fun listener() {
@@ -295,8 +300,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         val selectedFiles = videoList.filter { it.isChecked }
 
-
-
         bottomDialogFunction(position, selectedFiles)
 
 
@@ -309,86 +312,50 @@ class VideosFragment : Fragment(), OnItemClickListener {
         selectedFiles: List<VideoDataClass>
     ) {
 
-        if (selectedFiles.size == 1) {
 
-            fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
-                val tempFile = adapterVideo.getFile(position)
-                val renameSheetDialog =
-                    BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
-                val renameSheetView: View =
-                    LayoutInflater.from(requireContext()).inflate(R.layout.popup_rename, null)
-                renameSheetDialog.setContentView(renameSheetView)
-                renameSheetDialog.setCanceledOnTouchOutside(true)
+        //for deleting file
+        fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
 
-                val renameEditText = renameSheetView.findViewById<EditText>(R.id.rename_EditText)
-                val renameCancelText =
-                    renameSheetView.findViewById<TextView>(R.id.rename_CancelText)
-                val renameOKText = renameSheetView.findViewById<TextView>(R.id.rename_OKText)
+            val deleteSheetDialog =
+                BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
+            val deleteSheetView = layoutInflater.inflate(R.layout.popup_delete, null)
+            deleteSheetDialog.setContentView(deleteSheetView)
+            deleteSheetDialog.setCanceledOnTouchOutside(true)
+            val deleteSelectedText =
+                deleteSheetView.findViewById<TextView>(R.id.deleteSelectedText)
+            val deleteDeleteText = deleteSheetView.findViewById<TextView>(R.id.deleteDeleteText)
+            val deleteCancelText = deleteSheetView.findViewById<TextView>(R.id.deleteCancelText)
 
-                renameEditText.requestFocus()
-                renameEditText.setText(tempFile.videoName)
-                renameEditText.selectAll()
-                renameSheetDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            deleteSelectedText.text = "Delete ${selectedFiles.size} selected items"
 
-                renameCancelText.setOnClickListener {
-                    renameSheetDialog.dismiss()
-                }
-
-                renameOKText.setOnClickListener {
-                    val newName = renameEditText.text.toString().trim()
-
-                    if (newName.isNotEmpty()) {
-                        val currentFile = File(tempFile.path)
-                        val newFile =
-                            File(currentFile.parentFile, "$newName.${currentFile.extension}")
-
-                        if (!newFile.exists() || newFile == currentFile) {
-                            if (currentFile.renameTo(newFile)) {
-                                MediaScannerConnection.scanFile(
-                                    requireContext(),
-                                    arrayOf(newFile.toString()),
-                                    arrayOf("video/*"),
-                                    null
-                                )
-                                videoList[position].apply {
-                                    videoName = newName
-                                    path = newFile.path
-                                    image = Uri.fromFile(newFile)
-                                }
-                                adapterVideo.notifyItemChanged(position)
-                            } else {
-                                showToast(requireContext(), "Error in renaming File!!")
-                            }
-                        } else {
-                            showToast(requireContext(), "File with the same name already exists!")
-                        }
-                    } else {
-                        showToast(requireContext(), "Please provide a valid name!")
-                    }
-                    renameSheetDialog.dismiss()
-                }
-
-                changeVisibility(false)
-                renameSheetDialog.show()
+            deleteCancelText.setOnClickListener {
+                deleteSheetDialog.dismiss()
             }
 
-        } else {
-            fragmentVideosBinding.bottomRenameVideoFragment.isClickable = false
-            fragmentVideosBinding.bottomRenameIMG.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red
-                ), PorterDuff.Mode.SRC_ATOP
-            )
-            fragmentVideosBinding.bottomRenameTXT.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red
-                )
-            )
+            deleteDeleteText.setOnClickListener {
+                val toDelete = videoList.filter { it.isChecked }
+                toDelete.forEach { videoItem ->
+                    val file = File(videoItem.path)
+                    if (file.exists()) {
+                        file.delete()
+                        MediaScannerConnection.scanFile(
+                            requireContext(), arrayOf(file.toString()),
+                            arrayOf("video/*"), null
+                        )
+                    }
+                }
+                videoList.removeAll(toDelete.toSet())
+                adapterVideo.notifyDataSetChanged()
+                deleteSheetDialog.dismiss()
+            }
+
+
+            deleteSheetDialog.show()
+
+
         }
 
-
+        //details of file
         fragmentVideosBinding.bottomDetailsVideoFragment.setOnClickListener {
 
             val popUpDialog = LayoutInflater.from(requireContext())
@@ -440,48 +407,72 @@ class VideosFragment : Fragment(), OnItemClickListener {
             dialog.show()
         }
 
+        //for renaming file
+        if (selectedFiles.size == 1) {
 
+            fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
+                val renameSheetDialog =
+                    BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
+                val renameSheetView: View =
+                    LayoutInflater.from(requireContext()).inflate(R.layout.popup_rename, null)
+                renameSheetDialog.setContentView(renameSheetView)
+                renameSheetDialog.setCanceledOnTouchOutside(true)
 
-        fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
+                val renameEditText = renameSheetView.findViewById<EditText>(R.id.rename_EditText)
+                val renameCancelText =
+                    renameSheetView.findViewById<TextView>(R.id.rename_CancelText)
+                val renameOKText = renameSheetView.findViewById<TextView>(R.id.rename_OKText)
 
-            val deleteSheetDialog =
-                BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
-            val deleteSheetView = layoutInflater.inflate(R.layout.popup_delete, null)
-            deleteSheetDialog.setContentView(deleteSheetView)
-            deleteSheetDialog.setCanceledOnTouchOutside(true)
-            val deleteSelectedText =
-                deleteSheetView.findViewById<TextView>(R.id.deleteSelectedText)
-            val deleteDeleteText = deleteSheetView.findViewById<TextView>(R.id.deleteDeleteText)
-            val deleteCancelText = deleteSheetView.findViewById<TextView>(R.id.deleteCancelText)
+                val videoNameWithoutExtension = videoList[position].videoName.substringBeforeLast('.')
+                renameEditText.setText(videoNameWithoutExtension)
+                renameEditText.requestFocus()
+                renameEditText.selectAll()
+                renameSheetDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-            deleteSelectedText.text = "Delete ${selectedFiles.size} selected items"
-
-            deleteDeleteText.setOnClickListener {
-                val toDelete = videoList.filter { it.isChecked }
-                toDelete.forEach { videoItem ->
-                    val file = File(videoItem.path)
-                    if (file.exists()) {
-                        file.delete()
-                        MediaScannerConnection.scanFile(
-                            requireContext(), arrayOf(file.toString()),
-                            arrayOf("video/*"), null
-                        )
-                    }
+                renameCancelText.setOnClickListener {
+                    renameSheetDialog.dismiss()
                 }
-                videoList.removeAll(toDelete.toSet())
-                adapterVideo.notifyDataSetChanged()
-                deleteSheetDialog.dismiss()
+
+                renameOKText.setOnClickListener {
+                    val newName = renameEditText.text.toString().trim()
+                    val currentFile = File(videoList[position].path)
+
+                    if (currentFile.exists() && newName.isNotEmpty()) {
+                        val newFile =
+                            File(currentFile.parent, "$newName.${currentFile.extension}")
+
+                        if (currentFile.renameTo(newFile)) {
+                            videoList[position].videoName = newFile.name
+                            videoList[position].path = newFile.path
+                            adapterVideo.notifyDataSetChanged()
+                            fetchVideosUsingViewModel()
+                        } else {
+                            showToast(requireContext(), "Failed to rename file")
+                        }
+                    } else {
+                        showToast(requireContext(), "Please provide a valid name!")
+                    }
+
+                    renameSheetDialog.dismiss()
+                }
+                renameSheetDialog.show()
             }
 
-            deleteCancelText.setOnClickListener {
-                deleteSheetDialog.dismiss()
-            }
-
-            deleteSheetDialog.show()
-
-
+        } else {
+            fragmentVideosBinding.bottomRenameVideoFragment.isClickable = false
+            fragmentVideosBinding.bottomRenameIMG.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.red
+                ), PorterDuff.Mode.SRC_ATOP
+            )
+            fragmentVideosBinding.bottomRenameTXT.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.red
+                )
+            )
         }
-
 
         //for sending files
         fragmentVideosBinding.bottomSendVideoFragment.setOnClickListener {
@@ -507,6 +498,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
             )
 
         }
+
     }
 
 

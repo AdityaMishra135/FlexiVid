@@ -43,8 +43,9 @@ suspend fun getAllVideos(
         val tempList = ArrayList<VideoDataClass>()
 
         val projection = arrayOf(
-            _ID, TITLE, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
+            _ID, TITLE,DISPLAY_NAME, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
         )
+
         val cursor = context.contentResolver.query(
             EXTERNAL_CONTENT_URI, projection, null, null,
             "DATE_ADDED DESC"
@@ -53,7 +54,7 @@ suspend fun getAllVideos(
         cursor?.use {
             while (it.moveToNext()) {
                 val idCursor = it.getString(it.getColumnIndexOrThrow(_ID))
-                val videoNameCursor = it.getString(it.getColumnIndexOrThrow(TITLE))
+                val videoNameCursor = it.getString(it.getColumnIndexOrThrow(DISPLAY_NAME))
                 val folderNameCursor = it.getString(it.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME))
                 val durationCursor = it.getLong(it.getColumnIndexOrThrow(DURATION))
                 val data = it.getString(it.getColumnIndexOrThrow(DATA))
@@ -189,16 +190,14 @@ fun sortMusicList(
         "DATE_ADDED DESC" -> videoList.sortByDescending { it.dateModified }
         "SIZE ASC" -> videoList.sortBy { it.durationText }
         "SIZE DESC" -> videoList.sortByDescending { it.durationText }
-        "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName }
-        "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName }
+        "DISPLAY_NAME ASC" -> videoList.sortBy { it.videoName.lowercase() }
+        "DISPLAY_NAME DESC" -> videoList.sortByDescending { it.videoName.lowercase() }
         else -> {
             videoList.sortByDescending { it.dateModified }
         }
     }
     adapterVideo.notifyDataSetChanged()
 }
-
-
 
 
 fun countVideoFilesInFolder(folderPath: String): Int {
