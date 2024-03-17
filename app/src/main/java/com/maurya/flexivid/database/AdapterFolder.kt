@@ -62,24 +62,17 @@ class AdapterFolder(
 
 
     inner class FolderHolder(binding: ItemFolderBinding) :
-        RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root) {
         val folderName = binding.folderNameFolderItem
         val folderItemCount = binding.folderItemCountFolderItem
         val root = binding.root
 
 
         init {
-            root.setOnClickListener(this)
+
         }
 
 
-        override fun onClick(p0: View?) {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClickListener(position)
-            }
-        }
 
     }
 }

@@ -160,163 +160,92 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomSendVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Send"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_share" />
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_share" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomMoveVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Move"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_move" />
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_move" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Move"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomDeleteVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Delete"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_delete" />
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_delete" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Delete"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomCopyVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Copy"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_copy" />
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_copy" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Copy"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomRenameVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Rename"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_rename" />
 
-            <ImageView
-                android:id="@+id/bottomRenameIMG"
-                android:layout_width="30dp"
-                android:layout_height="22dp"
-                android:src="@drawable/icon_rename" />
-
-            <TextView
-                android:id="@+id/bottomRenameTXT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Rename"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/bottomDetailsVideoFragment"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_about" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Detail"
-                android:textColor="@color/ImageViewAndTextViewColour"
-                android:textSize="12sp" />
-
-        </LinearLayout>
+            android:text="Details"
+            android:textColor="@color/ImageViewAndTextViewColour"
+            android:textSize="12sp"
+            app:drawableTopCompat="@drawable/icon_about" />
 
 
     </LinearLayout>

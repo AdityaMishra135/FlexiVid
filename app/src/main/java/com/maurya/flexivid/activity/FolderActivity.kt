@@ -98,10 +98,6 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
     }
 
 
-    override fun onItemClickListener(position: Int) {
-
-
-    }
 
     override fun onItemLongClickListener(position: Int) {
 

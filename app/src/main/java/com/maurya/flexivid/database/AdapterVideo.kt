@@ -26,7 +26,29 @@ class AdapterVideo(
 ) : RecyclerView.Adapter<AdapterVideo.VideoHolder>() {
 
 
-    private var itemSelectedList = mutableListOf<Int>()
+    private val itemSelectedList: ArrayList<VideoDataClass> = arrayListOf()
+    private var isLongClickMode = false
+
+    private var onItemSelectedListener: ((Int) -> Unit)? = null
+
+    fun setOnItemSelectedListener(listener: (Int) -> Unit) {
+        onItemSelectedListener = listener
+    }
+
+    fun getItemSelectedList(): ArrayList<VideoDataClass> {
+        return itemSelectedList
+    }
+
+    fun clearItemSelectedList() {
+        itemSelectedList.clear()
+        itemList.forEach { it.isChecked = false }
+        notifyDataSetChanged()
+    }
+
+    fun setLongClickMode(enabled: Boolean) {
+        isLongClickMode = enabled
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {
         val binding = ItemVideoBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -46,9 +68,6 @@ class AdapterVideo(
             folderName.text = currentItem.folderName
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
-            Log.d("videoNameItemClass", currentItem.videoName)
-            Log.d("videoPathItemClass", currentItem.path)
-
             Glide.with(context)
                 .asBitmap()
                 .load(currentItem.image)
@@ -58,33 +77,48 @@ class AdapterVideo(
                 .into(image)
 
             root.setOnClickListener {
-                when {
-                    itemList[position].id == PlayerActivity.nowPlayingId -> {
-                        sendIntent(context, position, "nowPlaying")
-                    }
+                if (!isLongClickMode) {
+                    when {
+                        itemList[position].id == PlayerActivity.nowPlayingId -> {
+                            sendIntent(context, position, "nowPlaying")
+                        }
 
-                    isFolder -> {
-                        PlayerActivity.pipStatus = 1
-                        sendIntent(context, position, "folderActivity")
-                    }
+                        isFolder -> {
+                            PlayerActivity.pipStatus = 1
+                            sendIntent(context, position, "folderActivity")
+                        }
 
-                    MainActivity.search -> {
-                        PlayerActivity.pipStatus = 2
-                        sendIntent(context, position, "searchView")
-                    }
+                        MainActivity.search -> {
+                            PlayerActivity.pipStatus = 2
+                            sendIntent(context, position, "searchView")
+                        }
 
-                    else -> {
-                        PlayerActivity.pipStatus = 3
-                        sendIntent(context, position, "allVideos")
+                        else -> {
+                            PlayerActivity.pipStatus = 3
+                            sendIntent(context, position, "allVideos")
+                        }
                     }
+                } else {
+                    itemList[position].isChecked = !itemList[position].isChecked
+                    checkBox.isChecked = itemList[position].isChecked
                 }
             }
 
 
+            checkBox.visibility = if (isLongClickMode) View.VISIBLE else View.GONE
+
+
+
+            checkBox.isChecked = itemList[position].isChecked
+
             checkBox.setOnCheckedChangeListener { _, isChecked ->
-                if (itemList[position].isChecked != isChecked) {
-                    itemList[position].isChecked = isChecked
+                itemList[position].isChecked = isChecked
+                if (isChecked) {
+                    itemSelectedList.add(itemList[position])
+                } else {
+                    itemSelectedList.remove(itemList[position])
                 }
+                onItemSelectedListener?.invoke(itemSelectedList.size)
             }
 
         }
@@ -106,8 +140,7 @@ class AdapterVideo(
 
 
     inner class VideoHolder(binding: ItemVideoBinding) :
-        RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener, View.OnLongClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnLongClickListener {
         val videoTitle = binding.videoNameVideoItem
         val folderName = binding.pathNameVideoItem
         val durationText = binding.videoDurationVideoItem
@@ -115,33 +148,21 @@ class AdapterVideo(
         val root = binding.root
         val checkBox = binding.checkBoxVideoItem
 
-
         init {
-            root.setOnClickListener(this)
             root.setOnLongClickListener(this)
         }
 
-        override fun onClick(p0: View?) {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClickListener(position)
-            }
-        }
 
-        override fun onLongClick(p0: View?): Boolean {
+        override fun onLongClick(view: View?): Boolean {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                for (i in itemList.indices) {
-                    checkBox.visibility = View.VISIBLE
-                }
+                isLongClickMode = !isLongClickMode
                 itemList[position].isChecked = true
-                checkBox.isChecked = true
                 listener.onItemLongClickListener(position)
             }
             return true
         }
-
-
     }
+
 
 }

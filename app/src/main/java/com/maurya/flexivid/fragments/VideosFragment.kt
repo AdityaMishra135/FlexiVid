@@ -60,6 +60,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class VideosFragment : Fragment(), OnItemClickListener {
 
+    private var isLongClickMode = false
 
     private lateinit var fragmentVideosBinding: FragmentVideosBinding
     private lateinit var adapterVideo: AdapterVideo
@@ -157,6 +158,11 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         searchVisibility(false)
 
+        adapterVideo.setOnItemSelectedListener { selectedCount ->
+            fragmentVideosBinding.topToolbarSelectedtext.text = "$selectedCount Selected"
+        }
+
+
         fragmentVideosBinding.nowPlayingVideoFragment.setOnClickListener {
             val intent = Intent(requireContext(), PlayerActivity::class.java)
             intent.putExtra("class", "nowPlaying")
@@ -169,6 +175,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         fragmentVideosBinding.topToolbarClose.setOnClickListener {
             changeVisibility(false)
+            showToast(requireContext(), adapterVideo.getItemSelectedList().size.toString())
+            adapterVideo.clearItemSelectedList()
+            exitLongClickMode()
         }
 
 
@@ -275,9 +284,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
     }
 
 
-    override fun onItemClickListener(position: Int) {
-
-    }
 
     private fun changeVisibility(visible: Boolean) {
         if (!visible) {
@@ -297,18 +303,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
     override fun onItemLongClickListener(position: Int) {
         changeVisibility(true)
 
-        val selectedFiles = videoList.filter { it.isChecked }
+        adapterVideo.setLongClickMode(true)
 
-        bottomDialogFunction(position, selectedFiles)
-
-    }
-
-
-    @SuppressLint("SetTextI18n", "InflateParams", "NotifyDataSetChanged")
-    private fun bottomDialogFunction(
-        position: Int,
-        selectedFiles: List<VideoDataClass>
-    ) {
+        val selectedFiles: ArrayList<VideoDataClass> = adapterVideo.getItemSelectedList()
 
         //for deleting file
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
@@ -420,7 +417,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
                     renameSheetView.findViewById<TextView>(R.id.rename_CancelText)
                 val renameOKText = renameSheetView.findViewById<TextView>(R.id.rename_OKText)
 
-                val videoNameWithoutExtension = videoList[position].videoName.substringBeforeLast('.')
+                val videoNameWithoutExtension =
+                    videoList[position].videoName.substringBeforeLast('.')
                 renameEditText.setText(videoNameWithoutExtension)
                 renameEditText.requestFocus()
                 renameEditText.selectAll()
@@ -457,13 +455,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         } else {
             fragmentVideosBinding.bottomRenameVideoFragment.isClickable = false
-            fragmentVideosBinding.bottomRenameIMG.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red
-                ), PorterDuff.Mode.SRC_ATOP
-            )
-            fragmentVideosBinding.bottomRenameTXT.setTextColor(
+//            fragmentVideosBinding.bottomRenameIMG.setColorFilter(
+//                ContextCompat.getColor(
+//                    requireContext(),
+//                    R.color.red
+//                ), PorterDuff.Mode.SRC_ATOP
+//            )
+            fragmentVideosBinding.bottomRenameVideoFragment.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.red
@@ -496,22 +494,20 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         }
 
+
+
     }
+
+    private fun exitLongClickMode() {
+        adapterVideo.setLongClickMode(false)
+    }
+
 
 
     override fun onResume() {
         super.onResume()
         if (PlayerActivity.position != -1) {
             fragmentVideosBinding.nowPlayingVideoFragment.visibility = View.VISIBLE
-        }
-        checkProgress()
-    }
-
-    private fun checkProgress() {
-        if (fragmentVideosBinding.recyclerViewVideosFragment.isEmpty()) {
-            fragmentVideosBinding.progressBar.visibility = View.VISIBLE
-        } else {
-            fragmentVideosBinding.progressBar.visibility = View.GONE
         }
     }
 
