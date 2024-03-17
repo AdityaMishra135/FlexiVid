@@ -297,11 +297,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
     override fun onItemLongClickListener(position: Int) {
         changeVisibility(true)
 
-
         val selectedFiles = videoList.filter { it.isChecked }
 
         bottomDialogFunction(position, selectedFiles)
-
 
     }
 
@@ -311,7 +309,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         position: Int,
         selectedFiles: List<VideoDataClass>
     ) {
-
 
         //for deleting file
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {

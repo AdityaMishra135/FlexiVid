@@ -6,9 +6,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -19,25 +17,25 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.sendIntent
-import java.io.File
 
 class AdapterVideo(
     private val context: Context,
     private var listener: OnItemClickListener,
     private var itemList: ArrayList<VideoDataClass> = arrayListOf(),
-    private val isFolder: Boolean = false,
-    private var isLongClickListenerInitialized: Boolean = false
-) : RecyclerView.Adapter<AdapterVideo.DayHolder>() {
+    private val isFolder: Boolean = false
+) : RecyclerView.Adapter<AdapterVideo.VideoHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayHolder {
+    private var itemSelectedList = mutableListOf<Int>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {
         val binding = ItemVideoBinding.inflate(LayoutInflater.from(context), parent, false)
 
-        return DayHolder(binding)
+        return VideoHolder(binding)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: DayHolder, position: Int) {
+    override fun onBindViewHolder(holder: VideoHolder, position: Int) {
         val currentItem = itemList[position]
 
         with(holder) {
@@ -48,8 +46,8 @@ class AdapterVideo(
             folderName.text = currentItem.folderName
             durationText.text = DateUtils.formatElapsedTime(currentItem.durationText / 1000)
 
-            Log.d("videoNameItemClass",currentItem.videoName)
-            Log.d("videoPathItemClass",currentItem.path)
+            Log.d("videoNameItemClass", currentItem.videoName)
+            Log.d("videoPathItemClass", currentItem.path)
 
             Glide.with(context)
                 .asBitmap()
@@ -60,64 +58,43 @@ class AdapterVideo(
                 .into(image)
 
             root.setOnClickListener {
+                when {
+                    itemList[position].id == PlayerActivity.nowPlayingId -> {
+                        sendIntent(context, position, "nowPlaying")
+                    }
 
-                if (isLongClickListenerInitialized) {
-                    itemList[position].isChecked = !itemList[position].isChecked
-                    isLongClickListenerInitialized = false
-                } else {
-                    when {
-                        itemList[position].id == PlayerActivity.nowPlayingId -> {
-                            sendIntent(context, position, "nowPlaying")
-                        }
+                    isFolder -> {
+                        PlayerActivity.pipStatus = 1
+                        sendIntent(context, position, "folderActivity")
+                    }
 
-                        isFolder -> {
-                            PlayerActivity.pipStatus = 1
-                            sendIntent(context, position, "folderActivity")
-                        }
+                    MainActivity.search -> {
+                        PlayerActivity.pipStatus = 2
+                        sendIntent(context, position, "searchView")
+                    }
 
-                        MainActivity.search -> {
-                            PlayerActivity.pipStatus = 2
-                            sendIntent(context, position, "searchView")
-                        }
-
-                        else -> {
-                            PlayerActivity.pipStatus = 3
-                            sendIntent(context, position, "allVideos")
-                        }
+                    else -> {
+                        PlayerActivity.pipStatus = 3
+                        sendIntent(context, position, "allVideos")
                     }
                 }
             }
-//
-//            root.setOnLongClickListener {
-//                isLongClickListenerInitialized = true
-//
-//                true
-//            }
 
-            if (currentItem.isChecked) {
-                checkBox.isChecked = true
+
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if (itemList[position].isChecked != isChecked) {
+                    itemList[position].isChecked = isChecked
+                }
             }
-
 
         }
 
 
     }
 
-    fun addItems(newItems: List<VideoDataClass>) {
-        val startPosition = itemList.size
-        itemList.addAll(newItems)
-        notifyItemRangeInserted(startPosition, newItems.size)
-    }
 
     override fun getItemCount(): Int {
         return itemList.size
-    }
-
-    fun updateVideoList(videoList: ArrayList<VideoDataClass>) {
-        itemList = ArrayList()
-        itemList.addAll(videoList)
-        notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -127,11 +104,8 @@ class AdapterVideo(
         notifyDataSetChanged()
     }
 
-    fun getFile(position: Int): VideoDataClass {
-        return itemList[position]
-    }
 
-    inner class DayHolder(binding: ItemVideoBinding) :
+    inner class VideoHolder(binding: ItemVideoBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener, View.OnLongClickListener {
         val videoTitle = binding.videoNameVideoItem
@@ -140,6 +114,7 @@ class AdapterVideo(
         val image = binding.videoImageVideoItem
         val root = binding.root
         val checkBox = binding.checkBoxVideoItem
+
 
         init {
             root.setOnClickListener(this)
@@ -155,18 +130,17 @@ class AdapterVideo(
 
         override fun onLongClick(p0: View?): Boolean {
             val position = adapterPosition
-            val currentFile = File(itemList[position].path)
-            itemList[position].isChecked = true
-
             if (position != RecyclerView.NO_POSITION) {
-                for (item in itemList) {
+                for (i in itemList.indices) {
                     checkBox.visibility = View.VISIBLE
                 }
-                notifyDataSetChanged()
-                listener.onItemLongClickListener( position)
+                itemList[position].isChecked = true
+                checkBox.isChecked = true
+                listener.onItemLongClickListener(position)
             }
             return true
         }
+
 
     }
 
