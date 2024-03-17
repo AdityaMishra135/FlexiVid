@@ -1,6 +1,8 @@
 package com.maurya.flexivid.viewModelsObserver
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.maurya.flexivid.dataEntities.FolderDataClass
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.util.getAllFolders
@@ -31,6 +33,8 @@ class Repository @Inject constructor() {
         MutableStateFlow<ModelResult<ArrayList<VideoDataClass>>>(ModelResult.Loading())
 
     val videosFromFolderStateFlow: StateFlow<ModelResult<ArrayList<VideoDataClass>>> get() = _videosFromFolderStateFlow
+
+
 
 
     private val _statusStateFlow = MutableStateFlow<ModelResult<String>>(ModelResult.Loading())
@@ -77,49 +81,6 @@ class Repository @Inject constructor() {
 
     }
 
-
-    /*
-        suspend fun createNotes(noteRequest: NoteRequest) {
-            _statusStateFlow.emit(Result.Loading())
-            try {
-                val response = notesAPI.createNote(noteRequest)
-                handleResponse(response, "Notes Created")
-            } catch (e: Exception) {
-                _notesStateFlow.emit(Result.Error("Something went wrong"))
-            }
-        }
-
-        suspend fun updateVideos(noteId: String, noteRequest: NoteRequest) {
-            _statusStateFlow.emit(VideoResult.Loading())
-            try {
-                val response = notesAPI.updateNote(noteId, noteRequest)
-                handleResponse(response, "Note Updated")
-            } catch (e: Exception) {
-                _notesStateFlow.emit(VideoResult.Error("Something went wrong"))
-            }
-        }
-
-        suspend fun deleteVideos(noteId: String) {
-            _statusStateFlow.emit(VideoResult.Loading())
-            try {
-                val response = notesAPI.deleteNote(noteId)
-                handleResponse(response, "Note Deleted")
-            } catch (e: Exception) {
-                _notesStateFlow.emit(VideoResult.Error("Something went wrong"))
-            }
-
-        }
-
-
-        private suspend fun handleResponse(response: Response<VideoDataClass>, message: String) {
-            if (response.isSuccessful && response.body() != null) {
-                _statusStateFlow.emit(VideoResult.Success(message))
-            } else {
-                _videosStateFlow.emit(VideoResult.Error("Something went wrong"))
-            }
-        }
-
-    */
 
 }
 

@@ -3,10 +3,10 @@ package com.maurya.flexivid.database
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -17,37 +17,33 @@ import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.sendIntent
+import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
 
 class AdapterVideo(
     private val context: Context,
     private var listener: OnItemClickListener,
     private var itemList: ArrayList<VideoDataClass> = arrayListOf(),
+    private val viewModel: ViewModelObserver,
+    private val lifecycleOwner: LifecycleOwner,
     private val isFolder: Boolean = false
 ) : RecyclerView.Adapter<AdapterVideo.VideoHolder>() {
 
-
-    private val itemSelectedList: ArrayList<VideoDataClass> = arrayListOf()
     private var isLongClickMode = false
-
-    private var onItemSelectedListener: ((Int) -> Unit)? = null
-
-    fun setOnItemSelectedListener(listener: (Int) -> Unit) {
-        onItemSelectedListener = listener
-    }
-
-    fun getItemSelectedList(): ArrayList<VideoDataClass> {
-        return itemSelectedList
-    }
-
-    fun clearItemSelectedList() {
-        itemSelectedList.clear()
-        itemList.forEach { it.isChecked = false }
-        notifyDataSetChanged()
-    }
 
     fun setLongClickMode(enabled: Boolean) {
         isLongClickMode = enabled
         notifyDataSetChanged()
+    }
+
+    init {
+        viewModel.selectedItems.observe(lifecycleOwner) { selectedItems ->
+            selectedItems.forEach { selectedItem ->
+                val index = itemList.indexOf(selectedItem)
+                if (index != -1) {
+                    notifyItemChanged(index)
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {
@@ -99,27 +95,14 @@ class AdapterVideo(
                         }
                     }
                 } else {
-                    itemList[position].isChecked = !itemList[position].isChecked
-                    checkBox.isChecked = itemList[position].isChecked
+                    viewModel.toggleSelection(currentItem)
                 }
             }
 
+            checkBox.isChecked = viewModel.selectedItems.value?.contains(currentItem) == true
 
             checkBox.visibility = if (isLongClickMode) View.VISIBLE else View.GONE
 
-
-
-            checkBox.isChecked = itemList[position].isChecked
-
-            checkBox.setOnCheckedChangeListener { _, isChecked ->
-                itemList[position].isChecked = isChecked
-                if (isChecked) {
-                    itemSelectedList.add(itemList[position])
-                } else {
-                    itemSelectedList.remove(itemList[position])
-                }
-                onItemSelectedListener?.invoke(itemSelectedList.size)
-            }
 
         }
 
@@ -157,11 +140,12 @@ class AdapterVideo(
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 isLongClickMode = !isLongClickMode
-                itemList[position].isChecked = true
+                viewModel.toggleSelection(itemList[position])
                 listener.onItemLongClickListener(position)
             }
             return true
         }
+
     }
 
 

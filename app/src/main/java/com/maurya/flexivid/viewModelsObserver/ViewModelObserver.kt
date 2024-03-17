@@ -1,11 +1,12 @@
 package com.maurya.flexivid.viewModelsObserver
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.util.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +52,33 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
         }
 
     }
+
+    //checkBox
+    private val _selectedItems = MutableLiveData<ArrayList<VideoDataClass>>()
+    val selectedItems: MutableLiveData<ArrayList<VideoDataClass>> = _selectedItems
+
+    init {
+        _selectedItems.value = arrayListOf()
+    }
+
+    fun toggleSelection(item: VideoDataClass) {
+        val selectedSet = _selectedItems.value ?: arrayListOf()
+        if (selectedSet.contains(item)) {
+            selectedSet.remove(item)
+        } else {
+            selectedSet.add(item)
+        }
+        _selectedItems.value = selectedSet
+    }
+    fun selectAllItems(items: ArrayList<VideoDataClass>) {
+        _selectedItems.value = items
+    }
+
+    fun clearSelection() {
+        _selectedItems.value?.clear()
+        _selectedItems.value = _selectedItems.value
+    }
+
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)

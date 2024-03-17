@@ -1,12 +1,9 @@
 package com.maurya.flexivid.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,8 +18,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -30,7 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.maurya.flexivid.MainActivity
 import com.maurya.flexivid.MainActivity.Companion.searchList
@@ -51,9 +45,6 @@ import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
@@ -71,7 +62,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
     private var sortingOrder: String = ""
     private var searchViewVisible: Boolean = false
 
-    private val viewModel by viewModels<ViewModelObserver>()
+    private val viewModel: ViewModelObserver by viewModels()
+
 
     private val sortOptions = arrayOf(
         "DISPLAY_NAME ASC",
@@ -85,6 +77,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
+
+    private var selectedFiles: ArrayList<VideoDataClass> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,7 +106,13 @@ class VideosFragment : Fragment(), OnItemClickListener {
             setItemViewCacheSize(13)
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapterVideo = AdapterVideo(requireContext(), this@VideosFragment, videoList)
+            adapterVideo = AdapterVideo(
+                requireContext(),
+                this@VideosFragment,
+                videoList,
+                viewModel,
+                this@VideosFragment
+            )
             adapter = adapterVideo
         }
         fetchVideosUsingViewModel()
@@ -158,8 +158,14 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         searchVisibility(false)
 
-        adapterVideo.setOnItemSelectedListener { selectedCount ->
-            fragmentVideosBinding.topToolbarSelectedtext.text = "$selectedCount Selected"
+
+        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
+            selectedFiles = selectedItems ?: arrayListOf()
+            fragmentVideosBinding.topToolbarSelectedtext.text = "${selectedItems.size} Selected"
+        }
+
+        fragmentVideosBinding.topToolbarSelectedall.setOnClickListener {
+            viewModel.selectAllItems(videoList)
         }
 
 
@@ -175,9 +181,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         fragmentVideosBinding.topToolbarClose.setOnClickListener {
             changeVisibility(false)
-            showToast(requireContext(), adapterVideo.getItemSelectedList().size.toString())
-            adapterVideo.clearItemSelectedList()
-            exitLongClickMode()
+            viewModel.clearSelection()
+            adapterVideo.setLongClickMode(false)
         }
 
 
@@ -284,7 +289,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
     }
 
 
-
     private fun changeVisibility(visible: Boolean) {
         if (!visible) {
             (activity as MainActivity).visibilityBottomNav(false)
@@ -304,8 +308,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
         changeVisibility(true)
 
         adapterVideo.setLongClickMode(true)
-
-        val selectedFiles: ArrayList<VideoDataClass> = adapterVideo.getItemSelectedList()
 
         //for deleting file
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
@@ -495,13 +497,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
 
 
-
     }
-
-    private fun exitLongClickMode() {
-        adapterVideo.setLongClickMode(false)
-    }
-
 
 
     override fun onResume() {

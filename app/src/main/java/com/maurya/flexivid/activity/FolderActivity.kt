@@ -1,11 +1,11 @@
 package com.maurya.flexivid.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,7 +54,8 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
                 this@FolderActivity, LinearLayoutManager.VERTICAL, false
             )
             adapterVideo = AdapterVideo(
-                this@FolderActivity, this@FolderActivity, currentFolderVideosList, isFolder = true
+                this@FolderActivity, this@FolderActivity, currentFolderVideosList, viewModel,
+                this@FolderActivity as LifecycleOwner, isFolder = true
             )
             adapter = adapterVideo
         }
@@ -96,7 +97,6 @@ class FolderActivity : AppCompatActivity(), OnItemClickListener {
         }
 
     }
-
 
 
     override fun onItemLongClickListener(position: Int) {
