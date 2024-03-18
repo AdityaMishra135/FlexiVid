@@ -84,7 +84,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
     }
 
     private val selectedFiles: ArrayList<VideoDataClass> = arrayListOf()
-    private var selectAllClicked: Boolean = false
+    private var isAllClicked: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -170,6 +170,23 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.topToolbarSelectedtext.text = "${selectedItems.size} Selected"
             selectedFiles.clear()
             selectedFiles.addAll(selectedItems)
+
+            // Update the select all image color based on the selection status
+            if (selectedItems.size == adapterVideo.itemCount) {
+                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.deep_blue),
+                    PorterDuff.Mode.SRC_IN
+                )
+                isAllClicked = true
+            } else {
+                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
+                    Color.WHITE,
+                    PorterDuff.Mode.SRC_IN
+                )
+                isAllClicked = false
+            }
+
+
             if (selectedFiles.isEmpty()) {
                 val textViews = arrayOf(
                     fragmentVideosBinding.bottomSendVideoFragment,
@@ -241,17 +258,16 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
 
 
-
         fragmentVideosBinding.topToolbarSelectedall.setOnClickListener {
-            if (!selectAllClicked) {
-                selectAllClicked = true
+            if (!isAllClicked) {
+                isAllClicked = true
                 adapterVideo.selectAllItems(videoList)
                 fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
                     R.color.deep_blue,
                     PorterDuff.Mode.SRC_IN
                 )
             } else {
-                selectAllClicked = false
+                isAllClicked = false
                 adapterVideo.unSelectAllItems(videoList)
                 fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
                     Color.WHITE,
@@ -259,7 +275,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 )
             }
         }
-
 
         fragmentVideosBinding.nowPlayingVideoFragment.setOnClickListener {
             val intent = Intent(requireContext(), PlayerActivity::class.java)
@@ -275,8 +290,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
             changeVisibility(false)
             adapterVideo.clearSelection()
             adapterVideo.setLongClickMode(false)
+            isAllClicked = false
         }
-
 
         fragmentVideosBinding.searchViewImage.setOnClickListener {
             searchVisibility(true)
@@ -284,7 +299,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
             fragmentVideosBinding.searchViewVideoFragment.requestFocus()
             fragmentVideosBinding.searchViewVideoFragment.onActionViewExpanded()
         }
-
 
         fragmentVideosBinding.searchViewVideoFragment.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -474,11 +488,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 val selectedFile = selectedFiles[0]
                 popupDetailsNameText.text = selectedFile.videoName
                 popupDetailsPathText.text = selectedFile.path
-
-                Log.d("fragmentDateItemClass", getFormattedDate(selectedFile.dateModified))
                 popupDetailsLastModifiedText.text = getFormattedDate(selectedFile.dateModified)
             } else {
-                popupDetailsNameText.visibility = View.GONE
+                popupDetailsNameText.text = "${selectedFiles.size} files selected"
                 popupLocationLayout.visibility = View.GONE
                 popupLastModifiedLayout.visibility = View.GONE
             }
