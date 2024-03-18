@@ -1,7 +1,9 @@
 package com.maurya.flexivid.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -9,6 +11,7 @@ import android.provider.MediaStore
 import android.provider.MediaStore.Video.Media.*
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.C
@@ -43,7 +46,15 @@ suspend fun getAllVideos(
         val tempList = ArrayList<VideoDataClass>()
 
         val projection = arrayOf(
-            _ID, TITLE,DISPLAY_NAME, BUCKET_DISPLAY_NAME, BUCKET_ID, DURATION, DATA, SIZE, DATE_MODIFIED
+            _ID,
+            TITLE,
+            DISPLAY_NAME,
+            BUCKET_DISPLAY_NAME,
+            BUCKET_ID,
+            DURATION,
+            DATA,
+            SIZE,
+            DATE_MODIFIED
         )
 
         val cursor = context.contentResolver.query(
@@ -237,6 +248,21 @@ fun getFormattedFileSize(sizeInBytes: Long): String {
     return "%.1f %s".format(sizeInUnit, units[digitGroups])
 }
 
+
+@SuppressLint("UseCompatTextViewDrawableApis")
+fun setTextViewColorsForChangingSelection(
+    context: Context,
+    textViews: Array<TextView>,
+    textColorId: Int,
+    clickable:Boolean
+) {
+    val redColor = ContextCompat.getColor(context, textColorId)
+    textViews.forEachIndexed { _, textView ->
+        textView.setTextColor(redColor)
+        textView.compoundDrawableTintList = ColorStateList.valueOf(redColor)
+        textView.isClickable = clickable
+    }
+}
 
 fun getFormattedDate(epochTime: Long): String {
     val date = Date(epochTime * 1000)

@@ -51,7 +51,14 @@ class AdapterVideo(
 
     fun selectAllItems(items: ArrayList<VideoDataClass>) {
         val currentItems = itemSelectedList.value ?: ArrayList()
+        currentItems.clear()
         currentItems.addAll(items)
+        itemSelectedList.value = currentItems
+        notifyDataSetChanged()
+    }
+    fun unSelectAllItems(items: ArrayList<VideoDataClass>) {
+        val currentItems = itemSelectedList.value ?: ArrayList()
+        currentItems.removeAll(items.toSet())
         itemSelectedList.value = currentItems
         notifyDataSetChanged()
     }
