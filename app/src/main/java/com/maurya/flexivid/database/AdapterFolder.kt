@@ -16,7 +16,6 @@ import com.maurya.flexivid.util.countVideoFilesInFolder
 
 class AdapterFolder(
     private val context: Context,
-    private var listener: OnItemClickListener,
     private val itemList: MutableList<FolderDataClass> = mutableListOf()
 ) : RecyclerView.Adapter<AdapterFolder.FolderHolder>() {
 
@@ -36,7 +35,7 @@ class AdapterFolder(
 
             folderName.text = currentItem.folderName
 
-            val textToShow = countVideoFilesInFolder(currentItem.folderPath)
+            val textToShow = countVideoFilesInFolder(context, currentItem.folderPath)
 
             if (textToShow == 1) {
                 folderItemCount.text = "1 video"
@@ -66,13 +65,6 @@ class AdapterFolder(
         val folderName = binding.folderNameFolderItem
         val folderItemCount = binding.folderItemCountFolderItem
         val root = binding.root
-
-
-        init {
-
-        }
-
-
 
     }
 }

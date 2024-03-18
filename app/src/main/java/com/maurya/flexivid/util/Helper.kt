@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -210,31 +211,32 @@ fun sortMusicList(
     adapterVideo.notifyDataSetChanged()
 }
 
+fun countVideoFilesInFolder(context: Context, folderPath: String): Int {
+    val projection = arrayOf(DATA)
+    val selection = "$DATA like ?"
+    val selectionArgs = arrayOf("$folderPath%")
 
-fun countVideoFilesInFolder(folderPath: String): Int {
-    val folder = File(folderPath)
-    if (!folder.exists() || !folder.isDirectory) {
-        return 0
-    }
+    var count = 0
 
-    val videoFileExtensions =
-        listOf(".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv")
+    val cursor: Cursor? = context.contentResolver.query(
+        EXTERNAL_CONTENT_URI,
+        projection,
+        selection,
+        selectionArgs,
+        null
+    )
 
-    var videoFileCount = 0
-
-    val folderFiles = folder.listFiles()
-    if (folderFiles != null) {
-        for (file in folderFiles) {
-            if (file.isFile) {
-                val fileName = file.name.toLowerCase()
-                if (videoFileExtensions.any { fileName.endsWith(it) }) {
-                    videoFileCount++
-                }
+    cursor?.use {
+        while (it.moveToNext()) {
+            val filePath = it.getString(it.getColumnIndexOrThrow(DATA))
+            val file = File(filePath)
+            if (file.exists() && file.parent == folderPath) {
+                count++
             }
         }
     }
 
-    return videoFileCount
+    return count
 }
 
 // for converting bytes to MB and GB
@@ -254,7 +256,7 @@ fun setTextViewColorsForChangingSelection(
     context: Context,
     textViews: Array<TextView>,
     textColorId: Int,
-    clickable:Boolean
+    clickable: Boolean
 ) {
     val redColor = ContextCompat.getColor(context, textColorId)
     textViews.forEachIndexed { _, textView ->

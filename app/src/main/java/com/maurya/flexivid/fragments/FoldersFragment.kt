@@ -58,7 +58,7 @@ class FoldersFragment : Fragment(), OnItemClickListener {
             setItemViewCacheSize(13)
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapterFolder = AdapterFolder(requireContext(), this@FoldersFragment, folderList)
+            adapterFolder = AdapterFolder(requireContext(), folderList)
             adapter = adapterFolder
         }
 

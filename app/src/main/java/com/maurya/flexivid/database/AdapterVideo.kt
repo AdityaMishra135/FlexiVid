@@ -16,6 +16,7 @@ import com.maurya.flexivid.R
 import com.maurya.flexivid.activity.PlayerActivity
 import com.maurya.flexivid.dataEntities.VideoDataClass
 import com.maurya.flexivid.databinding.ItemVideoBinding
+import com.maurya.flexivid.fragments.VideosFragment
 import com.maurya.flexivid.util.OnItemClickListener
 import com.maurya.flexivid.util.sendIntent
 import com.maurya.flexivid.viewModelsObserver.ViewModelObserver
@@ -31,7 +32,7 @@ class AdapterVideo(
 
     private var isLongClickMode = false
 
-//    val itemSelectedList: ArrayList<VideoDataClass> = arrayListOf()
+    //    val itemSelectedList: ArrayList<VideoDataClass> = arrayListOf()
     val itemSelectedList: MutableLiveData<ArrayList<VideoDataClass>> = MutableLiveData()
 
     fun setLongClickMode(enabled: Boolean) {
@@ -56,6 +57,7 @@ class AdapterVideo(
         itemSelectedList.value = currentItems
         notifyDataSetChanged()
     }
+
     fun unSelectAllItems(items: ArrayList<VideoDataClass>) {
         val currentItems = itemSelectedList.value ?: ArrayList()
         currentItems.removeAll(items.toSet())
@@ -66,7 +68,6 @@ class AdapterVideo(
     fun clearSelection() {
         itemSelectedList.value?.clear()
     }
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {
@@ -107,7 +108,7 @@ class AdapterVideo(
                             sendIntent(context, position, "folderActivity")
                         }
 
-                        MainActivity.search -> {
+                        VideosFragment.isSearchViewOpen -> {
                             PlayerActivity.pipStatus = 2
                             sendIntent(context, position, "searchView")
                         }

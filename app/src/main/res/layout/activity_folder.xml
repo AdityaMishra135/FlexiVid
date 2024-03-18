@@ -23,10 +23,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backImgFolderActivity"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
+            android:padding="19dp"
             android:src="@drawable/icon_back" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:fontFamily="@font/font_link"
             android:gravity="center_vertical"
             android:marqueeRepeatLimit="marquee_forever"
-            android:paddingHorizontal="40dp"
+            android:paddingHorizontal="10dp"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Folder Name"

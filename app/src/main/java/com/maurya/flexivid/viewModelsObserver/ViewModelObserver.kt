@@ -20,7 +20,7 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
 
     val foldersStateFLow get() = repository.foldersStateFlow
     val videoFromFoldersStateFLow get() = repository.videosFromFolderStateFlow
-    val statusStateFlow get() = repository.statusStateFlow
+
 
     fun fetchVideos(context: Context) {
         viewModelScope.launch {
@@ -53,36 +53,7 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
 
     }
 
-    //checkBox
-    private val _selectedItems = MutableLiveData<ArrayList<VideoDataClass>>()
-    val selectedItems: MutableLiveData<ArrayList<VideoDataClass>> = _selectedItems
 
-    init {
-        _selectedItems.value = arrayListOf()
-    }
-
-    fun toggleSelection(item: VideoDataClass) {
-        val selectedSet = _selectedItems.value ?: arrayListOf()
-        if (selectedSet.contains(item)) {
-            selectedSet.remove(item)
-        } else {
-            selectedSet.add(item)
-        }
-        _selectedItems.value = selectedSet
-    }
-    fun selectAllItems(items: List<VideoDataClass>) {
-        _selectedItems.value?.addAll(items)
-        _selectedItems.notifyObserver()
-    }
-
-    fun clearSelection() {
-        _selectedItems.value?.clear()
-        _selectedItems.notifyObserver()
-    }
-
-    private fun MutableLiveData<ArrayList<VideoDataClass>>.notifyObserver() {
-        this.value = this.value
-    }
 
 
     override fun onCreate(owner: LifecycleOwner) {

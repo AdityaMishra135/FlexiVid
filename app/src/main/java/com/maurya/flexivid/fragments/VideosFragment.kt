@@ -65,7 +65,6 @@ class VideosFragment : Fragment(), OnItemClickListener {
     lateinit var sharedPreferencesHelper: SharedPreferenceHelper
 
     private var sortingOrder: String = ""
-    private var searchViewVisible: Boolean = false
 
     private val viewModel: ViewModelObserver by viewModels()
 
@@ -81,10 +80,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     companion object {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
+        var isSearchViewOpen: Boolean = false
     }
 
     private val selectedFiles: ArrayList<VideoDataClass> = arrayListOf()
     private var isAllClicked: Boolean = false
+    private var isLongClickMode: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -179,10 +180,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
                 )
                 isAllClicked = true
             } else {
-                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
-                    Color.WHITE,
-                    PorterDuff.Mode.SRC_IN
-                )
+                fragmentVideosBinding.topToolbarSelectedall.setImageResource(R.drawable.icon_unchecked)
                 isAllClicked = false
             }
 
@@ -262,17 +260,9 @@ class VideosFragment : Fragment(), OnItemClickListener {
             if (!isAllClicked) {
                 isAllClicked = true
                 adapterVideo.selectAllItems(videoList)
-                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
-                    R.color.deep_blue,
-                    PorterDuff.Mode.SRC_IN
-                )
             } else {
                 isAllClicked = false
                 adapterVideo.unSelectAllItems(videoList)
-                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
-                    Color.WHITE,
-                    PorterDuff.Mode.SRC_IN
-                )
             }
         }
 
@@ -287,15 +277,12 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
 
         fragmentVideosBinding.topToolbarClose.setOnClickListener {
-            changeVisibility(false)
-            adapterVideo.clearSelection()
-            adapterVideo.setLongClickMode(false)
-            isAllClicked = false
+            closeLongClick()
         }
 
         fragmentVideosBinding.searchViewImage.setOnClickListener {
             searchVisibility(true)
-            searchViewVisible = true
+            isSearchViewOpen = true
             fragmentVideosBinding.searchViewVideoFragment.requestFocus()
             fragmentVideosBinding.searchViewVideoFragment.onActionViewExpanded()
         }
@@ -311,7 +298,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
                         if (song.videoName.lowercase().contains(userInput))
                             searchList.add(song)
                     }
-                    MainActivity.search = true
+                    isSearchViewOpen = true
                     adapterVideo.updateSearchList(searchList)
                 }
                 return true
@@ -320,12 +307,24 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
 
         fragmentVideosBinding.searchViewClose.setOnClickListener {
-            fragmentVideosBinding.searchViewVideoFragment.setQuery("", false)
-            searchList.clear()
-            MainActivity.search = false
-            searchVisibility(false)
+            closeSearchView()
         }
 
+    }
+
+    private fun closeLongClick() {
+        changeVisibility(false)
+        adapterVideo.clearSelection()
+        adapterVideo.setLongClickMode(false)
+        isAllClicked = false
+        isLongClickMode = false
+    }
+
+    private fun closeSearchView() {
+        fragmentVideosBinding.searchViewVideoFragment.setQuery("", false)
+        searchList.clear()
+        isSearchViewOpen = false
+        searchVisibility(false)
     }
 
 
@@ -346,14 +345,16 @@ class VideosFragment : Fragment(), OnItemClickListener {
         }
     }
 
-    fun handleBackPressed() {
-        if (searchViewVisible) {
-            searchVisibility(false)
-            searchViewVisible = false
-        } else {
-            activity?.onBackPressed()
+
+    fun onBackPressed(): Boolean {
+        if (isSearchViewOpen || isLongClickMode) {
+            closeSearchView()
+            closeLongClick()
+            return true
         }
+        return false
     }
+
 
     private fun showSortingMenu() {
         val inflater =
@@ -413,6 +414,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
     override fun onItemLongClickListener(position: Int) {
         changeVisibility(true)
+
+        isLongClickMode = true
 
         adapterVideo.setLongClickMode(true)
 

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var searchList: ArrayList<VideoDataClass> = arrayListOf()
-        var search: Boolean = false
     }
 
 
@@ -103,16 +103,16 @@ class MainActivity : AppCompatActivity() {
         permission()
 
 
-//        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                val fragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-//                if (fragment is VideosFragment) {
-//                    fragment.handleBackPressed()
-//                } else {
-//                    finish()
-//                }
-//            }
-//        })
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val fragment = supportFragmentManager.findFragmentByTag("videosFragmentTag")
+                if (fragment is VideosFragment && fragment.onBackPressed()) {
+                    return
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
 
@@ -211,6 +211,9 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .show()
     }
+
+
+
 
 
 }
