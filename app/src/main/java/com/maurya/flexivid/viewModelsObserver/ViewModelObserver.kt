@@ -70,13 +70,18 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
         }
         _selectedItems.value = selectedSet
     }
-    fun selectAllItems(items: ArrayList<VideoDataClass>) {
-        _selectedItems.value = items
+    fun selectAllItems(items: List<VideoDataClass>) {
+        _selectedItems.value?.addAll(items)
+        _selectedItems.notifyObserver()
     }
 
     fun clearSelection() {
         _selectedItems.value?.clear()
-        _selectedItems.value = _selectedItems.value
+        _selectedItems.notifyObserver()
+    }
+
+    private fun MutableLiveData<ArrayList<VideoDataClass>>.notifyObserver() {
+        this.value = this.value
     }
 
 
@@ -87,12 +92,5 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
     }
 
 
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-    }
 
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -30,21 +31,36 @@ class AdapterVideo(
 
     private var isLongClickMode = false
 
+//    val itemSelectedList: ArrayList<VideoDataClass> = arrayListOf()
+    val itemSelectedList: MutableLiveData<ArrayList<VideoDataClass>> = MutableLiveData()
+
     fun setLongClickMode(enabled: Boolean) {
         isLongClickMode = enabled
         notifyDataSetChanged()
     }
 
-    init {
-        viewModel.selectedItems.observe(lifecycleOwner) { selectedItems ->
-            selectedItems.forEach { selectedItem ->
-                val index = itemList.indexOf(selectedItem)
-                if (index != -1) {
-                    notifyItemChanged(index)
-                }
-            }
+    fun toggleSelection(item: VideoDataClass) {
+        val currentItems = itemSelectedList.value ?: ArrayList()
+        if (currentItems.contains(item)) {
+            currentItems.remove(item)
+        } else {
+            currentItems.add(item)
         }
+        itemSelectedList.value = currentItems
     }
+
+    fun selectAllItems(items: ArrayList<VideoDataClass>) {
+        val currentItems = itemSelectedList.value ?: ArrayList()
+        currentItems.addAll(items)
+        itemSelectedList.value = currentItems
+        notifyDataSetChanged()
+    }
+
+    fun clearSelection() {
+        itemSelectedList.value?.clear()
+    }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoHolder {
         val binding = ItemVideoBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -95,11 +111,12 @@ class AdapterVideo(
                         }
                     }
                 } else {
-                    viewModel.toggleSelection(currentItem)
+                    toggleSelection(currentItem)
+                    checkBox.isChecked = itemSelectedList.value?.contains(currentItem) == true
                 }
             }
+            checkBox.isChecked = itemSelectedList.value?.contains(currentItem) == true
 
-            checkBox.isChecked = viewModel.selectedItems.value?.contains(currentItem) == true
 
             checkBox.visibility = if (isLongClickMode) View.VISIBLE else View.GONE
 
@@ -140,7 +157,8 @@ class AdapterVideo(
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 isLongClickMode = !isLongClickMode
-                viewModel.toggleSelection(itemList[position])
+//                viewModel.toggleSelection(itemList[position])
+                toggleSelection(itemList[position])
                 listener.onItemLongClickListener(position)
             }
             return true

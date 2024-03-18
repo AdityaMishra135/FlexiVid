@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,7 +52,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class VideosFragment : Fragment(), OnItemClickListener {
 
-    private var isLongClickMode = false
 
     private lateinit var fragmentVideosBinding: FragmentVideosBinding
     private lateinit var adapterVideo: AdapterVideo
@@ -78,7 +78,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         var videoList: ArrayList<VideoDataClass> = arrayListOf()
     }
 
-    private var selectedFiles: ArrayList<VideoDataClass> = arrayListOf()
+    private val selectedFiles: ArrayList<VideoDataClass> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -159,13 +159,27 @@ class VideosFragment : Fragment(), OnItemClickListener {
         searchVisibility(false)
 
 
-        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            selectedFiles = selectedItems ?: arrayListOf()
+//        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
+//            selectedFiles = selectedItems ?: arrayListOf()
+//            fragmentVideosBinding.topToolbarSelectedtext.text = "${selectedItems.size} Selected"
+//        }
+
+
+//        selectedFiles = adapterVideo.itemSelectedList
+
+        adapterVideo.itemSelectedList.observe(viewLifecycleOwner) { selectedItems ->
             fragmentVideosBinding.topToolbarSelectedtext.text = "${selectedItems.size} Selected"
+            selectedFiles.clear()
+            selectedFiles.addAll(selectedItems)
         }
 
+
+
+
+
         fragmentVideosBinding.topToolbarSelectedall.setOnClickListener {
-            viewModel.selectAllItems(videoList)
+//            viewModel.selectAllItems(videoList)
+            adapterVideo.selectAllItems(videoList)
         }
 
 
@@ -181,7 +195,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         fragmentVideosBinding.topToolbarClose.setOnClickListener {
             changeVisibility(false)
-            viewModel.clearSelection()
+//            viewModel.clearSelection()
+            adapterVideo.clearSelection()
             adapterVideo.setLongClickMode(false)
         }
 
@@ -308,6 +323,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
         changeVisibility(true)
 
         adapterVideo.setLongClickMode(true)
+
 
         //for deleting file
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
