@@ -752,13 +752,6 @@ class PlayerActivity : AppCompatActivity(), AudioManager.OnAudioFocusChangeListe
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        if (!isInPictureInPictureMode) {
-//            pipDialog()
-//        }
-    }
-
     override fun onPause() {
         super.onPause()
         pipDialog()

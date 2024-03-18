@@ -174,10 +174,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
             // Update the select all image color based on the selection status
             if (selectedItems.size == adapterVideo.itemCount) {
-                fragmentVideosBinding.topToolbarSelectedall.setColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.deep_blue),
-                    PorterDuff.Mode.SRC_IN
-                )
+                fragmentVideosBinding.topToolbarSelectedall.setImageResource(R.drawable.icon_checked)
                 isAllClicked = true
             } else {
                 fragmentVideosBinding.topToolbarSelectedall.setImageResource(R.drawable.icon_unchecked)
@@ -421,6 +418,7 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         //for deleting file
         fragmentVideosBinding.bottomDeleteVideoFragment.setOnClickListener {
+            closeLongClick()
 
             val deleteSheetDialog =
                 BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
@@ -512,6 +510,8 @@ class VideosFragment : Fragment(), OnItemClickListener {
 
         //for renaming file
         fragmentVideosBinding.bottomRenameVideoFragment.setOnClickListener {
+            closeLongClick()
+
             val renameSheetDialog =
                 BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
             val renameSheetView: View =

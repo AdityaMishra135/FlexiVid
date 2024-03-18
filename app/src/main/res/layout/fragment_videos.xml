@@ -115,12 +115,12 @@
 
             <ImageView
                 android:id="@+id/top_toolbar_selectedall"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_ripplefactor"
                 android:padding="7dp"
-                android:src="@drawable/icon_check_all" />
+                android:src="@drawable/icon_checked" />
 
         </LinearLayout>
 

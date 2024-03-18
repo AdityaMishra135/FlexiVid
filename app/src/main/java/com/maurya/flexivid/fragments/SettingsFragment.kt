@@ -48,7 +48,7 @@ class SettingsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
         val view = fragmentSettingsBinding.root
 

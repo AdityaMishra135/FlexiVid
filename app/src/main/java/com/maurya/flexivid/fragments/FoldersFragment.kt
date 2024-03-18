@@ -40,7 +40,7 @@ class FoldersFragment : Fragment(), OnItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         fragmentFoldersBinding = FragmentFoldersBinding.inflate(inflater, container, false)
         val view = fragmentFoldersBinding.root
 

@@ -54,14 +54,4 @@ class ViewModelObserver @Inject constructor(private val repository: Repository) 
     }
 
 
-
-
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-
-
-    }
-
-
-
 }
